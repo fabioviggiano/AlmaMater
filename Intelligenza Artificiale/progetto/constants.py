@@ -12,11 +12,11 @@ executeSectorAnalysis = False # Related to 'workSectors'
 executeGlobalSpecificAnalysis = True
 
 # All related to 'executeGlobalSpecificAnalysis'
-maleFemaleAnalysis = True 
-#citizenRaceAnalysis = False 
+maleFemaleAnalysis = True
+#citizenRaceAnalysis = False
 raceAnalysis = False
 educAnalysis = False
-geoAnalysis = False 
+geoAnalysis = False
 
 # -----------------------------------------------
 
@@ -36,13 +36,13 @@ featuresColumns = [
     'year',
     'age',
     'marst',
-    'classwkr', 
+    'classwkr',
     'nativity',
     'union',
     'potexp',
     # Artificial features
     'geography',
-    'labor', 
+    'labor',
     'work_type'
 ]
 
@@ -53,8 +53,8 @@ firstDatasetFilter = 'hrwage' # Necessary because is target feature (sample with
 secondDatasetFilter = 'nativity'
 thirdDatasetFilter = 'uhrswork'
 
-features_plus_sex = ['race', 'sch']   
-features_plus_race = ['sex', 'sch']     
+features_plus_sex = ['race', 'sch']
+features_plus_race = ['sex', 'sch']
 features_plus_education = ['sex', 'race']
 features_plus_global = ['sex', 'race', 'sch']
 
@@ -157,5 +157,10 @@ messageLenShapValues =          '\n--- Len Shap values: '
 messageFilter = '\n--- Filter #'
 messageDataDimension = ' - Data length: '
 
+messageExecuteSectorAnalysis =      '\n--- SectorAnalysis'
+messageNotExecuteSectorAnalysis =      '\n--- Sector Analysis not executed'
+
+messageExecuteGlobalSpecificAnalysis =      '\n--- GlobalSpecificAnalysis'
+messageNotExecuteGlobalSpecificAnalysis =      '\n--- Global Specific Analysis not executed'
 
 # -----------------------------------------------
