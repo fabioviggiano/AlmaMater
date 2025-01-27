@@ -1,48 +1,47 @@
-# -*- coding: utf-8 -*-
-import methods
-from constants import *
-
 # Importazione librerie
 import pandas as pd
-import methods
 
-print(messageStartAlberiDecisionali)
+import methods
+import constants
+from constants import *
+
+print(constants.messageStartInDecisionTree)
 
 data = methods.readCSV()
 
-if executeSectorAnalysis:
+if constants.executeSectorAnalysis:
     # Group the filtered data based on defined column in costants
-    data[groupingColumn] = pd.cut(data[columnToExtract], bins=wage_ranges)
+    data[constants.workSectors] = pd.cut(data[wageRanges], bins=constants.wage_bins)
 
     # Count the number of observations in each group
-    wage_distribution = data[groupingColumn].value_counts().sort_index()
+    wage_distribution = data[constants.workSectors].value_counts().sort_index()
 
     methods.plotWageDistribution(wage_distribution)
 
-    # Filtra sotto stipendio trenta
-    df = data[data[columnToExtract] <= 30]
+    # Filter by hourly wage
+    df = data[(data[constants.firstDatasetFilter] >= 5) & (data[constants.firstDatasetFilter] <= 50)]
 
     male, female = methods.filterSex(df)
 
-    methods.avg_hrwage_diff_by_sector(male, female)
+    methods.avgHrwageDiffBySector(male, female)
 
 data = methods.doubleFiter(data)
+data = methods.insertFeature(data)
 
-if executeGlobalSpecificAnalysis:
-    if maleFemaleAnalysis:
+if constants.executeGlobalSpecificAnalysis:
+    if constants.maleFemaleAnalysis:
             methods.maleFemaleAnalysisFunction(data)
 
-    if citizenRaceAnalysis:
-            methods.citizenRaceAnalysisFnction(data)
+    #if constants.citizen_race_analysis:
+    #        methods.citizenRaceAnalysisFunction(data)
 
-    if raceAnalysis:
+    if constants.raceAnalysis:
         methods.raceAnalysisFunction(data)
 
-    if educAnalysis:
+    if constants.educAnalysis:
         methods.educAnalysisFunction(data)
 
-if executeExplainer:
-    model, xTest = methods.executeRandomForestRegressor(data)
-    methods.executeTreeExplainer(model, xTest)
+    if constants.executeExplainer:
+        methods.globalAnalysisFunction(data)
 
-print(messageEndAlberiDecisionali)
+print(constants.messageEndInDecisionTree)

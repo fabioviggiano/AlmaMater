@@ -1,76 +1,161 @@
+## CONSTANTS FILE
+
+# Dataset path
 csvFilePath = 'data/CurrentPopulationSurvey.csv'
 
-executeSectorAnalysis = False
+# -----------------------------------------------
+
+# Analysis Flag
 executeExplainer = False
+
+executeSectorAnalysis = False # Related to 'workSectors'
 executeGlobalSpecificAnalysis = True
 
-maleFemaleAnalysis = False
-citizenRaceAnalysis = False
+# All related to 'executeGlobalSpecificAnalysis'
+maleFemaleAnalysis = True 
+#citizenRaceAnalysis = False 
 raceAnalysis = False
 educAnalysis = False
-geoAnalysis = True
+geoAnalysis = False 
 
-# Define the ranges for grouping hourly wage
-wage_ranges = [0, 1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 100000]
+# -----------------------------------------------
 
-# Target e variabili predittive
-target = ['hrwage']  # Puoi cambiare con il tuo target
-features = ["metro", "age", "potexp",
-            "citizen"
-    , "sch", "educ99", "schlcoll"
-    , "inflate",
-            "year"
-            # --rimettile dopo    , "Agriculture",  "durables", "nondurables",  "Transport", "Utilities", "Communications", "retailtrade", "wholesaletrade", "finance", "SocArtOther",  "Medical", "Education", "professional", "publicadmin", "sumadj_ind", "manager", "business", "financialop", "computer", "architect", "scientist", "socialworker", "postseceduc", "legaleduc", "artist", "lawyerphysician", "healthcare", "healthsupport", "protective", "foodcare", "building", "sales", "officeadmin", "farmer",   "production", "transport"
-    , "sex"
-    , "relate", "hdwfcoh", "marst"  # not really the gender but very close to it
-    , "race"  # not very usefull
-    , "annhrs"
-            # --rimettile dopo     ,"farm", "yrimmig", "nativity", "hispan", "uhrswork", "union"   --rimettile dopo
-            # --rimettile dopo  , "northeast", "northcentral", "south", "west"
-            # , "perconexp"#it is cheating
-            ]
+# Random Trees parameters
+nEstimator = 100
+randomState = 42
+
+# -----------------------------------------------
 
 # CPSVariable
 
+target = ['hrwage']  # Or 'realhrwage' + feature 'inflate'
+# Ranges for grouping hourly wage
+wageRanges = [0, 1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 100000]
+
+featuresColumns = [
+    'year',
+    'age',
+    'marst',
+    'classwkr', 
+    'nativity',
+    'union',
+    'potexp',
+    # Artificial features
+    'geography',
+    'labor', 
+    'work_type'
+]
+
+groupingColumn = wageRanges
 columnToExtract = 'hrwage'
-groupingColumn = 'wage'
+
+firstDatasetFilter = 'hrwage' # Necessary because is target feature (sample with measured 'hrwage')
+secondDatasetFilter = 'nativity'
+thirdDatasetFilter = 'uhrswork'
+
+features_plus_sex = ['race', 'sch']   
+features_plus_race = ['sex', 'sch']     
+features_plus_education = ['sex', 'race']
+features_plus_global = ['sex', 'race', 'sch']
 
 hrwage = 'hrwage'
 sex = 'sex'
 race = 'race'
+citizen = 'citizen'
+schooledu = 'sch'
+union = 'union'
+uhrswork = 'uhrswork'
+classwkr = 'classwkr'
+geography = 'geography'
+location = ['northeast', 'northcentral', 'south', 'west']
+labor = 'labor'
+work_type = 'work_type'
+wage_group = 'wage_group'
+schooledu = 'sch'
+production = 'production'
 
-workSectors = ["Agriculture", "durables", "nondurables", "Transport", "Utilities", "Communications", "retailtrade",
-                    "wholesaletrade", "finance", "SocArtOther", "Medical", "Education", "professional", "publicadmin",
-                    "sumadj_ind", "manager", "business", "financialop", "computer", "architect", "scientist",
-                    "socialworker", "postseceduc", "legaleduc", "artist", "lawyerphysician", "healthcare",
-                    "healthsupport", "protective", "foodcare", "building", "sales", "officeadmin", "farmer",
-                    "production", "transport"]
+location_weights=[1, 2, 3, 4]
+
+workSectors = [
+    # Agricultural and livestock sector
+    'Agriculture',
+    'farmer',
+    # Medical and healthcare sector
+    'Medical',
+    'healthcare',
+    'healthsupport',
+    # educational and social sector
+    'Education',
+    'postseceduc',
+    'legaleduc',
+    'socialworker',
+    # artistic and creative sector
+    'architect',
+    'artist',
+    'SocArtOther',
+    # legal and juridical sector
+    'lawyerphysician',
+    # professional and managerial sector
+    'manager',
+    'business',
+    'professional',
+    # commercial and sales sector
+    'wholesaletrade',
+    'sales',
+    'retailtrade',
+    # technology and IT sector
+    'computer',
+    'scientist',
+    # industry and production sector
+    'durables',
+    'nondurables',
+    'Transport',
+    'production',
+    'transport',
+    'building',
+    'constructextractinstall',
+    # public and administrative sector
+    'publicadmin',
+    'protective',
+    # service sector
+    'hotelsrestaurants',
+    'foodcare',
+    'officeadmin',
+    # financial and banking sector
+    'finance',
+    'financialop',
+    # communications sector
+    'Communications',
+    # energy sector and infrastructure
+    'Utilities'
+]
+
+# -----------------------------------------------
 
 # Users messages
+messageRandomForest =           '\n--- Model Random Forest ---'
 
-messageRandomForest = "\n--- Model Random Forest ---"
+messageStartInDecisionTree =      '\n--- InDecision Trees | Starting execution ---'
+messageEndInDecisionTree =        '\n--- InDecision Trees | Execution finished ---'
 
-messageStartAlberiDecisionali = "\n--- Alberi Decisionali | Avvio esecuzione ---"
-messageEndAlberiDecisionali = '\n--- Alberi Decisionali | Fine esecuzione ---'
+messageExecuteTreeExplainer =   '\n--- Executing Tree Explainer ---'
 
-messageExecuteTreeExplainer = "\n--- Esecuzione Tree Explainer ---"
+filteredRowMessageString =      '\n--- Number of rows in the filtered dataset: '
+messageFinalRow = '\n--- Number of rows in the final dataset: '
 
-filteredRowMessageString = '\n--- Numero di righe nel dataset filtrato: '
-finalRowMessageString = '\n--- Numero di righe nel dataset finale: '
+messageFileReadCorrectly =      '\n--- The file has been read correctly'
+messageFileNotReadCorrectly =   '\n--- Error: The CSV file is empty or was not read correctly'
+messageFileNotFound =           '\n--- Error: CSV file not found at:  '
+messageFileErrorWhileReading =  '\n--- An error occurred while reading the CSV file'
 
-messageFileReadCorrectly = '\n--- Il file è stato letto correttamente'
-messageFileNotReadCorrectly = '\n Il file CSV è vuoto o non è stato letto correttamente.'
+messageDatasetEmpty =           '\n--- The dataset is empty ---'
+messageDatasetIsNotEmpty =      '\n--- The dataset for the current analysis is not empty ---'
 
-messageXTestShape = '\n X_test.shape'
-messageLenShapValues = '\n len Shap Values'
+messageXTestShape =             '\n--- X_test.shape: '
+messageLenShapValues =          '\n--- Len Shap values: '
 
-nEstimator = 100
-randomState = 42
+messageFilter = '\n--- Filter #'
+messageDataDimension = ' - Data length: '
 
-sectorFilter = 'production'
 
-# classwkr: classwkr_lbl
-# Class of worker
-# (Self-empl=10, Wage/salary, private sector=21, Wage/salary, government=24, Federal govt employee=25, State govt employee=27, Local govt employee=28, Unpaid family worker=29)
-
-classWkr = [10, 21, 24, 25, 27, 28, 29]
+# -----------------------------------------------
