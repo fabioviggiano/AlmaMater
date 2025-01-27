@@ -232,7 +232,7 @@ def executeTreeExplainer(X_train, X_test, model, features, model_desc):
     print(constants.messageExecuteTreeExplainer)
 
     explainer = shap.TreeExplainer(model, X_train)
-    shap_values = explainer.shap_values(X_test)
+    shap_values = explainer(X_test)
 
     print(constants.messageXTestShape + str(X_test.shape))
     print(constants.messageLenShapValues + str(len(shap_values)))
