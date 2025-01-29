@@ -6,17 +6,17 @@ csvFilePath = 'data/CurrentPopulationSurvey.csv'
 # -----------------------------------------------
 
 # Analysis Flag
-executeExplainer = False
 
-executeSectorAnalysis = False # Related to 'workSectors'
+executeSectorAnalysis = True
+executeExplainer = True
 executeGlobalSpecificAnalysis = True
 
 # All related to 'executeGlobalSpecificAnalysis'
 maleFemaleAnalysis = True
-#citizenRaceAnalysis = False
-raceAnalysis = False
-educAnalysis = False
-geoAnalysis = False
+executeCitizenAnalysis = True
+executeMarstAnalysis = True
+executeGeographyAnalysis = True
+executeRaceAnalysis = True
 
 # -----------------------------------------------
 
@@ -26,9 +26,27 @@ randomState = 42
 
 # -----------------------------------------------
 
-# CPSVariable
+# Target e variabili predittive
 
 target = ['hrwage']  # Or 'realhrwage' + feature 'inflate'
+
+features = ["metro", "age", "potexp",
+            "citizen"
+    , "sch", "educ99", "schlcoll"
+    , "inflate",
+            "year"
+            # --stiamo lavorando solo su production per limitare il tempo macchina    , "Agriculture",  "durables", "nondurables",  "Transport", "Utilities", "Communications", "retailtrade", "wholesaletrade", "finance", "SocArtOther",  "Medical", "Education", "professional", "publicadmin", "sumadj_ind", "manager", "business", "financialop", "computer", "architect", "scientist", "socialworker", "postseceduc", "legaleduc", "artist", "lawyerphysician", "healthcare", "healthsupport", "protective", "foodcare", "building", "sales", "officeadmin", "farmer",   "production", "transport"
+    , "sex"
+    , "relate", "hdwfcoh", "marst"  # not really the gender but very close to it
+    , "race"
+    , "annhrs"
+            # no very usefull ,"farm", "yrimmig", "nativity", "hispan", "uhrswork", "union"
+            # -raggruppate in geography  , "northeast", "northcentral", "south", "west"
+    , "geography"
+            # , "perconexp"#it is cheating
+            ]
+
+
 # Ranges for grouping hourly wage
 wageRanges = [0, 1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 100000]
 
@@ -139,6 +157,7 @@ messageStartInDecisionTree =      '\n--- InDecision Trees | Starting execution -
 messageEndInDecisionTree =        '\n--- InDecision Trees | Execution finished ---'
 
 messageExecuteTreeExplainer =   '\n--- Executing Tree Explainer ---'
+messageNotExecuteTreeExplainer =   '\n--- Not Executing Tree Explainer ---'
 
 filteredRowMessageString =      '\n--- Number of rows in the filtered dataset: '
 messageFinalRow = '\n--- Number of rows in the final dataset: '
@@ -164,3 +183,34 @@ messageExecuteGlobalSpecificAnalysis =      '\n--- GlobalSpecificAnalysis'
 messageNotExecuteGlobalSpecificAnalysis =      '\n--- Global Specific Analysis not executed'
 
 # -----------------------------------------------
+
+# Mappatura numerica -> significato
+citizen_mapping = {
+    1: "Cittadino",
+    2: "Naturalizzato",
+    3: "Non cittadino"
+}
+
+race_mapping = {
+    1: "White non-Hispanic",
+    2: "Black non-Hispanic",
+    3: "Hispanic",
+    4: "Other non-Hispanic"
+}
+
+marst_mapping = {
+    1: "Married, spouse present",
+    2: "Married, spouse absent",
+    3: "Separated",
+    4: "Divorced",
+    5: "Widowed",
+    6: "Never married"
+}
+
+geography_mapping = {
+    1: "Northeast",
+    2: "North Central",
+    3: "South",
+    4: "West",
+    5: "Other/Unknown"
+}
