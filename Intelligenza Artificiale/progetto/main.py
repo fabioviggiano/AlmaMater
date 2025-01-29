@@ -4,7 +4,7 @@ Created on Thu Jan 16 20:57:38 2025
 
 @author: cesaredarochapinto
 @author: fabioviggiano
-@author: francesacmazzetti
+@author: francescamazzetti
 """
 
 # Importazione librerie
