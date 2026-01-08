@@ -1,6 +1,6 @@
 # Portfolio Accademico - Fabio Viggiano
 
-Benvenuti nel mio repository accademico. Questo spazio raccoglie progetti, relazioni, appunti e materiale di studio relativi al mio percorso di laurea presso l'**Alma Mater Studiorum - Università di Bologna**.
+Benvenuti nel mio repository accademico. Questo spazio raccoglie progetti, relazioni, appunti e materiale di studio relativi al mio percorso di **laurea magistrale in Informatica: Curriculum per il management** presso l'**Alma Mater Studiorum - Università di Bologna** .
 
 L'obiettivo è documentare il mio lavoro e condividere risorse che potrebbero essere utili ad altri studenti.
 
@@ -42,4 +42,5 @@ Per domande o feedback, non esitate a contattarmi.
 
 *   **Email:** `fabio.viggiano@studio.unibo.it`
 *   **Profilo GitHub:** [fabioviggiano](https://github.com/fabioviggiano)
+
 
