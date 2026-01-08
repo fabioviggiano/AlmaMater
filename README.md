@@ -14,35 +14,32 @@ Ogni cartella in questo repository corrisponde a un esame specifico. All'interno
 
 Di seguito è riportato l'elenco dei corsi documentati in questo repository. Clicca su un nome per accedere direttamente alla cartella corrispondente.
 
-### 📚 Materie Principali
+### 📚 Corsi
 
 *   **[Intelligenza Artificiale](./Intelligenza%20Artificiale/)**
-    *   *Descrizione:* Progetti e materiale relativi ai fondamenti dell'IA, algoritmi di ricerca, logica e machine learning.
+    *   *Descrizione:* .
 
 *   **[Natural Language Processing](./Natural%20Language%20Processing/)**
-    *   *Descrizione:* Approfondimenti e implementazioni di modelli per l'elaborazione del linguaggio naturale.
+    *   *Descrizione:* .
 
 *   **[Computational Imaging](./Computational%20Imaging/)**
-    *   *Descrizione:* Contiene il progetto sulla "Blind Deconvolution", che confronta un approccio classico model-based (Shan et al.) con una rete neurale U-Net per il deblurring di immagini.
-
-### 📊 Basi di Dati e Analisi
+    *   *Descrizione:* .
 
 *   **[Complementi di Basi di Dati](./Complementi%20di%20Basi%20di%20Dati/)**
-    *   *Descrizione:* Materiale avanzato sui database, tecnologie NoSQL e gestione di dati su larga scala.
+    *   *Descrizione:* .
 
 *   **[Social Network Analysis](./Social%20Network%20Analysis/)**
-    *   *Descrizione:* Progetti e analisi sulla struttura e le dinamiche delle reti sociali.
-
-### 🎓 Altri Corsi
+    *   *Descrizione:* .
 
 *   **[Didattica dell' Informatica](./Didattica%20dell'%20Informatica/)**
-    *   *Descrizione:* Riflessioni e materiali sulle metodologie di insegnamento dell'informatica.
+    *   *Descrizione:* .
 
 ---
 
 ## Contatti
 
-Per domande, collaborazioni o feedback, non esitate a contattarmi.
+Per domande o feedback, non esitate a contattarmi.
 
 *   **Email:** `fabio.viggiano@studio.unibo.it`
 *   **Profilo GitHub:** [fabioviggiano](https://github.com/fabioviggiano)
+
