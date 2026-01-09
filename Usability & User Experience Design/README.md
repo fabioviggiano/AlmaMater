@@ -1,6 +1,7 @@
 # User & Usability eXperience (UUX) – Appunti del Corso
 
 Questa cartella contiene una raccolta di **appunti strutturati in Markdown** sul corso di **User & Usability eXperience (UUX)**.  
+
 Il materiale è pensato per:
 
 - 📘 studio teorico
