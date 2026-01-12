@@ -7,7 +7,8 @@ Questa cartella **contiene esclusivamente la presentazione del progetto** relati
 🔗 https://github.com/fabioviggiano/BlindDeconvolution
 
 ## Contenuto della cartella
-- Presentazione del progetto (slide)
+- Presentazione del progetto (slide e formato markdown)
+- Paper scientifico analizzato
 
 ## Repository del progetto
 Nel repository esterno sono presenti:
