@@ -7,11 +7,14 @@ Questa cartella **contiene esclusivamente la presentazione del progetto** relati
 🔗 https://github.com/fabioviggiano/BlindDeconvolution
 
 ## Contenuto della cartella
+
 - Presentazione del progetto (slide e formato markdown)
-- Paper scientifico analizzato
+- [Understanding and evaluating blind deconvolution algorithms - Levin]() (Paper scientifico analizzato)
 
 ## Repository del progetto
+
 Nel repository esterno sono presenti:
+
 - Implementazione completa del progetto di *Blind Deconvolution*
 - Codice sorgente
 - Eventuale documentazione tecnica
