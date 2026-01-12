@@ -8,8 +8,11 @@ Questa cartella **contiene esclusivamente la presentazione del progetto** relati
 
 ## Contenuto della cartella
 
-- Presentazione del progetto (slide e formato markdown)
-- [Understanding and evaluating blind deconvolution algorithms - Levin](https://github.com/fabioviggiano/AlmaMater/blob/main/Computational%20Imaging/Understanding%20and%20evaluating%20blind%20deconvolution%20algorithms.pdf) (Paper scientifico analizzato)
+- Presentazione del progetto
+- --- [Understanding and evaluating blind deconvolution algorithms - Levin](https://github.com/fabioviggiano/AlmaMater/blob/main/Computational%20Imaging/Understanding%20and%20evaluating%20blind%20deconvolution%20algorithms.pdf) (Paper scientifico analizzato)
+  -- [Blind Deconvolotuion - File Mardkown]([url](https://github.com/fabioviggiano/AlmaMater/blob/main/Computational%20Imaging/Blind%20Deconvolution%3A%20Confronto%20tra%20Metodi%20Model-Based%20e%20Approcci%20Deep%20Learning%20Supervisionati.md))
+   -- [Blind Deconvolotuion - Slide]([url]())
+
 
 ## Repository del progetto
 
