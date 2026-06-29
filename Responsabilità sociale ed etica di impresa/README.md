@@ -1,0 +1,1 @@
+Tra gli esami che trovato più interessanti del corso di laurea, tutto il tema è molto interesante, i concetti abbastanza agevoli e l' esame scritto consente di poter rispondere non solo fornendo nozioni ma anche portando proprie riflessioni e valutazioni.
