@@ -21,28 +21,20 @@ Di seguito è riportato l'elenco degli insegnamenti documentati nel repository. 
 ## Corsi
 
 - **[Artificial Intelligence, Blockchain e Criptovalute nello Sviluppo Software](./Artificial%20Intelligence%2C%20Blockchain%20E%20Criptovalute%20nello%20Sviluppo%20Software/)**
-  - *Descrizione:*
 
 - **[Complementi di Basi di Dati](./Complementi%20di%20Basi%20di%20Dati/)**
-  - *Descrizione:*
 
 - **[Computational Imaging](./Computational%20Imaging/)**
-  - *Descrizione:*
 
 - **[Didattica dell'Informatica](./Didattica%20dell'%20Informatica/)**
-  - *Descrizione:*
 
 - **[Natural Language Processing](./Natural%20Language%20Processing/)**
-  - *Descrizione:*
 
 - **[Responsabilità sociale ed etica d'impresa](./Responsabilit%C3%A0%20sociale%20ed%20etica%20d'impresa/)**
-  - *Descrizione:*
 
 - **[Social Network Analysis](./Social%20Network%20Analysis/)**
-  - *Descrizione:*
 
 - **[Usability & User Experience Design](./Usability%20%26%20User%20Experience%20Design/)**
-  - *Descrizione:* Appunti teorici e materiale di studio su usabilità, User Experience Design, progettazione user-centered, psicologia cognitiva, architettura dell'informazione e metodi di valutazione dell'usabilità.
 
 ---
 
