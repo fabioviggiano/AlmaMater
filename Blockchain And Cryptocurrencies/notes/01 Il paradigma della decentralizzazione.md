@@ -2,7 +2,7 @@
 
 *Lezione 1 · Slide "Roadmap", "What is this course all about?", "Problems of Centralized Solutions", "Peer-to-Peer Model", "Overlay", "Service Evolution" e "The Public Ledger", incrociate con 01 – Preliminaries, 02 – Introduction Blockchain, 07.a – DHT short intro, 08.00 – Consensus short e 08 – Blockchain.*
 
-[← Indice](../README.md)
+[← Indice](README.md)
 
 ---
 
