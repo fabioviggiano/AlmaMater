@@ -1,0 +1,1 @@
+Slide dal corso virtuale.
