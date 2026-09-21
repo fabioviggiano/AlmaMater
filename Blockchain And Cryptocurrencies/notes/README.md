@@ -10,7 +10,7 @@ Ogni capitolo corrisponde a una lezione e incrocia tre fonti: gli appunti presi 
 
 | Cap. | Titolo | Lezione | Slide principali | Stato |
 |---|---|---|---|---|
-| 1 | [Il paradigma della decentralizzazione](capitoli/01-paradigma-decentralizzazione.md) | 21/09/2026 | 01, 02, 07.a, 08.00, 08 | ✅ |
+| 1 | [Il paradigma della decentralizzazione](<01 Il paradigma della decentralizzazione.md>) | 21/09/2026 | 01, 02, 07.a, 08.00, 08 | ✅ |
 | 2 | *da scrivere* | | | ⏳ |
 
 ---
