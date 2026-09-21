@@ -65,12 +65,18 @@ Narayanan, Bonneau, Felten, Miller, Goldfeder, [*Bitcoin and Cryptocurrency Tech
 
 ## Struttura del repository
 
+## Struttura del repository
+
 ```
-.
-├── README.md                  ← questo file (copertina e indice)
-├── _template-capitolo.md      ← scheletro per i nuovi capitoli
-└── capitoli/
-    └── 01-paradigma-decentralizzazione.md
+notes/
+├── README.md                                    ← copertina e indice
+├── _template-capitolo.md                        ← scheletro per i nuovi capitoli
+├── 01 Il paradigma della decentralizzazione.md  ← capitoli ragionati
+└── 2026.09.21 - Lezione 1.md                    ← appunti grezzi di lezione
 ```
 
-Convenzione per i nomi: `capitoli/NN-titolo-breve.md`.
+Convenzioni per i nomi:
+- capitoli: `NN Titolo del capitolo.md`
+- appunti grezzi: `AAAA.MM.GG - Lezione N.md`
+
+Nei link ai file con spazi usa le parentesi angolari: `[Titolo](<NN Titolo del capitolo.md>)`.
