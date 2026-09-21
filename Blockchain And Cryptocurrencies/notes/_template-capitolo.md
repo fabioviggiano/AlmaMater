@@ -2,7 +2,7 @@
 
 *Lezione N · Slide "…", incrociate con …*
 
-[← Indice](../README.md)
+[← Indice](README.md)
 
 ---
 
