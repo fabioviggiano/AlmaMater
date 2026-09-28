@@ -12,7 +12,7 @@ Ogni capitolo corrisponde a una lezione e incrocia tre fonti: gli appunti presi 
 |---|---|---|---|---|
 | 1 | [Il paradigma della decentralizzazione](<01 Il paradigma della decentralizzazione.md>) | 21/09/2026 | 01, 02, 07.a, 08.00, 08 | ✅ |
 | 2.1 | [Smart contracts](<01 Il paradigma della decentralizzazione.md>)  | 25/09/2026 | | ✅ |
-| 2.2 | [Smart contracts - Use case](<01 Il paradigma della decentralizzazione.md>)  | 25/09/2026 | | ⏳ |
+| 2.2 | [Smart contracts - Some use cases](<01 Il paradigma della decentralizzazione.md>)  | 25/09/2026 | | ⏳ |
 
 ---
 
