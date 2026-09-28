@@ -10,9 +10,29 @@ Ogni capitolo corrisponde a una lezione e incrocia tre fonti: gli appunti presi 
 
 | Cap. | Titolo | Lezione | Slide principali | Stato |
 |---|---|---|---|---|
-| 1 | [Il paradigma della decentralizzazione](<01 Il paradigma della decentralizzazione.md>) | 21/09/2026 | 01, 02, 07.a, 08.00, 08 | ✅ |
-| 2.1 | [Smart contracts](<01 Il paradigma della decentralizzazione.md>)  | 25/09/2026 | | ✅ |
-| 2.2 | [Smart contracts - Some use cases](<01 Il paradigma della decentralizzazione.md>)  | 25/09/2026 | | ⏳ |
+| 1 | [Il paradigma della centralizzazione](<notes/2026.09.21 - Lezione 1 - Il paradigma della centralizzazione- Appunti da Panopoto.md>) | 21/09/2026 | 01, 02, 07.a, 08.00, 08 | ✅ |
+| 2.1 | [Smart contracts](<notes/2026.09.25 - Lezione 2.1 - Smart Contracts - Appunti da Panopoto.md>) | 25/09/2026 | 02, 04.00 | ✅ |
+| 2.2 | [Smart contracts - Some use cases](<notes/2026.09.25 - Lezione 2.2 - Smart Contracts - Somo use cases - Appunti da Panopoto.md>) | 25/09/2026 | 02, 04.00 | ⏳ |
+| 3 | [Applicazioni decentralizzate e Smart Transportation](<notes/2026.09.28 - Lezione 3 - Smart Transportation.md>) | 28/09/2026 | 03.00 (Mobi talk) | ⏳ |
+| 4 | [Cryptocurrencies: Architetture e modello UTXO vs Account](<notes/2026.10.02 - Lezione 4 - Cryptocurrencies e Modelli di Stato.md>) | 02/10/2026 | 03.01 | ⏳ |
+| 5 | [Bitcoin: Transazioni, Scripting e P2P Network](<notes/2026.10.05 - Lezione 5 - Bitcoin Internals.md>) | 05/10/2026 | 03.01, 08 | ⏳ |
+| 6 | [Tokenomics e Standard Fungibili (ERC-20)](<notes/2026.10.12 - Lezione 6 - Token ed ERC-20.md>) | 12/10/2026 | 04.01 | ⏳ |
+| 7 | [NFT, Crowdfunding (ICO) e Governance (DAO)](<notes/2026.10.16 - Lezione 7 - NFT ICO e DAO.md>) | 16/10/2026 | 04.01 | ⏳ |
+| 8 | [Ethereum Architecture: Account, Transazioni e Gas](<notes/2026.10.19 - Lezione 8 - Ethereum e Gas Model.md>) | 19/10/2026 | 05 | ⏳ |
+| 9 | [Ethereum Virtual Machine (EVM) e Storage](<notes/2026.10.26 - Lezione 9 - EVM Internals.md>) | 26/10/2026 | 05 | ⏳ |
+| 10 | [Sviluppo di Smart Contract: Fondamenti di Solidity](<notes/2026.11.02 - Lezione 10 - Solidity Basics.md>) | 02/11/2026 | 06.01 | ⏳ |
+| 11 | [Solidity Avanzato: Pattern architetturali e Remix IDE](<notes/2026.11.06 - Lezione 11 - Solidity Advanced e Remix.md>) | 06/11/2026 | 06.01 | ⏳ |
+| 12 | [Decentralized Finance (DeFi): Swap, Liquidity Pool e DEX](<notes/2026.11.09 - Lezione 12 - DeFi e AMM.md>) | 09/11/2026 | 06.00 | ⏳ |
+| 13 | [DeFi Protocols: Lending, Lending Pools e Cross-Chain Bridges](<notes/2026.11.13 - Lezione 13 - DeFi Lending e Bridges.md>) | 13/11/2026 | 06.00 | ⏳ |
+| 14 | [DeFi Security: Vulnerabilità degli Smart Contract e Attacchi](<notes/2026.11.16 - Lezione 14 - DeFi Security e Vulnerabilita.md>) | 16/11/2026 | 9.1 | ⏳ |
+| 15 | [Privacy, Pseudonimato e Tecniche di De-anonimizzazione](<notes/2026.11.20 - Lezione 15 - Privacy e De-anonimizzazione.md>) | 20/11/2026 | 9.1 | ⏳ |
+| 16 | [Strumenti Crittografici per DLT: Hash Pointers e Merkle Tree](<notes/2026.11.23 - Lezione 16 - Merkle Tree e Strutture Dati.md>) | 23/11/2026 | 07 | ⏳ |
+| 17 | [P2P Overlay e Distributed Hash Tables (DHT)](<notes/2026.11.27 - Lezione 17 - DHT e Routing P2P.md>) | 27/11/2026 | 07.a | ⏳ |
+| 18 | [Blockchain Ledger: Struttura del Blocco e Validazione](<notes/2026.11.30 - Lezione 18 - Blockchain Data Structure.md>) | 30/11/2026 | 08 | ⏳ |
+| 19 | [Distributed Consensus: Proof of Work (PoW) e Mining Dynamics](<notes/2026.12.04 - Lezione 19 - Consenso PoW e Mining.md>) | 04/12/2026 | 08.00 | ⏳ |
+| 20 | [Consenso Alternativo: Proof of Stake (PoS) e DPoS](<notes/2026.12.11 - Lezione 20 - Consenso PoS e DPoS.md>) | 11/12/2026 | 08.00 | ⏳ |
+| 21 | [Modelli di Consenso Permissioned (PBFT, PoA, BFT Voting)](<notes/2026.12.14 - Lezione 21 - Consenso Byzantine e Permissioned.md>) | 14/12/2026 | 08.00 | ⏳ |
+| 22 | [Riepilogo, Seminari / Discussione Project Work ed Esame](<notes/2026.12.18 - Lezione 22 - Wrap-up e Progetti.md>) | 18/12/2026 | — | ⏳ |
 
 ---
 
