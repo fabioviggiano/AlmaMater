@@ -8,31 +8,30 @@ Ogni capitolo corrisponde a una lezione e incrocia tre fonti: gli appunti presi 
 
 ## Indice
 
-| Cap. | Titolo | Lezione | Slide principali | Stato |
+### Capitoli ragionati
+
+| Cap. | Titolo | Lezione | Slide principali | Appunti grezzi |
 |---|---|---|---|---|
-| 1 | [Il paradigma della centralizzazione](<2026.09.21 - Lezione 1 - Il paradigma della centralizzazione- Appunti da Panopoto.md>) | 21/09/2026 | 01, 02, 07.a, 08.00, 08 | ✅ |
-| 2.1 | [Smart contracts](<2026.09.25 - Lezione 2.1 - Smart Contracts - Appunti da Panopoto.md>) | 25/09/2026 | 02, 04.00 | ✅ |
-| 2.2 | [Smart contracts - Some use cases](<2026.09.25 - Lezione 2.2 - Smart Contracts - Somo use cases - Appunti da Panopoto.md>) | 25/09/2026 | 02, 04.00 | ⏳ |
-| 3 | [Applicazioni decentralizzate e Smart Transportation](<2026.09.28 - Lezione 3 - Smart Transportation.md>) | 28/09/2026 | 03.00 (Mobi talk) | ⏳ |
-| 4 | [Cryptocurrencies: Architetture e modello UTXO vs Account](<2026.10.02 - Lezione 4 - Cryptocurrencies e Modelli di Stato.md>) | 02/10/2026 | 03.01 | ⏳ |
-| 5 | [Bitcoin: Transazioni, Scripting e P2P Network](<2026.10.05 - Lezione 5 - Bitcoin Internals.md>) | 05/10/2026 | 03.01, 08 | ⏳ |
-| 6 | [Tokenomics e Standard Fungibili (ERC-20)](<2026.10.12 - Lezione 6 - Token ed ERC-20.md>) | 12/10/2026 | 04.01 | ⏳ |
-| 7 | [NFT, Crowdfunding (ICO) e Governance (DAO)](<2026.10.16 - Lezione 7 - NFT ICO e DAO.md>) | 16/10/2026 | 04.01 | ⏳ |
-| 8 | [Ethereum Architecture: Account, Transazioni e Gas](<2026.10.19 - Lezione 8 - Ethereum e Gas Model.md>) | 19/10/2026 | 05 | ⏳ |
-| 9 | [Ethereum Virtual Machine (EVM) e Storage](<2026.10.26 - Lezione 9 - EVM Internals.md>) | 26/10/2026 | 05 | ⏳ |
-| 10 | [Sviluppo di Smart Contract: Fondamenti di Solidity](<2026.11.02 - Lezione 10 - Solidity Basics.md>) | 02/11/2026 | 06.01 | ⏳ |
-| 11 | [Solidity Avanzato: Pattern architetturali e Remix IDE](<2026.11.06 - Lezione 11 - Solidity Advanced e Remix.md>) | 06/11/2026 | 06.01 | ⏳ |
-| 12 | [Decentralized Finance (DeFi): Swap, Liquidity Pool e DEX](<2026.11.09 - Lezione 12 - DeFi e AMM.md>) | 09/11/2026 | 06.00 | ⏳ |
-| 13 | [DeFi Protocols: Lending, Lending Pools e Cross-Chain Bridges](<2026.11.13 - Lezione 13 - DeFi Lending e Bridges.md>) | 13/11/2026 | 06.00 | ⏳ |
-| 14 | [DeFi Security: Vulnerabilità degli Smart Contract e Attacchi](<2026.11.16 - Lezione 14 - DeFi Security e Vulnerabilita.md>) | 16/11/2026 | 9.1 | ⏳ |
-| 15 | [Privacy, Pseudonimato e Tecniche di De-anonimizzazione](<2026.11.20 - Lezione 15 - Privacy e De-anonimizzazione.md>) | 20/11/2026 | 9.1 | ⏳ |
-| 16 | [Strumenti Crittografici per DLT: Hash Pointers e Merkle Tree](<2026.11.23 - Lezione 16 - Merkle Tree e Strutture Dati.md>) | 23/11/2026 | 07 | ⏳ |
-| 17 | [P2P Overlay e Distributed Hash Tables (DHT)](<2026.11.27 - Lezione 17 - DHT e Routing P2P.md>) | 27/11/2026 | 07.a | ⏳ |
-| 18 | [Blockchain Ledger: Struttura del Blocco e Validazione](<2026.11.30 - Lezione 18 - Blockchain Data Structure.md>) | 30/11/2026 | 08 | ⏳ |
-| 19 | [Distributed Consensus: Proof of Work (PoW) e Mining Dynamics](<2026.12.04 - Lezione 19 - Consenso PoW e Mining.md>) | 04/12/2026 | 08.00 | ⏳ |
-| 20 | [Consenso Alternativo: Proof of Stake (PoS) e DPoS](<2026.12.11 - Lezione 20 - Consenso PoS e DPoS.md>) | 11/12/2026 | 08.00 | ⏳ |
-| 21 | [Modelli di Consenso Permissioned (PBFT, PoA, BFT Voting)](<2026.12.14 - Lezione 21 - Consenso Byzantine e Permissioned.md>) | 14/12/2026 | 08.00 | ⏳ |
-| 22 | [Riepilogo, Seminari / Discussione Project Work ed Esame](<2026.12.18 - Lezione 22 - Wrap-up e Progetti.md>) | 18/12/2026 | — | ⏳ |
+| 1 | [Il paradigma della decentralizzazione](<01 Il paradigma della decentralizzazione.md>) | 1 · 21/09/2026 | 01, 02, 07.a, 08.00, 08 | [Lezione 1](<2026.09.21 - Lezione 1 - Il paradigma della centralizzazione- Appunti da Panopoto.md>) |
+| 2 | [DLT, smart contract e casi d'uso](<02 DLT, smart contract e use case.md>) | 2 (2.1 + 2.2) · 25/09/2026 | 02 | [2.1](<2026.09.25 - Lezione 2.1 - Smart Contracts - Appunti da Panopoto.md>) · [2.2](<2026.09.25 - Lezione 2.2 - Smart Contracts - Somo use cases - Appunti da Panopoto.md>) |
+| 3 | [Smart Transportation: dati personali su DFS e DLT](<03 Smart Transportation.md>) | 3 · 28/09/2026 | 03.00 (Mobi talk) | [Lezione 3](<2026.09.28 - Lezione 3 -  Supply Chain e Tracciabilità - Appunti da Panopoto.md>) |
+| 4 | [Modelli di stato: UTXO vs account-based](<04 Modelli di stato UTXO e account.md>) | 4 | 03.01 (Taxonomy) | [Lezione 4](<2026.10.02 - Lezione 4 - Criptocurrencies - Appunti da Panopoto.md>) |
+
+### Programma indicativo delle prossime lezioni
+
+| Lezione | Argomento previsto | Slide |
+|---|---|---|
+| 02/10/2026 | Bitcoin, wallet, exchange e stablecoin | 03.01 |
+| — | Token: ERC-20, NFT, ICO, DAO | 04.01 |
+| — | Ethereum: account, transazioni, gas, EVM | 05 |
+| — | Solidity e Remix | 06.01 |
+| — | DeFi: swap, AMM, lending, bridge | 06.00 |
+| — | DeFi Security | 9.1 |
+| — | Strumenti per DLT, Merkle tree, DHT | 07, 07.a |
+| — | Struttura della blockchain e consenso (PoW, PoS, BFT) | 08, 08.00 |
+
+I titoli e le date future sono indicativi: i capitoli si aggiungono man mano, uno per lezione.
+
 ---
 
 ## Mappa del corso
@@ -57,7 +56,7 @@ Il corso segue un approccio **top-down**: dal problema alle applicazioni, fino a
 2. **Architettura** — schemi, modelli, componenti.
 3. **Trade-off e attacchi** — costi, limiti, superficie d'attacco.
 4. **Esempi e codice** — casi concreti e snippet eseguibili.
-5. **Active Recall** — checklist, domande e tracce di risposta.
+5. **Quadro sintetico** — tabella dei concetti chiave, domande e tracce di risposta (nel Cap. 1 anche la checklist da ripetere).
 
 Solo il Capitolo 1 ha in più una sezione **0. Informazioni sul corso**.
 
@@ -85,18 +84,12 @@ Narayanan, Bonneau, Felten, Miller, Goldfeder, [*Bitcoin and Cryptocurrency Tech
 
 ## Struttura del repository
 
-## Struttura del repository
-
 ```
 notes/
-├── README.md                                    ← copertina e indice
-├── _template-capitolo.md                        ← scheletro per i nuovi capitoli
-├── 01 Il paradigma della decentralizzazione.md  ← capitoli ragionati
-└── 2026.09.21 - Lezione 1.md                    ← appunti grezzi di lezione
+├── README.md                                   ← copertina e indice
+├── NN Titolo del capitolo.md                   ← capitoli ragionati (uno per lezione)
+├── AAAA.MM.GG - Lezione N - ... .md            ← appunti grezzi (fonte dei capitoli)
+└── images/                                     ← immagini delle slide
 ```
-
-Convenzioni per i nomi:
-- capitoli: `NN Titolo del capitolo.md`
-- appunti grezzi: `AAAA.MM.GG - Lezione N.md`
 
 Nei link ai file con spazi usa le parentesi angolari: `[Titolo](<NN Titolo del capitolo.md>)`.
