@@ -1,4 +1,4 @@
-# Blind Deconvolution: Confronto tra Metodi Model-Based e Approcci Deep Learning Supervisionati
+# Blind Deconvolution - Confronto tra Metodi Model-Based e Approcci Deep Learning Supervisionati
 
 Esame di **Computational Imaging**
 
