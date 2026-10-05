@@ -1,8 +1,22 @@
 # Capitolo 3 — Smart Transportation: dati personali su DFS e DLT
 
-*Lezione 3 (28/09/2026) · Slide "03.00 – The Use of Decentralized Systems to Develop Smart Transportation" (Mobi talk 2021, Prof. S. Ferretti), con i lavori Zichichi–Ferretti–D'Angelo del gruppo AnaNSi.*
+*Lezione 3 (28/09/2026) · Slide "03.00 – The Use of Decentralized Systems to Develop Smart Transportation" (Mobi talk 2021, Prof. S. Ferretti), con i lavori Zichichi–Ferretti–D'Angelo del gruppo AnaNSi. In apertura, ripresa della parte su supply chain e tracciabilità di "02 – Introduction Blockchain".*
 
 [← Indice](README.md)
+
+---
+
+## 0. Raccordo con la lezione precedente: supply chain e tracciabilità
+
+La lezione riparte dai casi d'uso di filiera, trattati per esteso nel [Capitolo 2](<02 DLT, smart contract e use case.md>) (§2.1–2.3):
+
+- **TradeLens (IBM + Maersk):** notarizzazione di polizze, documenti e passaggi doganali dei container;
+- **IBM Food Trust:** storia del lotto dal campo allo scaffale, consultabile dal consumatore tramite QR code;
+- **prototipi didattici:** [AgroChain](https://github.com/Kerala-Blockchain-Academy/AgroChain) e [Hackinators-Farming-Dapp](https://github.com/ShubhamKarala/Hackinators-Farming-Dapp).
+
+> 💡 **Punto su cui insiste il Prof.** La blockchain garantisce l'**immutabilità del registro**, non la veridicità del dato fisico a monte (*Garbage In, Garbage Out*).
+
+Il filo che collega le due parti: anche nella smart transportation i dati sono prodotti da molti attori (i veicoli), ma qui sono **dati personali**. Il problema si sposta dalla tracciabilità alla **sovranità del dato**.
 
 ---
 
@@ -28,7 +42,12 @@ La slide costruisce una tabella a tre livelli, che è la chiave di lettura dell'
 | **Features** (proprietà necessarie) | **Access control**, **authenticity**, **verifiability**, **immutability** |
 | **Technologies** (con cosa si ottengono) | **DLT**, **distributed storage**, **smart contract**, **authorization** |
 
-Il problema di fondo: sono **dati personali** (dove sono stato, quando, come guido). Chi li conserva?
+Il problema di fondo: sono **dati personali** (dove sono stato, quando, come guido). Chi li conserva? In sintesi servono quattro garanzie, che strutturano il resto del capitolo:
+
+1. **sovranità**: l'utente mantiene il controllo dei propri dati;
+2. **integrità**: il dato non è stato manomesso (§2.1);
+3. **controllo degli accessi**: si decide chi può leggere (§2.2);
+4. **persistenza**: i dati restano disponibili nel tempo (§2.3).
 
 ### 1.3 Quattro opzioni per conservare i dati
 
@@ -46,7 +65,7 @@ Il problema di fondo: sono **dati personali** (dove sono stato, quando, come gui
 **Opt3 — Registrare i dati su un ledger.**
 
 - **Pro:** abbastanza semplice; integrità dei dati; tracciabilità.
-- **Contro:** va bene **solo per dati piccoli**; **niente diritto all'oblio né alla rettifica**; **latenze**.
+- **Contro:** va bene **solo per dati piccoli** (payload, video o stream di telemetria costerebbero troppo in storage e gas); **niente diritto all'oblio né alla rettifica**; **latenze** e throughput limitato.
 
 **Opt4 — Usare un file system decentralizzato (DFS) per i dati.** Resta da risolvere come:
 
@@ -62,7 +81,7 @@ Il problema di fondo: sono **dati personali** (dove sono stato, quando, come gui
 
 ### 2.1 Integrità: content-based addressing e hash pointer
 
-- Sul DFS (es. **IPFS**, **Sia**) i dati sono suddivisi in chunk, ciascuno identificato dall'**hash del suo contenuto** (*content-based addressing*, invece di *location-based*: vedi Capitolo 2, §1.3). Gli identificatori nella slide (`QmW98pJ…`, `abc45j…`) sono di questo tipo.
+- Sul DFS (es. **IPFS**, **Sia**) i dati sono suddivisi in chunk, ciascuno identificato dall'**hash del suo contenuto** (*content-based addressing*, invece di *location-based*: vedi Capitolo 2, §1.3). Gli identificatori nella slide (`QmW98pJ…`, `887K215…`, `abc45j…`) sono di questo tipo.
 - Sulla **DLT** si registrano solo gli **hash pointer**, non i dati.
 
 Vantaggi indicati nella slide:
@@ -71,11 +90,11 @@ Vantaggi indicati nella slide:
 - il **caricamento sul DFS è veloce**;
 - le **latenze per registrare gli hash** sulla DLT diventano **meno problematiche**, perché si scrive poco e non serve attendere per usare il dato.
 
-**Verifica dell'integrità.** Chi scarica un chunk ricalcola l'hash e lo confronta con quello registrato sul ledger: se anche un bit è cambiato, i valori non coincidono.
+**Verifica dell'integrità.** Chi scarica un chunk ricalcola l'hash e lo confronta con quello registrato sul ledger: se anche un bit è cambiato, i valori non coincidono (*tamper-evident*).
 
 > ⚠️ **Nota di rigore** (sintesi mia). Con il content addressing un chunk è già auto-verificabile rispetto al proprio CID. La DLT aggiunge ciò che il DFS da solo non dà: **quale** CID è quello "ufficiale", **chi** l'ha registrato (firma) e **quando** (ordine e timestamp concordati dal consenso).
 
-> ⚠️ **Nota di rigore sulla cancellazione.** "Rimuovere il dato dal DFS" significa smettere di ospitarlo (*unpin*) sui propri nodi; non si può obbligare gli altri nodi che ne hanno una copia a cancellarla. Per questo i dati si **cifrano prima del caricamento**: distruggendo la chiave (*crypto-shredding*) il dato diventa illeggibile ovunque si trovi. Il riferimento on-chain resta, ma punta a un contenuto inutilizzabile.
+> ⚠️ **Nota di rigore sulla cancellazione.** "Rimuovere il dato dal DFS" significa smettere di ospitarlo (*unpin*) sui propri nodi; non si può obbligare gli altri nodi che ne hanno una copia a cancellarla. Per questo i dati si **cifrano prima del caricamento**: distruggendo la chiave (*crypto-shredding*) il dato diventa illeggibile ovunque si trovi. Il riferimento on-chain resta, ma punta a un contenuto inutilizzabile. Attenzione anche all'hash: se il dato ha poca entropia, l'hash rimasto on-chain può essere forzato (Capitolo 2, §2.5).
 
 ### 2.2 Controllo degli accessi: DFS + cifratura + autorizzazione
 
@@ -87,11 +106,13 @@ Sul DFS i dati sono **cifrati**; il problema diventa: **come ottiene la chiave p
       └──(hash / digest)──────▶ [ DLT ]
 ```
 
-**Opt4.1 — Server centrale di autorizzazione.** Un server consulta la propria ACL e, se l'utente è autorizzato, gli fornisce la chiave. Semplice, ma è di nuovo **SPOF** e punto di fiducia unico: il server vede tutte le chiavi.
+Il Prof. presenta tre modelli in sequenza.
 
-**Passaggio intermedio — più server con secret sharing** (dal lavoro *Personal Data Access Control Through Distributed Authorization*, 2020). La chiave è divisa con **Shamir (k, n)** tra n server di autorizzazione: nessuno la conosce per intero. L'utente contatta almeno k server; ognuno verifica l'autorizzazione e restituisce la propria quota; con k quote il client ricompone la chiave. Con meno di k quote non si ottiene nulla.
+**Opt4.1 — Server centrale di autorizzazione.** L'utente scarica il dato cifrato e contatta un server, che consulta la propria ACL e, se l'utente è autorizzato, gli fornisce la chiave. Semplice, ma è di nuovo **SPOF** e punto di fiducia unico: il server vede tutte le chiavi.
 
-**Opt4.2 — Security-by-contract su un ledger (privato).** La **ACL sta in uno smart contract**. I server di autorizzazione (*Auth. servers*) interrogano il contratto prima di rilasciare la propria parte di chiave.
+**Passaggio intermedio — più server con secret sharing** (dal lavoro *Personal Data Access Control Through Distributed Authorization*, 2020). La chiave è divisa con **Shamir (k, n)** tra n server di autorizzazione: nessuno la conosce per intero. L'utente contatta almeno k server; ognuno verifica l'autorizzazione e restituisce la propria quota; con k quote il client ricompone la chiave. Con meno di k quote non si ottiene nulla. Lo schema tollera fino a **k−1 server compromessi** (non bastano per ricostruire la chiave) e fino a **n−k server offline** (gli altri bastano a servire la richiesta).
+
+**Opt4.2 — Security-by-contract su un ledger (privato).** La **ACL sta in uno smart contract**. I server di autorizzazione (*Auth. servers*), o i proxy di re-encryption, interrogano il contratto prima di rilasciare la propria parte di chiave. Nessuna singola entità può cambiare i permessi senza che la modifica resti registrata sul ledger.
 
 Benefici elencati nella slide:
 
@@ -100,11 +121,13 @@ Benefici elencati nella slide:
   - si **mitiga la fuga di informazioni** (*privacy leakage*);
 - **trasparenza**: i permessi di accesso ai dati sono **verificabili** (*auditability*), perché la ACL sta sul ledger.
 
+> ⚠️ **Nota di rigore** (sintesi mia). La fiducia non sparisce del tutto: si distribuisce sui server di autorizzazione (con l'ipotesi che meno di k colludano) e si sposta su chi governa il ledger privato e il contratto ACL.
+
 > 💡 **Collegamento.** È la **Decentralized Authorization** proposta come tema di progetto nel [Capitolo 1](<01 Il paradigma della decentralizzazione.md>) (§0.4). Con la **Proxy Re-Encryption** il proxy può ricifrare il dato per il destinatario senza vederlo in chiaro, evitando di distribuire la chiave originale.
 
 ### 2.3 Persistenza: incentivi a cooperare
 
-In una rete P2P nessuno è obbligato a conservare i file altrui. La slide *"Data persistence: we'd like to avoid this"* mostra lo studio di Guo et al. (2007) su BitTorrent: la disponibilità di un contenuto **decade nel tempo** quando i peer se ne vanno (churn, Capitolo 1).
+In una rete P2P nessuno è obbligato a conservare i file altrui: i nodi escono (churn, Capitolo 1) o liberano spazio cancellando la cache locale. La slide *"Data persistence: we'd like to avoid this"* mostra lo studio di Guo et al. (2007) su BitTorrent: la disponibilità di un contenuto **decade nel tempo** quando i peer se ne vanno.
 
 **Soluzione: incentivi economici tramite token su blockchain.** Esempi della slide: **Filecoin, Sia, Storj** (e Swarm, con un punto interrogativo). I nodi di storage vengono pagati in token per conservare i dati e devono **dimostrare** di farlo (in Filecoin: *Proof-of-Replication* e *Proof-of-Spacetime*).
 
@@ -233,20 +256,22 @@ Il segreto è il termine noto di un polinomio di grado k−1; servono k punti pe
 
 ---
 
-## 5. Quadro sintetico
+## 5. Active Recall
 
 ### 5.1 Concetti chiave
 
 | Concetto | In sintesi |
 |---|---|
+| **Raccordo supply chain** | TradeLens, Food Trust, prototipi; GIGO: immutabilità del registro, non verità del dato |
 | **ITS** | Veicoli che producono dati per servizi di safety, ottimizzazione e sensing |
 | **Desiderata → features → tecnologie** | Sharing/aggregation/trading → access control, authenticity, verifiability, immutability → DLT, DFS, smart contract, authorization |
+| **Quattro garanzie** | Sovranità, integrità, controllo degli accessi, persistenza |
 | **Opt1** | Entità centrale: gli utenti perdono la sovranità sui dati |
 | **Opt2** | Dati in locale: sovranità, ma bisogna essere sempre raggiungibili |
 | **Opt3** | Tutto sul ledger: integrità, ma solo dati piccoli, niente oblio, latenze |
 | **Opt4** | DFS + hash sulla DLT; restano integrità, accesso, persistenza |
 | **Integrità** | Content addressing + hash pointer sul ledger; verifica ricalcolando l'hash |
-| **Accesso** | Dati cifrati; Opt4.1 server centrale; Opt4.2 ACL in smart contract + server di autorizzazione con quote della chiave |
+| **Accesso** | Dati cifrati; Opt4.1 server centrale; secret sharing tra più server; Opt4.2 ACL in smart contract + server con quote della chiave |
 | **Persistenza** | Incentivi in token (Filecoin, Sia, Storj) con prove di storage |
 | **Overall system** | DFS + DLT veloce senza fee (IOTA) + DLT programmabile (Ethereum) |
 | **Risultati** | IOTA affidabile con buona scelta dei nodi ma con latenze rilevanti; problema aperto: scalabilità e churn |
@@ -261,7 +286,7 @@ Il segreto è il termine noto di un polinomio di grado k−1; servono k punti pe
 6. Cosa aggiunge la DLT rispetto al solo content addressing?
 7. "Rimuovere il dato dal DFS" basta per il diritto all'oblio?
 8. Confronta Opt4.1 e Opt4.2 per il controllo degli accessi.
-9. Come funziona lo schema (k, n) di Shamir e perché elimina lo SPOF sulla chiave?
+9. Come funziona lo schema (k, n) di Shamir e perché elimina lo SPOF sulla chiave? Quanti server compromessi o offline tollera?
 10. Quali benefici elenca la slide per la security-by-contract?
 11. Perché serve un meccanismo di persistenza in un DFS? Come lo si ottiene?
 12. Descrivi l'overall system e il ruolo di ciascuno strato.
@@ -280,7 +305,7 @@ Il segreto è il termine noto di un polinomio di grado k−1; servono k punti pe
 6. Quale CID è quello valido, chi l'ha registrato e quando, con ordine concordato dal consenso.
 7. No: altri nodi possono averne copie. Si cifra il dato e si distrugge la chiave (crypto-shredding).
 8. 4.1: un server con ACL propria fornisce le chiavi (SPOF, fiducia totale). 4.2: ACL nello smart contract, più server di autorizzazione che rilasciano quote della chiave solo se il contratto conferma i permessi.
-9. La chiave è il termine noto di un polinomio di grado k−1; ogni server ha un punto. Servono k punti per ricostruirla, con meno non si ottiene nulla. Nessun server ha la chiave intera.
+9. La chiave è il termine noto di un polinomio di grado k−1; ogni server ha un punto. Servono k punti per ricostruirla, con meno non si ottiene nulla. Nessun server ha la chiave intera. Tollera fino a k−1 server compromessi e fino a n−k offline.
 10. Custodia decentralizzata delle chiavi (i server non hanno i dati, meno privacy leakage) e trasparenza (permessi verificabili).
 11. Senza obblighi i nodi abbandonano i contenuti (studio su BitTorrent). Si pagano i nodi in token (Filecoin, Sia, Storj) chiedendo prove crittografiche di conservazione.
 12. DFS per i dati cifrati; DLT veloce senza fee per gli hash; DLT con smart contract per ACL e token.
@@ -300,7 +325,7 @@ Il segreto è il termine noto di un polinomio di grado k−1; servono k punti pe
 - Zichichi, Ferretti, D'Angelo, *On the Efficiency of Decentralized File Storage for Personal Information Management Systems*, ISCC (2020)
 - Guo et al., *A performance study of BitTorrent-like peer-to-peer systems*, IEEE JSAC 25 (2007)
 
-> Nota: Proof-of-Replication e Proof-of-Spacetime, la precisazione su unpin e crypto-shredding e il codice di Shamir vengono dalla letteratura generale, non dalle slide.
+> Nota: Proof-of-Replication e Proof-of-Spacetime, la precisazione su unpin e crypto-shredding, le soglie di tolleranza di Shamir e il codice vengono dalla letteratura generale, non dalle slide.
 
 ---
 
