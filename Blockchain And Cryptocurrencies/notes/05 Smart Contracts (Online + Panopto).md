@@ -12,7 +12,7 @@ Definizione molto generale, il codice per ora non lo vediamo. Presentazione brev
 
 L'idea non è nuova: è stata proposta circa 30 anni fa da **Nick Szabo** (1994). Il concetto di un programma che si comporta come una sorta di contratto era però introdotto in un contesto diverso (non esisteva la blockchain); alcuni aspetti restano comunque attuali.
 
-## Szabo (1994): computerized transaction protocol
+### Szabo (1994): computerized transaction protocol
 
 <img width="40%" height="40%" alt="image" src="https://github.com/user-attachments/assets/5b22ad8a-36b3-41a2-b50b-2a47e087a591" />
 
@@ -28,7 +28,7 @@ Il problema principale resta la fiducia (*trust*): l'idea è spostarla dalla con
 
 <img width="40%" height="40%" alt="image" src="https://github.com/user-attachments/assets/3c50f269-c90a-41b0-b069-314500e31351" />
 
-## Smart contract come programmi su blockchain
+### Smart contract come programmi su blockchain
 
 <img width="40%" height="40%" alt="image" src="https://github.com/user-attachments/assets/f8f4f252-7089-4f9b-bc03-941e729715ca" />
 
@@ -38,7 +38,7 @@ Oggi: **programmi definiti dall'utente che girano sopra una blockchain**.
 - Ogni contratto = **codice + storage** (stato persistente)
 - Esecuzione e stato sono garantiti dal **consenso decentralizzato**: nessuna parte singola può alterare il risultato
 
-## Flessibilità
+### Flessibilità
 
 <img width="40%" height="462" alt="image" src="https://github.com/user-attachments/assets/9ebbd44e-a8b5-4aeb-8d84-c344695fd68c" />"
 
@@ -48,7 +48,7 @@ Oggi: **programmi definiti dall'utente che girano sopra una blockchain**.
 - Può fare *qualsiasi cosa* faccia un normale computer
 - **Ma si paga**: il codice viene eseguito in parallelo da **tutti i nodi** della rete → ogni computazione ha un costo (anticipa il concetto di *gas*)
 
-## Applicazioni
+### Applicazioni
 
 <!-- screenshot "Smart Contract Applications" (elenco) da caricare -->
 
@@ -77,7 +77,7 @@ Spettro dal semplice al complesso:
 | Distributed autonomous government | coloni di un'area disabitata che codificano servizi pubblici auto-applicanti |
 | Distributed autonomous society | gruppi di coloni che stabiliscono accordi commerciali auto-applicanti |
 
-## Esempio: CryptoKitties (digital marketplace)
+### Esempio: CryptoKitties (digital marketplace)
 
 <!-- screenshot CryptoKitties -->
 
@@ -88,7 +88,7 @@ Spettro dal semplice al complesso:
 
 > Contesto: lanciato a fine 2017, ebbe un successo tale da congestionare la rete Ethereum, caso citato spesso per i limiti di scalabilità.
 
-## Da smart contract a DApp
+### Da smart contract a DApp
 
 <!-- screenshot "Smart Contracts → Dapps" -->
 
@@ -99,7 +99,7 @@ Spettro dal semplice al complesso:
 - L'utente finale non chiama il contratto a mano: usa l'interfaccia, che costruisce e invia le transazioni al contratto
 - CryptoKitties è un esempio di DApp: contratto su Ethereum + sito web per comprare e far riprodurre i gattini
 
-## Web site vs DApp
+### Web site vs DApp
 
 <!-- screenshot "Web site vs Dapp" -->
 
@@ -134,7 +134,7 @@ Due elementi nuovi rispetto al Web 2.0:
 
 *Fonte figura: Towards Data Science, "Decoding Ethereum smart contract data"*
 
-## Esempio: licenza (contratto legale)
+### Esempio: licenza (contratto legale)
 
 Spunto: Solidity come linguaggio per scrivere smart contract su Ethereum (non visto oggi).
 
@@ -148,7 +148,7 @@ Licenza per la valutazione di un prodotto, 5 articoli:
 4. Se è **commissionato** per una valutazione indipendente, ha l'**obbligo** di pubblicare
 5. La licenza termina automaticamente in caso di violazione
 
-## Esempio: licenza come macchina a stati
+### Esempio: licenza come macchina a stati
 
 <img width="40%" height="40%" alt="image" src="https://github.com/user-attachments/assets/a6ebec72-9815-4cdd-bafb-1b6e60b08713" />
 
@@ -175,22 +175,29 @@ Morale: un contratto legale si può formalizzare come macchina a stati, quindi c
 
 ---
 
-## Punti su cui insiste il Prof.
+### Punti su cui insiste il Prof.
 
 > L'idea di smart contract non è nuova (Szabo 1994): la novità è eseguirli su un consenso decentralizzato.
 > Obiettivo chiave: ridurre il bisogno di intermediari fidati.
 > Turing completezza (Ethereum vs Bitcoin) ha un costo: ogni nodo esegue tutto.
 
-## Dubbi da verificare
+## Tokens
 
-- [ ] Verificare ordine/associazione dei primi tre screenshot (Szabo vs schema "programs on top of a blockchain")
-- [ ] Caricare gli screenshot mancanti (elenco applicazioni, spettro PwC, CryptoKitties, DApp, Web site vs DApp)
-- [ ] In che punto il Prof. ha introdotto Solidity?
-- [ ] Come si gestiscono tempo (24 h) ed eventi esterni in uno smart contract? → oracoli / timestamp del blocco
-- [ ] Il Prof. ha citato ERC-721 / la congestione di Ethereum per CryptoKitties?
-- [ ] La UI di una DApp è davvero sempre su file system decentralizzato? (spesso in pratica è su server tradizionali)
-- [ ] Riferimento slide esatto
+Con gli smart contract si possono sviluppare molte applicazioni diverse, ma di solito prevedono qualcosa che gli utenti possono scambiare: in genere parliamo di **token**.
 
----
+<img width="60%" height="60%" alt="image" src="https://github.com/user-attachments/assets/eca7600e-51a3-4d12-8784-e68b961955a1" />
+
+Un token è un **dato digitale che rappresenta un "fatto"**: un valore, un diritto, la proprietà di un bene. Cosa si può tokenizzare? Immobili, valute, opere, diritti d'accesso, ecc.
+
+Nel nostro scenario un token è **gestito da uno smart contract** che gira sopra una blockchain: il contratto tiene il registro di chi possiede quanti token e definisce le regole per trasferirli.
+
+I token si possono ottenere:
+- **comprandoli**
+- **guadagnandoli** svolgendo determinate attività (es. come ricompensa per un servizio)
+
+Il prezzo di un token sale o scende in base a **domanda e offerta**.
+
+
+
 
 *Lezione in corso di trascrizione: da completare.*
