@@ -16,7 +16,7 @@ Ogni capitolo corrisponde a una lezione e incrocia tre fonti: gli appunti presi 
 | 2 | [DLT, smart contract e casi d'uso](<02 DLT, smart contract e use case.md>) | 2 (2.1 + 2.2) · 25/09/2026 | 02 | [2.1](<2026.09.25 - Lezione 2.1 - Smart Contracts - Appunti da Panopoto.md>) · [2.2](<2026.09.25 - Lezione 2.2 - Smart Contracts - Somo use cases - Appunti da Panopoto.md>) |
 | 3 | [Smart Transportation: dati personali su DFS e DLT](<03 Smart Transportation.md>) | 3 · 28/09/2026 | 03.00 (Mobi talk) | [Lezione 3](<2026.09.28 - Lezione 3 -  Supply Chain e Tracciabilità - Appunti da Panopoto.md>) |
 | 4 | [Modelli di stato: UTXO vs account-based](<04 Modelli di stato UTXO e account.md>) | 4 | 03.01 (Taxonomy) | [Lezione 4](<2026.10.02 - Lezione 4 - Criptocurrencies - Appunti da Panopoto.md>) |
-| 5 | Smart Contracts | 5 |  | [Lezione 5](<2026.10.05 - Lezione 5.md>) |
+| 5 | Smart Contracts | 5 | 05.10 | [Lezione 5](<2026.10.05 - Lezione 5.md>) |
  
 5  (no presence friday)
 12 e 15
