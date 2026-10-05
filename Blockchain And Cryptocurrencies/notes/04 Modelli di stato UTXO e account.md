@@ -2,7 +2,7 @@
 
 *Lezione 4 (02/10/2026) · Slide "03.01 – Cryptocurrencies": sezione "Taxonomy of Crypto Platforms" (slide 3–13, anticipata a fine della lezione precedente) e prima parte su Bitcoin. [Registrazione Panopto](https://unibo.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=c71434dc-97a7-4bf1-9658-b4d700985bcb)*
 
-> 🚧 **Capitolo in corso.** Copre la lezione fino alla sezione *Wallets* esclusa. Vedi la nota in fondo.
+> 🚧 **Capitolo in corso.** Copre la lezione fino al minuto 55:41 (slide *Fiat-Asset Collateralized Currency*). Vedi la nota in fondo.
 
 [← Indice](README.md)
 
@@ -173,6 +173,140 @@ Nel modello stateless il contract account contiene **solo il codice**. Stato e t
 
 > 💡 **Collegamento.** "Accettata solo quando compare nella blockchain" va letto insieme alla finalità probabilistica del PoW (Capitolo 1, §1.6): un blocco può ancora essere riorganizzato, per questo si attendono circa 6 conferme (la latenza "1 h" della tabella del Capitolo 2, §1.7).
 
+### 2.6 Wallet
+
+**Bitcoin wallet.**
+
+- **Bitcoin è un protocollo**: vi si accede tramite un'applicazione client in grado di "parlarlo".
+- **Il wallet è l'interfaccia utente più comune** verso il sistema Bitcoin. L'analogia della slide: il wallet sta a Bitcoin come il **browser** sta al protocollo **HTTP**.
+- Esistono **molte implementazioni** diverse di wallet.
+
+> ⚠️ **Nota di rigore** (sintesi mia). Il wallet **non contiene bitcoin**. I fondi sono UTXO registrati sulla blockchain (§2.1); il wallet custodisce le **chiavi private** che soddisfano le loro condizioni di spesa, calcola il saldo sommando gli UTXO che sa sbloccare e firma le nuove transazioni. Chi ha le chiavi controlla i fondi.
+
+**Tipologie di wallet: Desktop wallet.**
+
+- **Storia**: è stata la **prima** tipologia di wallet Bitcoin.
+- **Vantaggi**: molte funzionalità, **autonomia** e opzioni di **controllo** avanzate; pratico da usare. Esempio in slide: **Electrum**.
+- **Disponibilità**: limitata al **dispositivo** su cui è installato il software.
+  - **Dispositivo perso → chiavi perse → fondi persi.**
+- **Sicurezza**: gira su **sistemi operativi general purpose** (Windows, macOS), spesso insicuri o configurati male. Un malware sul computer può rubare le chiavi.
+
+> 💡 **Collegamento** (sintesi mia). La catena "dispositivo perso → fondi persi" è la conseguenza diretta dell'assenza di una TTP (Capitolo 1, §1.2): non esiste una banca a cui chiedere il recupero. Nella pratica la perdita si mitiga con un **backup delle chiavi**, tipicamente una *seed phrase* di 12–24 parole da cui il wallet rigenera tutte le chiavi.
+
+**Tipologie di wallet: Web wallet.**
+
+- Si usa **dal browser** e conserva il wallet dell'utente su un **server di terze parti**.
+- È come la **webmail**: dipende interamente dal server di qualcun altro.
+- **Comodo**: niente da installare, funziona su più dispositivi.
+- **Problemi di sicurezza**: *"what's up with the stolen bitcoins?"*
+  - i furti di bitcoin sono avvenuti **tutti dai siti di wallet**;
+  - gli hacker entrano nel server, **rubano le chiavi private** e trasferiscono i bitcoin a sé stessi;
+  - **non conviene tenere grandi quantità di bitcoin su sistemi di terze parti**.
+- Loghi in slide: Coinbase, Electrum, **Mt.Gox**.
+
+> ⚠️ **Nota di rigore** (sintesi mia). Il furto avviene **sul server**, non sulla blockchain: il protocollo non viene violato, perché chi ha la chiave privata è, per il protocollo, il legittimo proprietario. Il web wallet reintroduce proprio la TTP che Bitcoin voleva eliminare, ed è un **honeypot** (Capitolo 1, §2.1.2): tante chiavi in un solo posto. Il caso storico è **Mt.Gox** (2014): circa 850.000 BTC persi, all'epoca il principale exchange al mondo. Electrum in realtà è un desktop wallet, non custodial.
+
+**Altre tipologie: hardware e paper wallet.**
+
+- **Hardware wallet**: dispositivi fisici dedicati, simili a una **chiavetta USB**, che custodiscono le chiavi offline. La chiave privata non esce mai dal dispositivo: le transazioni vengono firmate al suo interno.
+- **Paper wallet**: le chiavi (spesso come QR code) sono **stampate su carta**. Completamente offline, quindi immune ai malware, ma vulnerabile a perdita, furto o deterioramento del foglio.
+
+> 💡 **Lettura da esame** (sintesi mia). Hardware e paper wallet sono **cold wallet** (offline); desktop e web wallet sono **hot wallet** (connessi). Il trade-off è sempre comodità contro sicurezza, e custodia propria contro custodia di terzi: *not your keys, not your coins*.
+
+### 2.7 Exchange centralizzati (*Centralized Crypto Exchanges*)
+
+Gli exchange sono **marketplace** dove si comprano e vendono criptovalute, anche contro valute tradizionali. C'è un **intermediario**, che applica **commissioni** sugli scambi.
+
+- **Order book**: gli ordini di acquisto e vendita sono elencati e ordinati per prezzo.
+  - Un **matching engine** abbina compratori e venditori al miglior prezzo eseguibile per la quantità richiesta (*lot size*).
+  - Il prezzo di un asset dipende dalla **domanda e offerta** rispetto a un altro asset.
+- Molti offrono anche **web wallet custodial**: le chiavi le tiene l'exchange.
+- 💡 **Punto evidenziato in slide:** le transazioni sull'exchange **di solito non vengono registrate sulla blockchain**. L'exchange tiene un **registro o database centrale** con le operazioni dei suoi utenti.
+
+> ⚠️ **Nota di rigore** (sintesi mia). Comprare bitcoin su un exchange significa avere una **riga nel database dell'exchange**, non un UTXO a proprio nome. Solo con un **prelievo** verso un proprio indirizzo la transazione va on-chain. È un sistema **centralizzato** costruito sopra un sistema decentralizzato, con tutti i rischi di una TTP (insolvenza, hack, blocco dei fondi). È anche il motivo per cui l'exchange è veloce ed economico: non paga fee né attende conferme per ogni scambio interno.
+
+### 2.8 Exchange decentralizzati (*Decentralized Crypto Exchanges*, DEX)
+
+- Le transazioni avvengono **direttamente sulla blockchain**, tramite **smart contract**.
+- La slide si ferma qui: *"To look for the details, we need to introduce some concepts, first"*. I dettagli (es. liquidity pool e AMM) arriveranno con la parte su DeFi.
+
+**Centralizzati vs decentralizzati**
+
+| | **Exchange centralizzato (CEX)** | **Exchange decentralizzato (DEX)** |
+|---|---|---|
+| **Chi gestisce** | Un'azienda intermediaria | Smart contract sulla blockchain |
+| **Dove si registrano gli scambi** | Database centrale dell'exchange | On-chain |
+| **Custodia delle chiavi** | Dell'exchange (custodial) | Dell'utente (non custodial) |
+| **Prezzo** | Order book + matching engine | Definito dalla logica del contratto (dettagli più avanti) |
+| **Fiducia** | Nell'exchange (TTP) | Nel codice e nel consenso |
+| **Rischi tipici** | Hack del server, insolvenza, blocco dei fondi | Bug nel contratto, fee e latenza on-chain |
+
+> 💡 **Lettura da esame** (sintesi mia). È la distinzione del Capitolo 1 applicata agli scambi: il CEX è un client/server con una TTP, il DEX sostituisce l'intermediario con il protocollo. In cambio paga i costi della blockchain (fee, latenza, codice immutabile).
+
+### 2.9 Non solo Bitcoin: le altre criptovalute
+
+Bitcoin è solo la prima di **moltissime** criptovalute (spesso chiamate *altcoin*). Il Prof. ne mostra tanti esempi. Guardando i prezzi, salta all'occhio che **alcune valgono stabilmente circa 1 (dollaro)**: sono le **stablecoin** (§2.11).
+
+### 2.10 I limiti delle cripto volatili (*Drawbacks of Volatile Cryptos*)
+
+- **La speculazione alimenta la volatilità**: chi compra per rivendere amplifica le oscillazioni di prezzo.
+- **Rischio di cambio inutile** (*unnecessary currency risk*). Domanda della slide: *"Can you pay someone salary in Bitcoin?"* Se il valore cambia molto in pochi giorni, né chi paga né chi riceve sa quanto vale davvero lo stipendio.
+- **Difficili da usare negli scambi**: la volatilità ostacola **prestiti, derivati, prediction market** e in generale tutti i **contratti che richiedono stabilità del prezzo**.
+- **Molti utenti non vogliono speculare**: vogliono solo **conservare denaro su un registro resistente alla censura**, ad esempio per **sottrarsi al sistema bancario** (vedi i casi di Cipro e Argentina, §3.4).
+
+> 💡 **Collegamento** (sintesi mia). È la contraddizione delle "possibilità offerte" del §3.2: rimesse, unbanked e micropagamenti richiedono una moneta stabile, mentre BTC è soprattutto un asset speculativo.
+
+### 2.11 Stablecoin
+
+**Definizione.** Una stablecoin è una criptovaluta progettata per avere un **valore stabile**, agganciato (*peg*) a un riferimento esterno, di solito una valuta tradizionale: **1 stablecoin ≈ 1 USD** (o 1 EUR).
+
+Unisce i vantaggi della blockchain (trasferimento P2P, senza intermediari bancari, resistenza alla censura) a quelli di una moneta stabile (prezzi, stipendi e contratti si possono esprimere senza rischio di cambio).
+
+> 💡 **Punto su cui insiste il Prof.** Le stablecoin sono le criptovalute **davvero utili come servizio sociale**: è qui che le promesse di §3.2 (rimesse, unbanked, pagamenti) diventano praticabili.
+
+#### Tipi di stablecoin (slide *Types of Stablecoins*)
+
+La slide le dispone su un **triangolo**: tre tipi ai vertici, e ogni lato indica la proprietà che i due vertici hanno in comune.
+
+```
+                    Fiat/asset-collateralized
+                   (Digix, Tether, TrueUSD)
+                      ╱                  ╲
+          Collateralized              Capital-efficient
+                    ╱                      ╲
+   Crypto-collateralized ─── Decentralized ─── Non-collateralized
+   (MakerDAO, bitUSD)            (Terra)         (Basis, Carbon)
+          └──────── algoritmiche (ellisse rossa) ────────┘
+```
+
+| Tipo | Su cosa si basa il valore | Esempi in slide |
+|---|---|---|
+| **Fiat/asset-collateralized** | Riserve in valuta reale (es. USD) o in un bene (es. oro) | Digix, Tether, TrueUSD |
+| **Crypto-collateralized** | Garanzie in altre criptovalute | MakerDAO, bitUSD |
+| **Non-collateralized** | Nessuna garanzia: il valore è regolato da **algoritmi** | Basis, Carbon |
+
+**I lati del triangolo:**
+
+- **Collateralized** (fiat ↔ crypto): entrambi hanno una **garanzia** dietro ogni token.
+- **Capital-efficient** (fiat ↔ non-collateralized): entrambi emettono un token per ogni unità di valore, senza bisogno di **bloccare più capitale** di quello emesso.
+- **Decentralized** (crypto ↔ non-collateralized): entrambi vivono **interamente on-chain**, senza un custode centrale.
+
+**Stablecoin algoritmiche.** L'ellisse rossa racchiude le **non-collateralized** e la zona di confine con le crypto-collateralized: sono le **stablecoin algoritmiche**, dette anche **ibride**, in cui il valore è mantenuto da **algoritmi** che regolano l'offerta. **Terra** sta proprio sul lato *Decentralized*, a metà tra i due vertici.
+
+> ⚠️ **Nota di rigore** (sintesi mia).
+> - Nessun tipo ha tutte e tre le proprietà: è un altro **trilemma**, simile a quello del Capitolo 1.
+> - Le **fiat-collateralized** sono le più stabili, ma reintroducono un emittente centralizzato: può congelare indirizzi e la stabilità dipende dalle sue riserve.
+> - Le **crypto-collateralized** sono decentralizzate ma poco efficienti: servono garanzie superiori al valore emesso (*sovra-collateralizzazione*), perché il collaterale è volatile.
+> - Le **algoritmiche** sono efficienti e decentralizzate, ma fragili: **Terra (UST)** ha perso il peg ed è collassata nel 2022.
+> - Digix in realtà è agganciata all'**oro**: è per questo che il vertice si chiama *fiat/asset*.
+
+#### Fiat-asset collateralized currency
+
+- Ogni token è **garantito da una valuta reale** (es. USD), depositata presso una **banca**.
+- Lo schema della slide (animato) parte da **banca** e **utente**. Primo passo: **si depositano USD su un conto bancario** (*Deposit USD to a bank account*).
+
+*(Sezione in corso: lezione sospesa al minuto 55:41, sul primo passo dello schema.)*
+
 ---
 
 ## 3. Trade-off e implicazioni
@@ -296,6 +430,15 @@ lock("alice")
 | **Rete Bitcoin** | P2P, ledger replicato, broadcast, validazione (firma, UTXO non spesi), accettazione solo in blocco, consenso globale |
 | **Pseudonimato** | Transazioni pubbliche e analizzabili; indirizzi non legati direttamente all'identità |
 | **Valore sociale** | Rimesse, unbanked, micropagamenti, resistenza al controllo dei capitali; il Prof. insiste sul protocollo più che sul mercato |
+| **Wallet** | Interfaccia verso il protocollo (come il browser per HTTP); custodisce le chiavi, non i bitcoin |
+| **Desktop wallet** | Il primo tipo (es. Electrum): autonomia e controllo, ma legato al dispositivo (perso → fondi persi) e a OS poco sicuri |
+| **Web wallet** | Chiavi sul server di terzi (come la webmail): comodo, ma i furti sono avvenuti tutti lì (Mt.Gox) |
+| **Hardware / paper wallet** | Cold wallet: chiavi offline su dispositivo dedicato o su carta |
+| **Exchange centralizzati** | Order book + matching engine, commissioni, custodia delle chiavi; scambi interni non on-chain ma in un DB centrale |
+| **Exchange decentralizzati** | Scambi on-chain tramite smart contract, senza intermediario; l'utente tiene le chiavi |
+| **Limiti della volatilità** | Speculazione, rischio di cambio (stipendio in BTC?), difficile per prestiti e contratti; molti vogliono solo un registro anti-censura |
+| **Stablecoin** | Valore agganciato a una valuta (≈ 1 USD); per il Prof. le cripto davvero utili come servizio sociale |
+| **Tipi di stablecoin** | Fiat/asset, crypto-collateralized, non-collateralized (algoritmiche/ibride); lati: collateralized, capital-efficient, decentralized |
 
 ### 5.2 Domande e risposte
 
@@ -316,6 +459,15 @@ lock("alice")
 15. Bitcoin è anonimo? Motiva.
 16. Quali possibilità offre Bitcoin secondo le slide, e quali limiti pratici hanno?
 17. Perché il Prof. insiste sul valore sociale più che sul mercato?
+18. Che ruolo ha un wallet rispetto al protocollo Bitcoin? Cosa custodisce davvero?
+19. Pro e contro di un desktop wallet.
+20. Perché i web wallet sono il punto debole da cui sono stati rubati i bitcoin? Il protocollo è stato violato?
+21. Che differenza c'è tra hot e cold wallet? Fai un esempio per tipo.
+22. Come funziona un exchange centralizzato? Le transazioni tra utenti finiscono sulla blockchain?
+23. Che differenza c'è tra exchange centralizzati e decentralizzati?
+24. Quali sono i limiti delle criptovalute volatili secondo la slide?
+25. Cos'è una stablecoin e perché il Prof. la considera utile come servizio sociale?
+26. Descrivi i tre tipi di stablecoin e le proprietà sui lati del triangolo della slide.
 
 <details>
 <summary><b>Tracce di risposta</b></summary>
@@ -337,6 +489,15 @@ lock("alice")
 15. No, è pseudonimo: le transazioni sono pubbliche e tracciabili, ma gli indirizzi non sono direttamente legati a un'identità.
 16. Rimesse, bank the unbanked, micropagamenti. Limiti: fee e latenza sulla catena principale rendono poco praticabili i micropagamenti (da cui soluzioni di livello 2).
 17. Perché l'innovazione sta nel protocollo: trasferire valore senza intermediari e senza poter essere bloccati, non nella speculazione sul prezzo.
+18. È il client che "parla" il protocollo, come il browser per HTTP. Custodisce le chiavi private (i fondi sono UTXO sulla blockchain), calcola il saldo e firma le transazioni.
+19. Pro: prima tipologia, ricca di funzioni, autonomia e controllo (es. Electrum). Contro: disponibile solo sul dispositivo (perso → chiavi e fondi persi) e gira su OS general purpose spesso insicuri.
+20. Le chiavi di molti utenti stanno su un server di terzi (honeypot): gli hacker lo violano, prendono le chiavi e spostano i fondi. Il protocollo non è violato: per Bitcoin chi ha la chiave è il proprietario.
+21. Hot = connesso (desktop, web wallet), comodo ma esposto. Cold = offline (hardware, paper wallet), più sicuro ma meno pratico.
+22. Order book ordinato per prezzo, matching engine che abbina gli ordini, commissioni. Di solito no: l'exchange registra gli scambi in un database centrale; si va on-chain solo con depositi e prelievi.
+23. CEX: intermediario, DB centrale, custodia delle chiavi, fiducia nell'exchange. DEX: scambi on-chain tramite smart contract, l'utente tiene le chiavi, fiducia nel codice e nel consenso.
+24. La speculazione alimenta la volatilità; rischio di cambio (non si può pagare uno stipendio in BTC con serenità); prestiti, derivati e contratti richiedono stabilità; molti utenti vogliono solo conservare valore su un registro anti-censura, fuori dal sistema bancario.
+25. Una cripto con valore agganciato a una valuta (≈ 1 USD). Toglie il rischio di cambio mantenendo i vantaggi della blockchain, quindi rende davvero praticabili rimesse, pagamenti e accesso per gli unbanked.
+26. Tre tipi sul triangolo della slide: fiat/asset-collateralized (Tether, TrueUSD, Digix; fiducia nell'emittente), crypto-collateralized (MakerDAO, bitUSD; crollo del collaterale), non-collateralized/algoritmiche (Basis, Carbon, Terra; perdita del peg, Terra 2022). Lati: collateralized, capital-efficient, decentralized; nessun tipo li ha tutti e tre.
 
 </details>
 
@@ -344,9 +505,9 @@ lock("alice")
 
 ## 🚧 Da completare
 
-**La lezione prosegue dalla sezione *Wallets*, al minuto 33:36 della [registrazione Panopto](https://unibo.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=c71434dc-97a7-4bf1-9658-b4d700985bcb).** Restano da integrare wallet, exchange e stablecoin (resto della slide *03.01 – Cryptocurrencies*).
+**Riprendere dal minuto 55:41**, slide *Fiat-Asset Collateralized Currency* (schema banca–utente, dopo il deposito di USD) ([registrazione Panopto](https://unibo.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=c71434dc-97a7-4bf1-9658-b4d700985bcb)). Restano da integrare il dettaglio sulle stablecoin e il resto della slide *03.01 – Cryptocurrencies*.
 
-> Nota: nonce, privacy degli UTXO, eUTXO di Cardano, il modello a program/account di Solana, Lightning Network e i dettagli su Cipro e Argentina vengono dalla letteratura generale, non dalle slide.
+> Nota: nonce, privacy degli UTXO, eUTXO di Cardano, il modello a program/account di Solana, Lightning Network, la seed phrase, hot/cold wallet, i dettagli su Mt.Gox, Cipro e Argentina, i dettagli sulle stablecoin (sovra-collateralizzazione, collasso di Terra, Digix legata all'oro) vengono dalla letteratura generale, non dalle slide.
 
 ---
 
