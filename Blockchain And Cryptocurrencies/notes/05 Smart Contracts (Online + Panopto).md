@@ -138,7 +138,7 @@ Due elementi nuovi rispetto al Web 2.0:
 
 Spunto: Solidity come linguaggio per scrivere smart contract su Ethereum (non visto oggi).
 
-<img width="905" height="618" alt="image" src="https://github.com/user-attachments/assets/2dfbfeaa-4831-4dc9-a947-5493481cc133" />
+<img width="40%" height="40%" alt="image" src="https://github.com/user-attachments/assets/2dfbfeaa-4831-4dc9-a947-5493481cc133" />
 
 Licenza per la valutazione di un prodotto, 5 articoli:
 
@@ -150,7 +150,7 @@ Licenza per la valutazione di un prodotto, 5 articoli:
 
 ## Esempio: licenza come macchina a stati
 
-<img width="905" height="566" alt="image" src="https://github.com/user-attachments/assets/a6ebec72-9815-4cdd-bafb-1b6e60b08713" />
+<img width="40%" height="40%" alt="image" src="https://github.com/user-attachments/assets/a6ebec72-9815-4cdd-bafb-1b6e60b08713" />
 
 Lo stesso contratto tradotto in un automa a stati finiti:
 
