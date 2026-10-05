@@ -84,7 +84,7 @@ Alla fine della parte sui termini il Prof. presenta l'evoluzione dei servizi dig
 | **3. Share economy** | Le piattaforme mettono in contatto chi offre e chi chiede un bene o servizio | Uber, Airbnb | La piattaforma come intermediario, che trattiene una commissione |
 | **4. Decentralization** | Servizi blockchain-based: il protocollo sostituisce l'intermediario | Criptovalute, DeFi, dApp | Protocollo + consenso |
 
-> 💡 **Punto del Prof.** *"Are we sure it is a sharing economy? It is rather a matching economy."* Uber non condivide nulla: **abbina** due utenti che devono andare in posti vicini. Il valore sta nel matching, e il matching è centralizzato, quindi chi lo controlla estrae una rendita, raccoglie i dati e decide le regole.
+> 💡 **Punto su cui insiste il Prof.** *"Are we sure it is a sharing economy? It is rather a matching economy."* Uber non condivide nulla: **abbina** due utenti che devono andare in posti vicini. Il valore sta nel matching, e il matching è centralizzato, quindi chi lo controlla estrae una rendita, raccoglie i dati e decide le regole.
 >
 > La fase 4 si chiede se il matching stesso possa essere svolto da un protocollo, senza un matcher centrale. È la domanda "Uber senza Uber" del §1.2, vista in prospettiva storica.
 
@@ -174,7 +174,7 @@ Le slide *Problems of Centralized Solutions* mettono in evidenza due problemi ch
 
 È il problema che l'architettura DFS + DLT + ACL del Prof. (§2.3) vuole risolvere con la **sovranità del dato**.
 
-**2. Censorship.** L'esempio della slide è il grafico del traffico Internet da e verso l'**Egitto** il 27–28 gennaio 2011 (Primavera araba). Nella serata del 27 (ora locale) il traffico attraverso circa 80 provider crolla quasi a zero: il governo ha "spento" Internet nel Paese. Dove esiste un punto di controllo, qualcuno può usarlo per censurare.
+**2. Censorship.** L'esempio della slide è il grafico del traffico Internet da e verso l'**Egitto** il 27–28 gennaio 2011 (Primavera araba). Intorno alle 17:20 EST del 27 (notte tra il 27 e il 28, ora locale) il traffico attraverso circa 80 provider crolla quasi a zero: il governo ha "spento" Internet nel Paese. Dove esiste un punto di controllo, qualcuno può usarlo per censurare.
 
 > ⚠️ **Sfumatura da esame.** Lo shutdown egiziano è avvenuto a livello di **ISP e routing** (ritiro degli annunci BGP), cioè nella rete fisica (*underlay*). In quel caso anche una rete P2P costruita come overlay su Internet sarebbe stata tagliata fuori. Un overlay decentralizzato protegge dalla censura **applicativa** (blocco di un sito, di un server, di un account). Contro lo spegnimento dell'infrastruttura servono reti che non dipendono da Internet, come le mesh di FireChat (§2.1.4).
 
@@ -343,7 +343,7 @@ Decentralizzare ha dei costi:
 - **replicazione ridondante**, che abbassa il throughput;
 - **latenza di finalità**, dovuta ai round di consenso e alle conferme;
 - **costi economici**: fee, energia nel PoW, capitale bloccato nel PoS;
-- **complessità**: il codice è immutabile e i bug sono difficili da correggere (serve un redeploy, vedi Capitolo 2).
+- **complessità**: il codice è immutabile e i bug sono difficili da correggere (serve un redeploy, vedi [Capitolo 2](<02 DLT, smart contract e use case.md>)).
 
 Da qui il **trilemma** (formulazione resa popolare da Buterin) tra decentralizzazione, sicurezza e scalabilità: tipicamente se ne ottengono due su tre. Il Prof. lo riassume così: *"Does it work?" "Yes!" "Does it scale?" "…"*
 
@@ -457,7 +457,7 @@ Modificare un blocco rompe il collegamento con tutti i successivi, quindi ogni n
 
 ---
 
-## 5. Quadro sintetico
+## 5. Active Recall
 
 ### 5.1 Concetti chiave
 
