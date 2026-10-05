@@ -77,6 +77,42 @@ Spettro dal semplice al complesso:
 | Distributed autonomous government | coloni di un'area disabitata che codificano servizi pubblici auto-applicanti |
 | Distributed autonomous society | gruppi di coloni che stabiliscono accordi commerciali auto-applicanti |
 
+## Esempio: CryptoKitties (digital marketplace)
+
+<!-- screenshot CryptoKitties -->
+
+- Gioco in cui gli utenti **collezionano e fanno riprodurre gattini virtuali** tramite smart contract su Ethereum
+- I gattini si **comprano pagando in ether**
+- Ogni gattino è unico e la sua proprietà è registrata on-chain: è un esempio di **token non fungibile** (NFT, standard ERC-721) → collegamento con la parte sui token
+- Anche la riproduzione (*breeding*) è logica del contratto: il nuovo gattino eredita caratteristiche dai genitori
+
+> Contesto: lanciato a fine 2017, ebbe un successo tale da congestionare la rete Ethereum, caso citato spesso per i limiti di scalabilità.
+
+## Da smart contract a DApp
+
+<!-- screenshot "Smart Contracts → Dapps" -->
+
+- **Smart contract**: protocollo di transazione che esegue i termini di un contratto (la definizione di Szabo)
+- **DApp** (*Decentralized Application*): **contratto + interfaccia grafica** per eseguirlo
+  - **Smart contract** → memorizzati **sulla blockchain** (logica e stato)
+  - **User interface** → memorizzata su un **file system decentralizzato** (es. IPFS)
+- L'utente finale non chiama il contratto a mano: usa l'interfaccia, che costruisce e invia le transazioni al contratto
+- CryptoKitties è un esempio di DApp: contratto su Ethereum + sito web per comprare e far riprodurre i gattini
+
+## Web site vs DApp
+
+<!-- screenshot "Web site vs Dapp" -->
+
+| | Catena | Chi controlla il back-end |
+|---|---|---|
+| **Sito convenzionale** | Front End → **API** → **Database** | il gestore del sito (server e DB centralizzati) |
+| **Sito "dApp empowered"** | Front End → **Smart Contract** → **Blockchain** | nessuno in particolare: logica e dati sono on-chain |
+
+- Il front end resta simile: cambia ciò che c'è dietro
+- Lo **smart contract prende il posto delle API** (la logica applicativa)
+- La **blockchain prende il posto del database** (lo stato), con dati replicati, trasparenti e non modificabili dal singolo gestore
+- Prezzo da pagare: ogni scrittura è una transazione, quindi costa e non è istantanea
+
 ## Esempio: licenza (contratto legale)
 
 Spunto: Solidity come linguaggio per scrivere smart contract su Ethereum (non visto oggi).
@@ -127,9 +163,11 @@ Morale: un contratto legale si può formalizzare come macchina a stati, quindi c
 ## Dubbi da verificare
 
 - [ ] Verificare ordine/associazione dei primi tre screenshot (Szabo vs schema "programs on top of a blockchain")
-- [ ] Caricare i due screenshot sulle applicazioni (elenco + spettro PwC)
+- [ ] Caricare gli screenshot mancanti (elenco applicazioni, spettro PwC, CryptoKitties, DApp, Web site vs DApp)
 - [ ] In che punto il Prof. ha introdotto Solidity?
 - [ ] Come si gestiscono tempo (24 h) ed eventi esterni in uno smart contract? → oracoli / timestamp del blocco
+- [ ] Il Prof. ha citato ERC-721 / la congestione di Ethereum per CryptoKitties?
+- [ ] La UI di una DApp è davvero sempre su file system decentralizzato? (spesso in pratica è su server tradizionali)
 - [ ] Riferimento slide esatto
 
 ---
