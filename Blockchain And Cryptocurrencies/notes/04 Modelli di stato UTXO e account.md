@@ -1,6 +1,8 @@
-# Capitolo 4 — Modelli di stato: UTXO vs account-based
+# Capitolo 4 — Modelli di stato (UTXO vs account) e Bitcoin
 
-*Lezione 4 · Slide "03.01 – Cryptocurrencies", sezione "Taxonomy of Crypto Platforms" (slide 3–13).*
+*Lezione 4 (02/10/2026) · Slide "03.01 – Cryptocurrencies": sezione "Taxonomy of Crypto Platforms" (slide 3–13, anticipata a fine della lezione precedente) e prima parte su Bitcoin. [Registrazione Panopto](https://unibo.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=c71434dc-97a7-4bf1-9658-b4d700985bcb)*
+
+> 🚧 **Capitolo in corso.** Copre la lezione fino alla sezione *Wallets* esclusa. Vedi la nota in fondo.
 
 [← Indice](README.md)
 
@@ -10,7 +12,7 @@
 
 ### 1.1 La domanda
 
-Ogni piattaforma crypto deve rappresentare lo **stato globale**: chi possiede quali token e, se ci sono smart contract, quali sono i valori delle loro variabili. Le slide classificano le piattaforme in base a **come** rappresentano questo stato.
+Ogni piattaforma crypto deve rappresentare lo **stato globale**: chi possiede quali token e, se ci sono smart contract, quali sono i valori delle loro variabili. Le slide classificano le piattaforme in base a **come** rappresentano questo stato. È la premessa necessaria per capire Bitcoin, che usa il modello UTXO.
 
 ### 1.2 Tassonomia (slide 13)
 
@@ -31,6 +33,25 @@ Ogni piattaforma crypto deve rappresentare lo **stato globale**: chi possiede qu
 | **Account-based stateless** | Solana |
 
 > 💡 Ethereum è evidenziato in blu nella slide: è il riferimento del modello account-based stateful e sarà la piattaforma usata nelle prossime lezioni (Solidity).
+
+### 1.3 Bitcoin ad alto livello
+
+- **Valuta completamente digitale**: non esistono monete o banconote fisiche. Bitcoin esiste solo come registrazioni sulla blockchain.
+- **Nessun governo la emette**: non c'è una banca centrale che stampa moneta o ne controlla l'offerta. Le regole di emissione sono scritte nel protocollo, con un tetto massimo di **21 milioni di BTC**.
+- **Nessuna banca gestisce conti e transazioni**: le transazioni passano direttamente da utente a utente (**peer-to-peer**). A validarle è una rete distribuita di nodi e miner, non un intermediario fidato.
+- **Nessuno sa chi l'ha inventata**: il whitepaper del 2008 (*"Bitcoin: A Peer-to-Peer Electronic Cash System"*) è firmato **Satoshi Nakamoto**, uno pseudonimo. Non si sa se dietro ci sia una persona o un gruppo.
+
+### 1.4 Storia
+
+- **2008–2009 – Nascita**
+  - Fine 2008: pubblicazione del whitepaper.
+  - Gennaio 2009: rilascio del software e annuncio di Bitcoin.
+- **2009–2011 – Partenza lenta**
+  - **Gennaio 2009**: viene creato il **Genesis Block**, il primo blocco della catena, che dà avvio al **mining**. Pochi giorni dopo avviene la **prima transazione**: Satoshi invia BTC a **Hal Finney**, sviluppatore e attivista della crittografia.
+  - **Maggio 2010 – Primo acquisto di beni reali**: **Laszlo Hanyecz** (Florida) offre su *Bitcointalk* **10.000 BTC** a chi gli consegna "un paio di pizze". Un utente della West Coast accetta, per circa **25 $ di pizza**. Il **22 maggio** è ricordato come **Bitcoin Pizza Day**: oggi quei BTC varrebbero centinaia di milioni di dollari.
+- **2013 – Il prezzo esplode**: Bitcoin esce dalla nicchia e attira media e investitori.
+
+La slide *BTC / Real money* mostra l'andamento del valore nel tempo, senza scendere nei dettagli.
 
 ---
 
@@ -57,7 +78,7 @@ tx1
 3. **soddisfa la condizione di spesa** di ciascuno (es. con la firma di p1);
 4. li **consuma interamente** e crea **nuovi output**.
 
-> 💡 **Punto del Prof.** *"In order to spend data/tokens, you have to do previous checks."* Non si "scala" un saldo: si dimostra di avere diritto a un output precedente non speso e lo si consuma.
+> 💡 **Punto su cui insiste il Prof.** *"In order to spend data/tokens, you have to do previous checks."* Non si "scala" un saldo: si dimostra di avere diritto a un output precedente non speso e lo si consuma.
 
 **Esempio completo delle slide**
 
@@ -137,9 +158,26 @@ Nel modello stateless il contract account contiene **solo il codice**. Stato e t
 
 > ⚠️ **Correzione rispetto agli appunti.** Negli appunti "stateless" era definito come "i validatori non conservano l'intero stato e le transazioni allegano una prova (witness)". Quello è un concetto diverso (*stateless clients / stateless validation*, un tema di ricerca per Ethereum). Nella tassonomia del corso **stateless significa: il contratto contiene solo codice, senza stato né token propri**.
 
+### 2.5 Bitcoin at a High-Level: la rete
+
+- **Bitcoin è una rete P2P di nodi** (i *client* Bitcoin).
+  - Ogni nodo conserva una copia del **ledger** di *tutte* le transazioni.
+  - Il ledger è la **blockchain**: distribuito e replicato, senza archivio centrale.
+- **Le transazioni vengono trasmesse (broadcast) ai nodi** (flooding sulla rete non strutturata, vedi Capitolo 1, §2.1.7).
+  - I nodi **validano** ogni transazione: firma corretta, fondi disponibili, nessun **double spending**. In termini del §2.1: gli input devono essere **UTXO non spesi** e le loro condizioni di spesa devono essere soddisfatte.
+  - Le transazioni valide vengono **inserite in un blocco**, aggiunte alla blockchain e **ritrasmesse**.
+  - Una transazione è **accettata solo quando compare nella blockchain**, non al semplice invio.
+- **Obiettivo: tutte le transazioni sono note e condivise dall'intera rete.**
+  - Si raggiunge un **consenso globale** sulla storia del ledger.
+  - Tutti i nodi concordano su chi possiede cosa, senza un'autorità centrale.
+
+> 💡 **Collegamento.** "Accettata solo quando compare nella blockchain" va letto insieme alla finalità probabilistica del PoW (Capitolo 1, §1.6): un blocco può ancora essere riorganizzato, per questo si attendono circa 6 conferme (la latenza "1 h" della tabella del Capitolo 2, §1.7).
+
 ---
 
-## 3. Trade-off
+## 3. Trade-off e implicazioni
+
+### 3.1 UTXO vs account
 
 | Caratteristica | UTXO-based | Account-based |
 |---|---|---|
@@ -154,6 +192,30 @@ Nel modello stateless il contract account contiene **solo il codice**. Stato e t
 | **Piattaforme** | Bitcoin, Cardano | Ethereum, Avalanche, Hedera, Tezos, Algorand (stateful); Solana (stateless) |
 
 > ⚠️ **Nota** (sintesi mia). Cardano usa un **eUTXO** (*extended UTXO*): gli output possono portare dati e i validatori (in Plutus) sono molto più espressivi di Bitcoin Script. Quindi "UTXO = non programmabile" vale per Bitcoin, non per il modello in generale.
+
+### 3.2 Bitcoin: possibilità offerte
+
+- **Rimesse** (*remittances*): invio di denaro all'estero senza intermediari e con costi ridotti.
+- **Bank the unbanked**: servizi finanziari per chi non ha un conto bancario.
+- **Micropagamenti**: importi molto piccoli, poco sostenibili con i circuiti tradizionali.
+
+> ⚠️ **Nota di rigore** (sintesi mia). Sono le promesse originarie. Con fee di 1–2 $ e latenza di circa un'ora (Capitolo 2, §1.7), i micropagamenti sulla catena principale non sono praticabili; per questo sono nate soluzioni di livello 2 come Lightning Network.
+
+### 3.3 Bitcoin e governi
+
+**Elusione del controllo dei capitali**: essendo digitale e decentralizzato, Bitcoin rende difficile agli Stati bloccare il flusso di valore in entrata e in uscita dai propri confini.
+
+> ⚠️ **Nota di rigore.** Bitcoin non è "non tracciabile". È **pseudonimo**: tutte le transazioni sono pubbliche e analizzabili, ma gli indirizzi non sono legati direttamente a un'identità. Il punto è che non serve un intermediario autorizzato dallo Stato per spostare valore. È la *censorship resistance* del Capitolo 1 applicata al denaro.
+
+### 3.4 Implicazioni
+
+- Le cripto **non sono un investimento economicamente sicuro**, ma molti le percepiscono come bene rifugio rispetto alle banche.
+- Esempi citati: **Argentina** e **Cipro**, dove le crisi bancarie hanno spinto le persone verso Bitcoin *(da verificare)*.
+
+> ⚠️ **Nota** (sintesi mia). A Cipro nel 2013 c'è stato il prelievo forzoso sui depositi (*bail-in*), in concomitanza con la prima impennata di BTC. In Argentina i fattori sono stati inflazione, *corralito* e controlli sui cambi. Da confrontare con quanto detto in aula.
+
+- 💡 **Punto su cui insiste il Prof.:** l'attenzione va spostata dal mercato finanziario al **valore sociale** di Bitcoin. La parte davvero interessante è il protocollo.
+- **Impatto energetico**: crescita dei data center e della potenza di calcolo per il mining, con conseguente aumento del consumo di energia negli ultimi anni (vedi i Wh/tx nel Capitolo 2, §1.7).
 
 ---
 
@@ -213,7 +275,7 @@ lock("alice")
 
 ---
 
-## 5. Quadro sintetico
+## 5. Active Recall
 
 ### 5.1 Concetti chiave
 
@@ -229,6 +291,11 @@ lock("alice")
 | **Stateful** | Il contratto ha codice, stato e token propri (`acct3` con `z` e `lock()`) |
 | **Stateless** | Il contratto ha solo codice; stato e token stanno in altri account (Solana) |
 | **Trade-off** | UTXO: parallelismo, privacy, semplicità di verifica. Account: programmabilità, saldi espliciti, stato condiviso |
+| **Bitcoin** | Moneta digitale, nessun emittente, P2P, tetto di 21 milioni, autore pseudonimo (Satoshi Nakamoto) |
+| **Storia** | Whitepaper 2008, Genesis Block 2009, prima tx a Hal Finney, Pizza Day 22/05/2010, boom 2013 |
+| **Rete Bitcoin** | P2P, ledger replicato, broadcast, validazione (firma, UTXO non spesi), accettazione solo in blocco, consenso globale |
+| **Pseudonimato** | Transazioni pubbliche e analizzabili; indirizzi non legati direttamente all'identità |
+| **Valore sociale** | Rimesse, unbanked, micropagamenti, resistenza al controllo dei capitali; il Prof. insiste sul protocollo più che sul mercato |
 
 ### 5.2 Domande e risposte
 
@@ -244,6 +311,11 @@ lock("alice")
 10. Cosa significa stateless nella tassonomia del corso? Perché Solana è in quella categoria?
 11. Perché il modello UTXO si presta meglio al parallelismo?
 12. Il modello UTXO implica l'assenza di smart contract? (Pensa a Cardano.)
+13. Quali sono le quattro caratteristiche di alto livello di Bitcoin?
+14. Quando una transazione Bitcoin si considera accettata? Cosa verificano i nodi?
+15. Bitcoin è anonimo? Motiva.
+16. Quali possibilità offre Bitcoin secondo le slide, e quali limiti pratici hanno?
+17. Perché il Prof. insiste sul valore sociale più che sul mercato?
 
 <details>
 <summary><b>Tracce di risposta</b></summary>
@@ -260,14 +332,21 @@ lock("alice")
 10. Il contratto contiene solo codice; stato e token stanno in account separati passati alla chiamata. In Solana i programmi non hanno stato proprio.
 11. Transazioni che consumano UTXO diversi non hanno dipendenze; negli account più transazioni toccano lo stesso saldo o le stesse variabili.
 12. No: Cardano usa l'eUTXO con validatori Plutus molto espressivi; Bitcoin Script invece è volutamente limitato.
+13. Completamente digitale; nessun governo la emette (tetto 21 milioni); nessuna banca, transazioni P2P validate da nodi e miner; inventore pseudonimo.
+14. Solo quando compare in un blocco della blockchain. I nodi verificano firma, disponibilità dei fondi (input UTXO non spesi) e assenza di double spending. Per sicurezza si attendono circa 6 conferme.
+15. No, è pseudonimo: le transazioni sono pubbliche e tracciabili, ma gli indirizzi non sono direttamente legati a un'identità.
+16. Rimesse, bank the unbanked, micropagamenti. Limiti: fee e latenza sulla catena principale rendono poco praticabili i micropagamenti (da cui soluzioni di livello 2).
+17. Perché l'innovazione sta nel protocollo: trasferire valore senza intermediari e senza poter essere bloccati, non nella speculazione sul prezzo.
 
 </details>
 
 ---
 
-**Prossima lezione (2 ottobre):** Bitcoin, wallet, exchange e stablecoin (resto della slide *03.01 – Cryptocurrencies*).
+## 🚧 Da completare
 
-> Nota: nonce, privacy degli UTXO, eUTXO di Cardano e il modello a program/account di Solana vengono dalla letteratura generale, non dalle slide.
+**La lezione prosegue dalla sezione *Wallets*, al minuto 33:36 della [registrazione Panopto](https://unibo.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=c71434dc-97a7-4bf1-9658-b4d700985bcb).** Restano da integrare wallet, exchange e stablecoin (resto della slide *03.01 – Cryptocurrencies*).
+
+> Nota: nonce, privacy degli UTXO, eUTXO di Cardano, il modello a program/account di Solana, Lightning Network e i dettagli su Cipro e Argentina vengono dalla letteratura generale, non dalle slide.
 
 ---
 
