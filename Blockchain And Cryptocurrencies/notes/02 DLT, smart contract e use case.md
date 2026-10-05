@@ -23,16 +23,18 @@ Il capitolo riparte dal *Public Ledger* del [Capitolo 1](<01 Il paradigma della 
 
 - **DLT (*Distributed Ledger Technology*)** è la categoria generale: registri condivisi e sincronizzati tra nodi, senza un gestore centrale.
 - La **blockchain** è un caso particolare di DLT: i dati sono raggruppati in **blocchi** collegati da hash in una catena lineare.
-- **Tutte le blockchain sono DLT, non tutte le DLT sono blockchain.** Esempio del corso: **IOTA**, il cui ledger è un **DAG** (*Tangle*) invece di una catena. Nelle slide IOTA è presentata con: scalabilità, bassi requisiti di risorse, **transazioni zero-fee**, **nessuno smart contract**.
+- **Tutte le blockchain sono DLT, non tutte le DLT sono blockchain.** Esempio del corso: **IOTA**, il cui ledger è un **DAG** (*Tangle*) invece di una catena (un altro esempio di DLT a DAG è **Nano**). Nelle slide IOTA è presentata con: scalabilità, bassi requisiti di risorse, **transazioni zero-fee**, **nessuno smart contract**.
 
 > ⚠️ **Nota di rigore** (sintesi mia). Le proprietà di IOTA indicate nella slide si riferiscono alle versioni storiche del protocollo. IOTA ha cambiato architettura più volte e le versioni recenti supportano smart contract (infatti nella slide *Smart Contract based* IOTA compare tra le piattaforme con smart contract). All'esame conviene citare IOTA come **esempio di DLT a DAG**, specificando che le caratteristiche dipendono dalla versione.
 
 ### 1.3 Non solo DLT: i file system decentralizzati (IPFS)
 
-Le DLT oggi si usano insieme a **file system decentralizzati (DFS)**. Esempio: **IPFS** (*InterPlanetary File System*), un protocollo per memorizzare contenuti in un file system P2P distribuito.
+Le DLT oggi si usano insieme a **file system decentralizzati (DFS)**. Esempio: **IPFS** (*InterPlanetary File System*), un protocollo P2P che funziona come **overlay network** (Capitolo 1, §2.1.3) per memorizzare e condividere file in modo distribuito.
 
-- **Content-based addressing**: un file non si identifica con *dove* sta (URL, server) ma con *cosa* contiene. L'identificatore (**CID**) deriva dall'hash del contenuto: se il file cambia, cambia l'indirizzo.
+- **Content-based addressing**: un file non si identifica con *dove* sta (URL, server: *location-based addressing*) ma con *cosa* contiene. L'identificatore (**CID**) deriva dall'hash del contenuto: se il file cambia, cambia l'indirizzo.
 - Da qui il pattern che torna in tutto il corso: **il dato sta sul DFS, l'hash sta sulla DLT** (vedi §2.5 e [Capitolo 3](<03 Smart Transportation.md>)).
+
+> 💡 **Focus del corso.** Il corso si concentra sull'architettura **blockchain**; IPFS e i DFS vengono citati come tecnologia complementare, non come oggetto di studio a sé.
 
 ### 1.4 Dalle transazioni agli smart contract (*The Code*)
 
@@ -85,7 +87,7 @@ Due dimensioni indipendenti:
 | | **Public** | **Private** |
 |---|---|---|
 | **Permissionless** | Bitcoin, Ethereum | **Rara** (lo dice la slide): chi può leggere è limitato, ma chiunque potrebbe validare. Combinazione poco sensata |
-| **Permissioned** | Ledger leggibile da tutti, validatori selezionati (es. reti consortili con audit pubblico) | Reti enterprise chiuse (es. Hyperledger Fabric) |
+| **Permissioned** | Ledger leggibile da tutti, validatori selezionati (es. reti consortili con audit pubblico) | Reti enterprise chiuse (es. Hyperledger Fabric, R3 Corda, Quorum) |
 
 > ⚠️ **Nota** (sintesi mia). La slide segna solo la cella *private/permissionless* come rara; gli esempi nelle altre celle vengono dalla letteratura. Ripple e Stellar sono spesso citati come *public permissioned* (lettura aperta, validatori su liste di fiducia), ma la classificazione è discussa: meglio usarli come esempi con cautela.
 
@@ -134,7 +136,7 @@ Dalla slide:
 
 ### 2.1 Tracciabilità e supply chain: il problema
 
-In una filiera tradizionale ogni attore (produttore, trasformatore, vettore, dogana, distributore) usa il proprio sistema informativo. Ne derivano:
+In una filiera tradizionale ogni attore (produttore, trasformatore, vettore, dogana, distributore) usa il proprio sistema informativo, chiuso (*silos*). Ne derivano:
 
 - **visibilità limitata** ai partner diretti (un passo a monte, uno a valle);
 - **registri manomissibili** a posteriori da chi amministra il database;
@@ -144,8 +146,11 @@ Una DLT offre un registro **condiviso, append-only e verificabile**, in cui ogni
 
 ### 2.2 Casi reali
 
-- **TradeLens (IBM + Maersk).** Digitalizzazione dei documenti e degli eventi del trasporto container (polizze di carico, sdoganamento, carico e scarico) su un registro consortile *permissioned*. **Chiuso** (annuncio a fine 2022, dismissione nel 2023) per insufficiente adesione degli altri operatori: la tecnologia funzionava, il consorzio no.
-- **IBM Food Trust.** Tracciabilità agroalimentare dal campo allo scaffale. Il consumatore scansiona un **QR code** e vede la storia del lotto (origine, lavorazioni, catena del freddo). Nelle slide è l'esempio di **Hybrid Blockchain** (§2.4).
+- **TradeLens (IBM + Maersk).**
+  - *Problema:* il trasporto container internazionale si regge su molti documenti (polizze di carico, certificati fitosanitari, approvazioni doganali), spesso cartacei o scambiati su canali non sincronizzati: rischio di frodi e colli di bottiglia nei porti.
+  - *Soluzione:* ogni evento (passaggio di mano del container, carico, sdoganamento, sbarco) viene notarizzato su un registro consortile *permissioned*; gli smart contract gestiscono l'accesso ai documenti e la visibilità selettiva tra vettori concorrenti e autorità.
+  - *Esito:* **chiuso** (annuncio a fine 2022, dismissione nel 2023) per insufficiente adesione degli altri operatori. La tecnologia funzionava, il consorzio no.
+- **IBM Food Trust.** Tracciabilità agroalimentare dal campo allo scaffale. Ogni lotto viene registrato dall'origine (raccolta, trattamenti) attraverso trasformazione, catena del freddo e distribuzione. Il consumatore scansiona un **QR code** e vede la storia del lotto. Nelle slide è l'esempio di **Hybrid Blockchain** (§2.4).
 - **Esempi italiani citati in slide:** Carrefour (filiere tracciate), Riseria Campanini ([agrichain](https://agrichain.riseriacampanini.it/bio/)), mantenimento della **catena del freddo** (*cold chain*).
 - **Prototipi didattici:**
   - [AgroChain](https://github.com/Kerala-Blockchain-Academy/AgroChain): DApp di supply chain agricola con microfinanza;
@@ -156,9 +161,9 @@ Una DLT offre un registro **condiviso, append-only e verificabile**, in cui ogni
 **Scenario.**
 
 - **A** progetta il prodotto;
-- **B1, B2, B3** producono i componenti;
+- **B1, B2, B3** producono i componenti, ciascuno con una matricola o un identificativo di lotto;
 - **C** è il vettore che li trasporta;
-- **A1** è lo stabilimento di A dove i componenti vengono assemblati.
+- **A1** è lo stabilimento di A dove i componenti vengono assemblati nella distinta base (**BOM**, *Bill of Materials*).
 
 **Tentativo 1: un unico DB.** Le domande della slide mostrano perché non funziona:
 
@@ -168,19 +173,23 @@ Una DLT offre un registro **condiviso, append-only e verificabile**, in cui ogni
 - *Se cambio partner, come gli revoco l'accesso?*
 - *Internamente uso un altro sistema: possiamo passare a quello?*
 
+Tradotte in problemi tecnici: **neutralità** (nessuno vuole che sia un concorrente a ospitare il DB e poterlo alterare in caso di disputa), **gestione degli accessi** (permessi parziali o temporanei per attori marginali come C, revoche tempestive) ed **eterogeneità dei sistemi** (ERP, MES, WMS diversi e poco interoperabili).
+
 **Tentativo 2: tanti DB, uno per attore.** Le domande peggiorano: *come leggo gli altri DB? Come so che i dati sono affidabili? Posso fare audit quando voglio?*
 
 **Tentativo 3: la blockchain.**
 
 1. **Chiavi.** Ogni attore X ha una coppia (S<sub>x</sub>, P<sub>x</sub>). Dalla slide: S<sub>a</sub> è *usata da A per scrivere dati* (e garantire che solo A li abbia scritti); P<sub>a</sub> è *usata dagli altri per leggere i dati scritti da A* (e verificare che li abbia scritti A).
 2. **A authorizes others.** A, come radice delle autorizzazioni, concede sulla blockchain i permessi di scrittura ad A1, B1, B2, B3, C.
-3. **Everyone writes their activities.** Ognuno registra solo le proprie attività, firmandole con la propria chiave.
-4. **Even products can write.** Se hanno sufficiente "intelligenza" (capacità di calcolo), anche i prodotti hanno una propria coppia di chiavi (S<sub>i</sub>) e registrano **statistiche, anomalie**, e **notificano attività di manutenzione**.
+3. **Everyone writes their activities.** Ognuno registra solo le proprie attività, firmandole con la propria chiave. Gli smart contract possono restringere ancora: il vettore C può invocare solo le operazioni di sua competenza (es. "aggiorna stato spedizione").
+4. **Even products can write.** Se hanno sufficiente "intelligenza" (capacità di calcolo), anche i prodotti o i loro componenti (es. carrello, scocca, motore di un treno, vedi Capitolo 3) hanno una propria coppia di chiavi (S<sub>i</sub>, P<sub>i</sub>) e registrano **statistiche, anomalie**, e **notificano attività di manutenzione**.
 5. **Revoke permissions.** *In ogni momento A può revocare l'accesso in scrittura a qualcuno* (esempio della slide: il permesso di C viene revocato). È la risposta diretta alla domanda "se cambio partner?".
+
+Sul fronte dell'eterogeneità, i gestionali interni restano dove sono: dialogano con la rete tramite **gateway API e nodi RPC**, e sul ledger finiscono solo gli eventi critici.
 
 > ⚠️ **Nota di rigore** (sintesi mia). Firmare con S<sub>x</sub> garantisce **autenticità e non ripudio**. Il ruolo di "radice" di A mostra che la rete è **permissioned** e che A mantiene un potere di governance (concedere e revocare). Il sistema è quindi decentralizzato nella *scrittura* e nella *verifica*, ma non nella *governance* dei permessi.
 
-**Estensione: Digital Product Passport** (sintesi mia, non in slide). Il prodotto finito espone, via QR o NFC, la storia certificata dei componenti: provenienza da B1–B3, trasporto di C, assemblaggio in A1, eventi registrati dal prodotto in esercizio. È la stessa idea del QR di Food Trust applicata alla distinta base (BOM).
+**Estensione: Digital Product Passport** (sintesi mia, non in slide). Il prodotto finito espone, via QR o NFC, la storia certificata dei componenti: provenienza da B1–B3, trasporto di C, assemblaggio in A1, eventi registrati dal prodotto in esercizio. È la stessa idea del QR di Food Trust applicata alla distinta base.
 
 > 💡 **Punto del Prof.: Garbage In, Garbage Out.** La blockchain **non certifica che il dato fisico sia vero**: se un fornitore scrive una temperatura falsa, il registro rende immutabile quella falsità. La DLT risolve la **falsificazione a posteriori**, non l'errore a monte. In cambio garantisce **chi** ha scritto cosa (firma, non ripudio), quindi un audit trail per individuare il responsabile. Il punto di contatto tra mondo fisico e ledger è il problema degli **oracoli** (Capitolo 1, §2.2).
 
@@ -204,7 +213,7 @@ La slide si concentra su tre diritti:
 - **Diritto di rettifica** (art. 16);
 - **Diritto alla cancellazione / all'oblio** (art. 17).
 
-> Per completezza (non in slide), gli altri diritti dell'interessato sono: informazione (artt. 13–14), limitazione del trattamento (art. 18), portabilità (art. 20), opposizione (art. 21), tutele sulle decisioni automatizzate e sulla profilazione (art. 22).
+> Per completezza, gli altri diritti dell'interessato sono: informazione (artt. 13–14), limitazione del trattamento (art. 18), portabilità (art. 20), opposizione (art. 21), tutele sulle decisioni automatizzate e sulla profilazione (art. 22). Quest'ultimo è rilevante perché uno smart contract è, di fatto, una decisione automatizzata.
 
 **Il conflitto.**
 
@@ -262,7 +271,7 @@ VISIBILITÀ
 - **Technology Trigger**: Bitcoin (2009), poi Ethereum e gli smart contract.
 - **Peak of Inflated Expectations**: "blockchain per tutto"; nascono molti progetti spinti dal clamore.
 - **Trough of Disillusionment**: emergono costi, scalabilità limitata, conflitti con il GDPR, difficoltà a far collaborare concorrenti. Esempio: la chiusura di TradeLens.
-- **Slope of Enlightenment**: si capisce dove la blockchain serve davvero: non sostituisce i database, fa da strato di **certificazione e coordinamento** tra parti che non si fidano.
+- **Slope of Enlightenment**: si capisce dove la blockchain serve davvero: non sostituisce i database, fa da strato di **certificazione e coordinamento** tra parti che non si fidano (es. Digital Product Passport).
 - **Plateau of Productivity**: architetture ibride on-chain/off-chain, usate in modo pragmatico.
 
 ### 2.7 Quando serve davvero una blockchain? (flowchart)
@@ -294,12 +303,12 @@ Serve verificabilità pubblica (public auditing)?
 
 1. **Store condiviso e consistente?** Se no, basta un DB.
 2. **Più entità scrivono?** Se ne scrive una sola non c'è contesa: DB. Eccezione (ramo *Auditing*): se terzi devono poter **verificare** i dati di un singolo scrittore, può servire comunque una DLT come strato di certificazione.
-3. **Esiste una TTP accettata da tutti?** Se sì, le si affida un DB centralizzato: più economico e veloce.
-4. **Scrittori noti?** Se no (chiunque deve poter scrivere): **permissionless**.
-5. **Scrittori fidati?** Se sono noti e si fidano tra loro: basta un DB condiviso.
+3. **Esiste una TTP accettata da tutti?** Se sì (notaio, banca, broker autorizzato), le si affida un DB centralizzato: più economico e veloce.
+4. **Scrittori noti?** Se no (chiunque deve poter scrivere): **permissionless** (es. Bitcoin, Ethereum).
+5. **Scrittori fidati?** Se sono noti e si fidano tra loro: basta un DB condiviso. Se sono noti ma in conflitto di interessi (concorrenti, partner di filiera), si prosegue.
 6. **Serve audit pubblico?** Se no: **private permissioned** (es. consorzio di filiera chiuso, Hyperledger Fabric). Se sì: **public permissioned** (scrivono solo gli autorizzati, ma chiunque può verificare).
 
-> ⚠️ **Correzione rispetto agli appunti.** IBM Food Trust era citato come esempio di *public permissioned*. Nelle slide è invece l'esempio di **hybrid blockchain**: il ledger è permissioned (su Hyperledger Fabric) e il consumatore non legge il ledger direttamente, ma vede i dati tramite l'app. Come esempio di public permissioned è più corretto uno scenario con lettura aperta a tutti e validatori selezionati.
+> ⚠️ **Correzione rispetto agli appunti.** IBM Food Trust era citato come esempio di *public permissioned*. Nelle slide è invece l'esempio di **hybrid blockchain**: il ledger è permissioned (su Hyperledger Fabric) e il consumatore non legge il ledger direttamente, ma vede i dati tramite l'app. Come esempio di public permissioned è più corretto uno scenario con lettura aperta a tutti e validatori selezionati (enti autorizzati, laboratori accreditati).
 
 ### 2.8 Architettura di una DApp di filiera
 
@@ -379,14 +388,14 @@ In un vero smart contract `caller` corrisponde a `msg.sender`, cioè l'indirizzo
 
 ---
 
-## 5. Quadro sintetico
+## 5. Active Recall
 
 ### 5.1 Concetti chiave
 
 | Concetto | In sintesi |
 |---|---|
 | **Proprietà del ledger** | Pseudo-anonimato (chiavi S/P), ridondanza, authenticity, verifiability, immutability |
-| **DLT vs blockchain** | Ogni blockchain è una DLT; non ogni DLT è una catena (IOTA = DAG) |
+| **DLT vs blockchain** | Ogni blockchain è una DLT; non ogni DLT è una catena (IOTA, Nano = DAG) |
 | **Content-based addressing** | Il file si identifica con l'hash del contenuto (IPFS, CID) |
 | **Smart contract** | Codice sul ledger, immutabile ed eseguito automaticamente; "code as law" (Boucher) |
 | **Redeploy / proxy** | Non si modifica sul posto: nuovo indirizzo o proxy aggiornabile (che reintroduce fiducia) |
@@ -439,7 +448,7 @@ In un vero smart contract `caller` corrisponde a `msg.sender`, cioè l'indirizzo
 8. No: ha Bitcoin Script, non Turing-completo, per esprimere condizioni di spesa, non logica applicativa generale.
 9. Il PoW richiede calcolo continuo dei miner; il PoS no. Slide: Bitcoin 360–3.700 kWh/tx, Ethereum PoS 18–557 Wh/tx.
 10. Il tempo per considerare una transazione sicura: circa 6 blocchi da ~10 minuti.
-11. DB unico: chi lo gestisce, manomissione, accesso dei partner marginali, revoca, sistemi diversi. Tanti DB: non si leggono tra loro, non ci si fida dei dati, audit difficile.
+11. DB unico: chi lo gestisce, manomissione, accesso dei partner marginali, revoca, sistemi diversi (neutralità, IAM, eterogeneità). Tanti DB: non si leggono tra loro, non ci si fida dei dati, audit difficile.
 12. S<sub>x</sub> per firmare ciò che X scrive (solo X può averlo scritto); P<sub>x</sub> per verificare la firma.
 13. A, che concede i permessi ad A1, B1–B3, C e può revocarli in ogni momento. La scrittura è distribuita, ma la governance resta in mano ad A: rete permissioned.
 14. Prodotti con capacità di calcolo hanno una propria coppia di chiavi e registrano statistiche, anomalie e richieste di manutenzione.
@@ -465,7 +474,7 @@ In un vero smart contract `caller` corrisponde a `msg.sender`, cioè l'indirizzo
 - Regolamento (UE) 2016/679 (GDPR), artt. 13–22
 - EDPB, *Guidelines 02/2025 on processing of personal data through blockchain technologies*
 
-> Nota: la chiusura di TradeLens, gli articoli GDPR diversi da 15–17, le linee guida EDPB, il pattern proxy, il crypto-shredding, gli hash salati e il Digital Product Passport vengono dalla letteratura generale, non dalle slide. Il titolo esatto del documento Boucher va verificato prima di citarlo.
+> Nota: la chiusura di TradeLens, gli articoli GDPR diversi da 15–17, le linee guida EDPB, il pattern proxy, il crypto-shredding, gli hash salati, Nano, R3 Corda, Quorum e il Digital Product Passport vengono dalla letteratura generale, non dalle slide. Il titolo esatto del documento Boucher va verificato prima di citarlo.
 
 ---
 
