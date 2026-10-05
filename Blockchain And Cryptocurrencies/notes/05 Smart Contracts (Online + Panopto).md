@@ -40,7 +40,7 @@ Oggi: **programmi definiti dall'utente che girano sopra una blockchain**.
 
 ## Flessibilità
 
-<img width="862" height="462" alt="image" src="https://github.com/user-attachments/assets/9ebbd44e-a8b5-4aeb-8d84-c344695fd68c" />
+<img width="40%" height="<img width="40%" height="462" alt="image" src="https://github.com/user-attachments/assets/9ebbd44e-a8b5-4aeb-8d84-c344695fd68c" />" alt="image" src="https://github.com/user-attachments/assets/9ebbd44e-a8b5-4aeb-8d84-c344695fd68c" />
 
 - Uno smart contract può essere scritto in un linguaggio **Turing completo**
   - **Non in Bitcoin** (Script volutamente limitato)
