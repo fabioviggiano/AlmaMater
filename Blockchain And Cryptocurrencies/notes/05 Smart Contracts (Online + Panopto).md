@@ -106,12 +106,33 @@ Spettro dal semplice al complesso:
 | | Catena | Chi controlla il back-end |
 |---|---|---|
 | **Sito convenzionale** | Front End → **API** → **Database** | il gestore del sito (server e DB centralizzati) |
-| **Sito "dApp empowered"** | Front End → **Smart Contract** → **Blockchain** | nessuno in particolare: logica e dati sono on-chain |
+| **Sito "dApp empowered"** | Front End → **Smart Contract** → **Blockchain** | nessun gestore unico: logica e dati sono on-chain |
 
 - Il front end resta simile: cambia ciò che c'è dietro
 - Lo **smart contract prende il posto delle API** (la logica applicativa)
 - La **blockchain prende il posto del database** (lo stato), con dati replicati, trasparenti e non modificabili dal singolo gestore
 - Prezzo da pagare: ogni scrittura è una transazione, quindi costa e non è istantanea
+
+### Architettura Web 2.0 vs Web 3.0
+
+<!-- screenshot "Web site vs Dapp" (architettura Web 2.0 / Web 3.0) -->
+
+| Livello | Web 2.0 | ≈ | Web 3.0 |
+|---|---|---|---|
+| Client | Browser | | Browser + **Wallet** (es. MetaMask) |
+| Frontend | HTML / JS / CSS | ≈ | HTML / JS / CSS |
+| Accesso alla rete | — | | **Node provider** (Infura, QuickNode, Alchemy, ...) |
+| Logica | Backend (Node, Python, Java, Ruby, ...) | ≈ | Smart contract (Solidity, Vyper, Rust, ...) |
+| Dati | Storage (Mongo, Firebase, ...) | ≈ | Blockchain (Ethereum, Polygon, Solana, ...) |
+
+Due elementi nuovi rispetto al Web 2.0:
+
+- **Wallet**: custodisce le chiavi dell'utente e **firma le transazioni**; l'identità è l'indirizzo, non un account username/password sul server
+- **Node provider**: il frontend non parla direttamente con la blockchain, ma passa da un nodo (gestito da un provider) che legge lo stato e inoltra le transazioni
+
+> Attenzione: wallet e node provider sono spesso servizi centralizzati, quindi nella pratica una DApp non è decentralizzata al 100%.
+
+*Fonte figura: Towards Data Science, "Decoding Ethereum smart contract data"*
 
 ## Esempio: licenza (contratto legale)
 
