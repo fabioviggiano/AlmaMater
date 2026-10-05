@@ -31,6 +31,11 @@ Flessibilità
 
 Solidity
 
+<img width="905" height="618" alt="image" src="https://github.com/user-attachments/assets/2dfbfeaa-4831-4dc9-a947-5493481cc133" />
+
+<img width="905" height="566" alt="image" src="https://github.com/user-attachments/assets/a6ebec72-9815-4cdd-bafb-1b6e60b08713" />
+
+
 ## [Titolo slide 2]
 
 - 
