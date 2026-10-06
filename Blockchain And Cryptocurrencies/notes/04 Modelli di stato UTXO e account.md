@@ -1,8 +1,8 @@
-# Capitolo 4 — Modelli di stato (UTXO vs account) e Bitcoin
+# Capitolo 4 — Modelli di stato, Bitcoin e stablecoin
 
-*Lezione 4 (02/10/2026) · Slide "03.01 – Cryptocurrencies": sezione "Taxonomy of Crypto Platforms" (slide 3–13, anticipata a fine della lezione precedente) e prima parte su Bitcoin. [Registrazione Panopto](https://unibo.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=c71434dc-97a7-4bf1-9658-b4d700985bcb)*
+*Lezione 4 (02/10/2026) · Slide "03.01 – Cryptocurrencies": sezione "Taxonomy of Crypto Platforms" (slide 3–13, anticipata a fine della lezione precedente), Bitcoin, wallet, exchange, stablecoin e caso Terra. [Registrazione Panopto](https://unibo.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=c71434dc-97a7-4bf1-9658-b4d700985bcb)*
 
-> 🚧 **Capitolo in corso.** Copre la lezione fino alla slide *Collateralization Ratio* inclusa. Vedi la nota in fondo.
+> 🚧 **Capitolo in corso.** Copre la lezione fino alla slide *Terra Classic USD* (caso Terra) inclusa. Vedi la nota in fondo.
 
 [← Indice](README.md)
 
@@ -297,7 +297,7 @@ La slide le dispone su un **triangolo**: tre tipi ai vertici, e ogni lato indica
 > - Nessun tipo ha tutte e tre le proprietà: è un altro **trilemma**, simile a quello del Capitolo 1.
 > - Le **fiat-collateralized** sono le più stabili, ma reintroducono un emittente centralizzato: può congelare indirizzi e la stabilità dipende dalle sue riserve.
 > - Le **crypto-collateralized** sono decentralizzate ma poco efficienti: servono garanzie superiori al valore emesso (*sovra-collateralizzazione*), perché il collaterale è volatile.
-> - Le **algoritmiche** sono efficienti e decentralizzate, ma fragili: **Terra (UST)** ha perso il peg ed è collassata nel 2022.
+> - Le **algoritmiche** sono efficienti e decentralizzate, ma fragili: **Terra (UST)** ha perso il peg ed è collassata nel 2022 (vedi il caso di studio più avanti).
 > - Digix in realtà è agganciata all'**oro**: è per questo che il vertice si chiama *fiat/asset*.
 
 #### Fiat-asset collateralized currency
@@ -365,7 +365,7 @@ Le slide (animate) mostrano tre operazioni.
 
 <img width="1412" height="1001" alt="image" src="https://github.com/user-attachments/assets/0f2809ef-1dbb-4849-990c-08023d7375e1" />
 
-**La soluzione: bloccare più garanzia di quanto si emette.** Le crypto-stablecoin sono **sovra-collateralizzate** (*over-collateralized*): per ogni stablecoin c'è in riserva **più di una moneta** di cripto.
+**La soluzione: bloccare più garanzia di quanto si emette.** Le stablecoin crypto-collateralized sono **sovra-collateralizzate** (*over-collateralized*): per ogni stablecoin c'è in riserva **più di una moneta** di cripto.
 
 **In parole semplici.** Il *collateralization ratio* è il rapporto tra **quanto vale la garanzia bloccata** e **quanto valgono le stablecoin emesse**:
 
@@ -382,7 +382,7 @@ collateralization ratio = valore della garanzia / valore delle stablecoin emesse
 
 Il margine in più fa da **cuscinetto**: assorbe i cali di prezzo della garanzia, così ogni stablecoin resta coperta da almeno 1 $.
 
-**Lettura della slide.** A sinistra il caso fiat: 4 dollari in banca per 4 token, basta l'**1:1** perché il dollaro non oscilla rispetto a sé stesso. A destra il caso cripto: **6 ETH** nello smart contract per **4 stablecoin**, cioè un ratio del **150%**.
+**Lettura della slide.** A sinistra il caso fiat: la garanzia sta in banca e basta l'**1:1** perché il dollaro non oscilla rispetto a sé stesso. A destra il caso cripto: **6 ETH** nello smart contract per **4 stablecoin**, cioè un ratio del **150%**.
 
 > 💡 **Regola della slide:** *"The more volatile the crypto, the higher this ratio should be"*. Più la garanzia oscilla, più grande deve essere il cuscinetto.
 
@@ -391,6 +391,108 @@ Il margine in più fa da **cuscinetto**: assorbe i cali di prezzo della garanzia
 > ⚠️ **Nota** (sintesi mia, dalla letteratura).
 > - Se la garanzia scende troppo e il ratio va sotto una soglia minima, lo smart contract **liquida** la posizione: vende la garanzia per ripagare le stablecoin. È il meccanismo di **MakerDAO (DAI)**.
 > - Il prezzo da pagare è il **capitale bloccato**: per 1.000 $ di stablecoin ne immobilizzi 1.500. Ecco perché, nel triangolo, le crypto-collateralized **non** stanno sul lato *capital-efficient*.
+
+#### Non-collateralized currency
+
+**Obiettivo:** mantenere la stabilità **senza una riserva di garanzia** (*without relying on a collateral reserve*).
+
+**Il modello di riferimento è la banca centrale.** Le valute fiat ci riescono perché le **banche centrali**, in quanto **autorità monetaria**, controllano l'offerta di moneta (*money supply*):
+
+- il valore della moneta è determinato da **domanda e offerta**:
+  - più domanda → il prezzo della valuta **sale**;
+  - meno domanda → il prezzo **scende**;
+- la banca centrale reagisce:
+  - se il prezzo sale, **stampa nuova moneta** (più offerta → prezzo giù);
+  - se il prezzo scende, **compra e distrugge moneta** (meno offerta → prezzo su).
+
+Le stablecoin non-collateralized fanno la stessa cosa con un **algoritmo in uno smart contract** al posto della banca centrale: se il token vale più di 1 $ ne emettono altri, se vale meno ne ritirano dalla circolazione. Per questo si chiamano **algoritmiche**.
+
+**Pro** (slide *Pros*):
+
+- **Nessuna garanzia** richiesta.
+- La forma **più decentralizzata e indipendente**.
+- **Non legata** a nessuna valuta fiat né a un'altra criptovaluta.
+- **Nessun incentivo a inflazionare o deflazionare** la valuta: l'algoritmo punta solo alla **stabilità**.
+
+> ⚠️ **Nota di rigore** (sintesi mia). Una banca centrale può difendere la propria valuta anche con riserve, tassi e poteri legali; l'algoritmo ha solo la leva dell'offerta. Se la fiducia crolla e tutti vendono, il meccanismo può avvitarsi su sé stesso: è quello che è successo a **Terra (UST)** nel 2022.
+
+#### Caso di studio: Terra, UST e Luna
+
+**L'ecosistema Terra.** Il Prof. lo presenta come un ecosistema **molto attivo e interessante**, con diverse stablecoin (**UST**, la principale, più altre come Altered e Soluna). La mappa *Terra DeFi Ecosystem* (tweet di @Terrians_, 4 marzo 2022) mostra decine di progetti divisi per categoria: lending, derivati, DEX/liquidità, wallet, stablecoin, gambling, social, privacy, saving/payment, tooling, yield farming, assicurazioni, charity, bridge e altro.
+
+**Luna: il token di staking di Terra.** Viene usato per scopi diversi:
+
+- **regolare le stablecoin**: l'offerta di UST si aggiusta **coniando o bruciando Luna**, quindi **Luna assorbe la volatilità** di Terra;
+- **pagare le ricompense di staking** a delegatori e validatori;
+- **governance**: ogni decisione richiede di **bloccare prima dei Luna**.
+
+**USD Luna e UST: il meccanismo di stabilità.** In qualsiasi momento si può scambiare **1 USD di Luna con 1 UST** e viceversa:
+
+| Scambio | Cosa succede |
+|---|---|
+| 1 USD di Luna → 1 UST | si **bruciano** Luna per 1 USD, si **conia** 1 UST |
+| 1 UST → 1 USD di Luna | si **brucia** 1 UST, si **coniano** Luna per 1 USD |
+
+> 💡 **Perché tiene il prezzo a 1 $** (sintesi mia). È un incentivo all'**arbitraggio**:
+> - se UST vale **0,98 $**, conviene comprarlo e convertirlo in 1 $ di Luna: guadagno 0,02 $, e gli UST bruciati **riducono l'offerta**, facendo risalire il prezzo;
+> - se UST vale **1,02 $**, conviene bruciare 1 $ di Luna per coniare 1 UST e venderlo: gli UST nuovi **aumentano l'offerta**, facendo scendere il prezzo.
+>
+> È la "banca centrale algoritmica" vista sopra: Luna fa da cuscinetto al posto delle riserve.
+
+**Perché UST era così richiesto: l'ecosistema.** La slide *"To understand why, we should probably look at the Terra ecosystem"* elenca cosa si poteva fare con Terra: **lending, assicurazioni, investimenti, cause benefiche** e altro.
+
+**Anchor**, il progetto principale:
+
+- un **conto di risparmio DeFi** che funziona come un normale conto bancario: si possono **chiedere prestiti** e **depositare risparmi** per ottenere un rendimento;
+- offriva un **rendimento del 20% annuo (APY)** a chi depositava UST;
+- il rendimento veniva dagli **interessi pagati da chi prendeva in prestito**.
+
+**Anchor Ponzinomics** (slide):
+
+- la grande **domanda di UST era trainata dall'APY di Anchor**: la gente **comprava UST per parcheggiarli in Anchor**;
+- rendimenti **artificiali, non sostenibili**;
+- citazione da un articolo di *Wired*: *"When you pay money for nothing, and stash your nothing in a protocol with the expectation that it will give you a 20% yield — all you end up with is 20% of nothing."*
+
+> 💡 **Lettura** (sintesi mia). UST non aveva valore proprio: la domanda veniva quasi tutta dal rendimento promesso. Il termine *Ponzinomics* indica proprio questo, un sistema che regge finché entrano nuovi depositi.
+
+> ⚠️ **Nota** (sintesi mia). Un 20% stabile su una stablecoin non era sostenibile con i soli interessi dei prestiti e veniva in parte sussidiato.
+
+**La caduta** (slide *The fall*):
+
+- all'improvviso, **enormi prelievi di UST da Anchor**;
+- c'è chi parla di **complotto** (articoli di Decrypt, Forbes, Cryptonews, CNET);
+- in slide i tweet di **Do Kwon**, cofondatore di Terra (14 maggio 2022): si dice *"heartbroken"* per il danno causato dal *depeg* e ammette che *"$UST in its current form will not be that money"*.
+
+**La caduta di UST** (slide *The fall of UST*):
+
+| Data | Cosa succede |
+|---|---|
+| **7 maggio 2022** | Oltre **2 miliardi di $** di UST vengono ritirati (*unstaked*) da Anchor; centinaia di milioni vengono venduti subito |
+| | Il prezzo scende a **0,91 $** |
+| | I trader provano l'**arbitraggio**: danno 0,90 $ di UST in cambio di 1 $ di Luna |
+| | **Ma** non funziona per tutti: si possono bruciare per Luna **solo 100 milioni di $ di UST al giorno** |
+| **26 maggio 2022** | UST vale circa **0,086 €** |
+
+**Peggio per chi aveva Luna** (slide *Worse for Luna Holders*):
+
+- tweet di Watcher.Guru (12 maggio 2022): una settimana prima Luna valeva **82,55 $**, ora **0,01 $**;
+- **26 maggio 2022**: Luna vale circa **0,000146 €**.
+
+> 💡 **Perché il meccanismo si è rotto** (sintesi mia, collegata al §"USD Luna e UST").
+> - L'arbitraggio funziona solo se è abbastanza **veloce**: con il tetto di 100 milioni al giorno, a fronte di miliardi venduti, non riusciva ad assorbire le vendite e il prezzo restava sotto 1 $.
+> - Ogni UST bruciato **conia nuovi Luna**. Più UST venivano convertiti, più Luna entravano in circolazione, e il prezzo di Luna crollava.
+> - Con Luna che vale sempre meno, per "1 $ di Luna" servono sempre più Luna: è la **spirale della morte** (*death spiral*). Il cuscinetto che doveva assorbire la volatilità (Luna) è crollato insieme a ciò che doveva proteggere (UST).
+
+**Un attacco speculativo?** (slide *A Speculation Attack?*). Alcuni ipotizzano questo scenario:
+
+1. un attaccante voleva **rompere UST** per guadagnare **scommettendo sul ribasso di Bitcoin** (*shorting*: vendere prima con l'intenzione di ricomprare a un prezzo più basso);
+2. gli attaccanti avrebbero accumulato una **grande posizione in UST** e poi ritirato **2 miliardi di $ in un colpo solo**, causando il *depeg*;
+3. a quel punto il team di Terra avrebbe dovuto **vendere parte delle sue riserve in Bitcoin** per ripristinare il peg;
+4. gli investitori, vedendo UST perdere valore, avrebbero venduto ancora, costringendo a vendere altri Bitcoin e aumentando la **pressione al ribasso** sul prezzo di BTC, a vantaggio di chi aveva scommesso sul ribasso.
+
+> ⚠️ **Nota** (sintesi mia). È un'ipotesi ("some suppose"), non un fatto accertato. Mostra però il punto debole del modello: una stablecoin algoritmica regge sulla **fiducia**, e un'uscita coordinata e improvvisa può innescare un panico che si autoalimenta (come una corsa agli sportelli, *bank run*). Il riferimento alle riserve in Bitcoin indica che Terra aveva comunque costituito una riserva di emergenza, non sufficiente.
+
+**Dopo** (slide *Terra Classic USD (3 months)*): il grafico CoinMarketCap fino a ottobre 2022 mostra UST, ribattezzato *Terra Classic USD*, fermo tra **0,02 e 0,065 $**, lontanissimo dal peg di 1 $.
 
 
 ---
@@ -436,6 +538,20 @@ Il margine in più fa da **cuscinetto**: assorbe i cali di prezzo della garanzia
 
 - 💡 **Punto su cui insiste il Prof.:** l'attenzione va spostata dal mercato finanziario al **valore sociale** di Bitcoin. La parte davvero interessante è il protocollo.
 - **Impatto energetico**: crescita dei data center e della potenza di calcolo per il mining, con conseguente aumento del consumo di energia negli ultimi anni (vedi i Wh/tx nel Capitolo 2, §1.7).
+
+### 3.5 Confronto tra i tipi di stablecoin
+
+| | **Fiat/asset-collateralized** | **Crypto-collateralized** | **Non-collateralized (algoritmiche)** |
+|---|---|---|---|
+| **Garanzia** | Valuta o bene reale in banca, 1:1 | Cripto in uno smart contract, > 100% | Nessuna |
+| **Chi la custodisce** | Un custode centralizzato | Lo smart contract | Nessuno: un algoritmo regola l'offerta |
+| **Stabilità** | Massima (100%) | Dipende dal ratio e dalla volatilità della garanzia | Regge sulla fiducia e sull'arbitraggio |
+| **Decentralizzazione** | Bassa | Alta | Massima |
+| **Efficienza del capitale** | Alta (1:1) | Bassa (capitale bloccato) | Alta |
+| **Rischio principale** | Riserve insufficienti, custode, regolamentazione | Crollo della garanzia, liquidazioni | Perdita di fiducia → death spiral |
+| **Esempi in slide** | Tether, TrueUSD, Digix | MakerDAO, bitUSD | Basis, Carbon, Terra (UST) |
+
+> 💡 **Lettura da esame** (sintesi mia). Ogni tipo rinuncia a una delle tre proprietà del triangolo: la fiat rinuncia alla decentralizzazione, la crypto all'efficienza del capitale, l'algoritmica alla garanzia, e quindi alla robustezza. Terra mostra cosa succede quando l'unica difesa è la fiducia.
 
 ---
 
@@ -493,6 +609,23 @@ lock("alice")
 # pay("acct2", 1) -> RuntimeError: abort
 ```
 
+### 4.3 Stablecoin algoritmica: la death spiral di UST/Luna (toy)
+
+```python
+def swap_ust_for_luna(ust, luna_price):
+    """Brucia `ust` UST e conia Luna per lo stesso valore in dollari (1 UST = 1 $)."""
+    return ust / luna_price            # Luna coniati
+
+luna_supply, luna_price = 350e6, 80.0  # ordini di grandezza indicativi
+for giorno in range(1, 6):
+    coniati = swap_ust_for_luna(100e6, luna_price)   # tetto: 100 mln $ di UST al giorno
+    luna_supply += coniati
+    luna_price *= 0.3                  # il mercato vende Luna per panico (ipotesi)
+    print(f"giorno {giorno}: +{coniati:,.0f} Luna, supply {luna_supply:,.0f}, prezzo {luna_price:.4f} $")
+```
+
+Più il prezzo di Luna scende, più Luna vanno coniati per ogni UST bruciato: l'offerta esplode e il prezzo crolla ancora. I numeri sono inventati; serve solo a vedere il meccanismo di retroazione.
+
 ---
 
 ## 5. Active Recall
@@ -528,6 +661,10 @@ lock("alice")
 | **Fiat-collateralized** | 1 USD in banca = 1 token; mint al deposito, transfer on-chain, burn al prelievo; stabile ma centralizzata, servono audit |
 | **Crypto-collateralized** | Garanzia in cripto dentro uno smart contract; con 1:1 sarebbe volatile quanto la garanzia |
 | **Collateralization ratio** | Valore garanzia / valore stablecoin emesse; > 100% (es. 150%) come cuscinetto; più volatile la cripto, più alto il ratio |
+| **Non-collateralized** | Stabilità senza riserva: un algoritmo emette o distrugge token come una banca centrale; più decentralizzata e indipendente |
+| **Terra / Luna / UST** | UST algoritmica; Luna token di staking che assorbe la volatilità (1 $ di Luna ↔ 1 UST con burn/mint), paga lo staking e serve per la governance |
+| **Caduta di Terra (maggio 2022)** | 2 mld $ ritirati da Anchor, UST a 0,91 $; arbitraggio limitato a 100 mln $/giorno; Luna coniati in massa → death spiral (Luna da 82 $ a 0,01 $); ipotesi di attacco speculativo |
+| **Anchor** | Conto di risparmio DeFi su Terra: prestiti e depositi, 20% APY sugli UST; domanda di UST trainata dall'APY, rendimenti artificiali e insostenibili (*Ponzinomics*) |
 
 ### 5.2 Domande e risposte
 
@@ -560,6 +697,13 @@ lock("alice")
 27. Descrivi deposito, trasferimento e prelievo di una stablecoin fiat-collateralized. Cosa fanno mint e burn?
 28. Pro e contro delle fiat-collateralized.
 29. Perché una stablecoin crypto-collateralized 1:1 non è stabile? Cos'è il collateralization ratio e da cosa dipende?
+30. Come mantiene la stabilità una stablecoin non-collateralized? Che analogia fa la slide con le banche centrali?
+31. A cosa serve Luna nell'ecosistema Terra?
+32. Spiega lo scambio 1 USD di Luna ↔ 1 UST e perché dovrebbe tenere UST a 1 $.
+33. Cos'era Anchor, da dove veniva il suo rendimento e perché la slide parla di *Ponzinomics*?
+34. Ricostruisci la caduta di UST e Luna nel maggio 2022. Perché l'arbitraggio non ha salvato il peg?
+35. In cosa consiste l'ipotesi dell'attacco speculativo?
+36. Confronta i tre tipi di stablecoin per garanzia, stabilità, decentralizzazione ed efficienza del capitale.
 
 <details>
 <summary><b>Tracce di risposta</b></summary>
@@ -593,6 +737,13 @@ lock("alice")
 27. Deposito: l'utente versa USD al custode, che fa mint dello stesso numero di token. Trasferimento: i token passano tra utenti on-chain, senza banca. Prelievo: il custode restituisce gli USD e fa burn dei token (es. Bob ritira 60 USD → burn(Bob, 60), riserva e token passano da 135 a 75). Regola: USD in riserva = token in circolazione.
 28. Pro: tutto digitale, semplice, prezzo stabile al 100%. Contro: centralizzata (custode fidato), servono audit sulle riserve, molto regolamentata, conversione in fiat lenta e costosa.
 29. Con 1:1 la stablecoin vale quanto la garanzia, quindi segue la sua volatilità. Il ratio è valore della garanzia / valore delle stablecoin: si tiene sopra il 100% (es. 6 ETH per 4 stablecoin = 150%) così un calo della garanzia non scopre i token. Più la cripto è volatile, più il ratio deve essere alto.
+30. Senza riserva, regolando l'offerta: come una banca centrale stampa moneta quando il prezzo sale e la ritira quando scende, un algoritmo emette o distrugge token per tenere il prezzo a 1 $. Pro: nessuna garanzia, la più decentralizzata e indipendente, non legata a fiat o cripto, nessun incentivo a inflazionare o deflazionare.
+31. È il token di staking: l'offerta di UST si regola coniando/bruciando Luna (che assorbe la volatilità), paga le ricompense di staking a delegatori e validatori, e va bloccato per partecipare alla governance.
+32. Si può sempre bruciare 1 $ di Luna per coniare 1 UST, o bruciare 1 UST per coniare 1 $ di Luna. Se UST < 1 $ conviene comprarlo e convertirlo in Luna (l'offerta di UST cala, il prezzo sale); se UST > 1 $ conviene coniarlo e venderlo (l'offerta sale, il prezzo scende): arbitraggio.
+33. Un conto di risparmio DeFi: depositi e prestiti in UST, con 20% APY per chi depositava, pagato dagli interessi dei debitori. La domanda di UST veniva quasi solo da lì: si compravano UST per parcheggiarli in Anchor. Rendimenti artificiali e insostenibili (*Ponzinomics*): "20% of nothing".
+34. Il 7 maggio 2022 oltre 2 mld $ di UST escono da Anchor e vengono in parte venduti: UST scende a 0,91 $. L'arbitraggio (0,90 $ di UST → 1 $ di Luna) era limitato a 100 mln $ al giorno, troppo poco; e ogni UST bruciato coniava nuovi Luna, facendone crollare il prezzo (da 82,55 $ a 0,01 $ in una settimana): death spiral. A fine maggio UST ~0,086 €, Luna ~0,000146 €.
+35. Qualcuno avrebbe accumulato UST e ritirato 2 mld $ in un colpo per rompere il peg, costringendo Terra a vendere le sue riserve in BTC; le vendite a catena avrebbero fatto scendere Bitcoin, facendo guadagnare chi aveva aperto posizioni short su BTC. È un'ipotesi, non un fatto accertato.
+36. Fiat: garanzia reale 1:1 in banca, massima stabilità ed efficienza, poco decentralizzata. Crypto: garanzia cripto > 100% in smart contract, decentralizzata ma capitale bloccato. Algoritmica: nessuna garanzia, massima decentralizzazione ed efficienza, ma fragile (Terra). Ognuna rinuncia a una proprietà del triangolo.
 
 </details>
 
@@ -600,9 +751,9 @@ lock("alice")
 
 ## 🚧 Da completare
 
-**Riprendere dopo la slide *Collateralization Ratio*** ([registrazione Panopto](https://unibo.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=c71434dc-97a7-4bf1-9658-b4d700985bcb)). Restano le stablecoin non-collateralized (algoritmiche) e il resto della slide *03.01 – Cryptocurrencies*.
+**Riprendere dopo la slide *Terra Classic USD (3 months)*** ([registrazione Panopto](https://unibo.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=c71434dc-97a7-4bf1-9658-b4d700985bcb)). Restano i contro delle non-collateralized (slide non ancora vista) e il resto della slide *03.01 – Cryptocurrencies*.
 
-> Nota: nonce, privacy degli UTXO, eUTXO di Cardano, il modello a program/account di Solana, Lightning Network, la seed phrase, hot/cold wallet, i dettagli su Mt.Gox, Cipro e Argentina, i dettagli sulle stablecoin (liquidazione in MakerDAO, collasso di Terra, Digix legata all'oro), l'esempio numerico sul collateralization ratio e l'analogia del pegno vengono dalla letteratura generale, non dalle slide.
+> Nota: nonce, privacy degli UTXO, eUTXO di Cardano, il modello a program/account di Solana, Lightning Network, la seed phrase, hot/cold wallet, i dettagli su Mt.Gox, Cipro e Argentina, i dettagli sulle stablecoin (liquidazione in MakerDAO, collasso di Terra, Digix legata all'oro), l'esempio numerico sul collateralization ratio, l'analogia del pegno la nota sui limiti dell'analogia con la banca centrale, l'esempio di arbitraggio UST/Luna, la spiegazione della death spiral, il paragone con il bank run, la tabella di confronto §3.5 e il codice §4.3 vengono dalla letteratura generale, non dalle slide.
 
 ---
 
