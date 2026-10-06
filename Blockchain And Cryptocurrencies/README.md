@@ -6,6 +6,34 @@ Scheda informativa e dettagli dell'insegnamento per l'Anno Accademico 2026/2027 
 
 ---
 
+## 📒 Libro di Studio: dove trovare gli appunti
+
+Gli appunti ragionati del corso, un capitolo per lezione, stanno nella cartella **[`notes/`](notes/)**. Si parte dall'**[indice dei capitoli](notes/README.md)**, che viene aggiornato a ogni nuova lezione.
+
+| Cap. | Titolo | Lezione |
+|---|---|---|
+| 1 | [Il paradigma della decentralizzazione](notes/01%20Il%20paradigma%20della%20decentralizzazione.md) | 21/09/2026 |
+| 2 | [DLT, smart contract e casi d'uso](notes/02%20DLT%2C%20smart%20contract%20e%20use%20case.md) | 25/09/2026 |
+| 3 | [Smart Transportation: dati personali su DFS e DLT](notes/03%20Smart%20Transportation.md) | 28/09/2026 |
+| 4 | [Criptovalute: modelli di stato, Bitcoin e stablecoin](notes/04%20Modelli%20di%20stato%20UTXO%20e%20account.md) | 02/10/2026 |
+| 5 | [Smart contract e token](notes/05%20Smart%20Contracts%20%28Online%20%2B%20Panopto%29.md) 🚧 bozza | 05/10/2026 |
+| … | I capitoli successivi si aggiungono in [`notes/`](notes/README.md) | — |
+
+Ogni capitolo (4–5 pagine) ha data, macro tema, teoria, esempi e codice, e chiude con quadro di riepilogo, parole chiave e domande.
+
+### Struttura della cartella
+
+| Cartella | Contenuto |
+|---|---|
+| [`notes/`](notes/README.md) | **Libro di Studio**: capitoli ragionati e indice |
+| [`Slide/`](Slide/) | Slide del corso (da Virtuale) |
+| [`cheatsheets/`](cheatsheets/) | Schemi veloci per il ripasso attivo |
+| [`exercises/`](exercises/) | Esercizi |
+| [`book/`](book/) | Materiale dal testo di riferimento |
+| [`project/`](project/) | Project work (`docs/` e `src/`) |
+
+---
+
 ## 📌 Informazioni Generali
 
 | Voce | Dettaglio |

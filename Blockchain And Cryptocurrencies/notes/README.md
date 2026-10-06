@@ -10,33 +10,33 @@ Ogni capitolo corrisponde a una lezione e incrocia tre fonti: gli appunti presi 
 
 ### Capitoli ragionati
 
-| Cap. | Titolo | Lezione | Slide principali | Appunti grezzi |
+| Cap. | Titolo | Lezione | Macro tema | Slide principali |
 |---|---|---|---|---|
-| 1 | [Il paradigma della decentralizzazione](<01 Il paradigma della decentralizzazione.md>) | 1 · 21/09/2026 | 01, 02, 07.a, 08 | [Lezione 1](<2026.09.21 - Lezione 1 - Il paradigma della centralizzazione- Appunti da Panopoto.md>) |
-| 2 | [DLT, smart contract e casi d'uso](<02 DLT, smart contract e use case.md>) | 2 (2.1 + 2.2) · 25/09/2026 | 02 | [2.1](<2026.09.25 - Lezione 2.1 - Smart Contracts - Appunti da Panopoto.md>) · [2.2](<2026.09.25 - Lezione 2.2 - Smart Contracts - Somo use cases - Appunti da Panopoto.md>) |
-| 3 | [Smart Transportation: dati personali su DFS e DLT](<03 Smart Transportation.md>) | 3 · 28/09/2026 | 03.00 (Mobi talk) | [Lezione 3](<2026.09.28 - Lezione 3 -  Supply Chain e Tracciabilità - Appunti da Panopoto.md>) |
-| 4 | [Criptovalute: modelli di stato, Bitcoin e stablecoin](<04 Modelli di stato UTXO e account.md>) | 4 · 02/10/2026 | 03.01 | [Lezione 4](<2026.10.02 - Lezione 4 - Criptocurrencies - Appunti da Panopoto.md>) |
-| 5 | Smart Contracts | 5 | 05.10 | [Lezione 5](<2026.10.05 - Lezione 5.md>) |
- 
-5  (no presence friday)
-12 e 15
-19 (no presence friday)
+| 1 | [Il paradigma della decentralizzazione](01%20Il%20paradigma%20della%20decentralizzazione.md) | 1 · lun 21/09/2026 | I — Problem statement e preliminari | 01, 02, 07.a, 08 |
+| 2 | [DLT, smart contract e casi d'uso](02%20DLT%2C%20smart%20contract%20e%20use%20case.md) | 2 (2.1 + 2.2) · ven 25/09/2026 | I–II — Introduzione e prime applicazioni | 02 |
+| 3 | [Smart Transportation: dati personali su DFS e DLT](03%20Smart%20Transportation.md) | 3 · lun 28/09/2026 | II — Applicazioni | 03.00 (Mobi talk) |
+| 4 | [Criptovalute: modelli di stato, Bitcoin e stablecoin](04%20Modelli%20di%20stato%20UTXO%20e%20account.md) | 4 · ven 02/10/2026 | III — Criptovalute | 03.01 |
+| 5 | [Smart contract e token](05%20Smart%20Contracts%20%28Online%20%2B%20Panopto%29.md) 🚧 *bozza, da completare* | 5 · lun 05/10/2026 | IV — Smart contract | 04.00, 04.01 |
 
+I capitoli 1–4 sono nella versione revisionata (formato uniforme, verificati sulle slide). Il 5 è ancora una trascrizione in corso.
+
+> Gli appunti grezzi da Panopto (`AAAA.MM.GG - Lezione N - ... .md`) non sono ancora caricati nel repository: per ora la fonte di verifica dei capitoli sono le slide.
+
+**Note di calendario (ottobre):** 5 *(no presence friday)* · 12 e 15 · 19 *(no presence friday)*.
 
 ### Programma indicativo delle prossime lezioni
 
-| Lezione | Argomento previsto | Slide |
-|---|---|---|
-| 02/10/2026 | Bitcoin, wallet, exchange e stablecoin | 03.01 |
-| — | Token: ERC-20, NFT, ICO, DAO | 04.01 |
-| — | Ethereum: account, transazioni, gas, EVM | 05 |
-| — | Solidity e Remix | 06.01 |
-| — | DeFi: swap, AMM, lending, bridge | 06.00 |
-| — | DeFi Security | 9.1 |
-| — | Strumenti per DLT, Merkle tree, DHT | 07, 07.a |
-| — | Struttura della blockchain e consenso (PoW, PoS, BFT) | 08, 08.00 |
+| Argomento previsto | Slide |
+|---|---|
+| Token: ERC-20, NFT, ICO, DAO | 04.01 |
+| Ethereum: account, transazioni, gas, EVM | 05 |
+| Solidity e Remix | 06.01 |
+| DeFi: swap, AMM, lending, bridge | 06.00 |
+| DeFi Security | 9.1 |
+| Strumenti per DLT, Merkle tree, DHT | 07, 07.a |
+| Struttura della blockchain e consenso (PoW, PoS, BFT) | 08, 08.00 |
 
-I titoli e le date future sono indicativi: i capitoli si aggiungono man mano, uno per lezione.
+Titoli e ordine sono indicativi: si aggiunge un capitolo per lezione, con il prossimo numero libero (`06 …`, `07 …`).
 
 ---
 
@@ -90,14 +90,15 @@ Narayanan, Bonneau, Felten, Miller, Goldfeder, [*Bitcoin and Cryptocurrency Tech
 
 ---
 
-## Struttura del repository
+## Struttura della cartella
 
 ```
 notes/
-├── README.md                                   ← copertina e indice
-├── NN Titolo del capitolo.md                   ← capitoli ragionati (uno per lezione)
-├── AAAA.MM.GG - Lezione N - ... .md            ← appunti grezzi (fonte dei capitoli)
-└── images/                                     ← immagini delle slide
+├── README.md                 ← questa pagina: copertina e indice
+├── NN Titolo del capitolo.md ← capitoli ragionati, uno per lezione (01, 02, …)
+└── images/                   ← immagini delle slide
 ```
 
-Nei link ai file con spazi usa le parentesi angolari: `[Titolo](<NN Titolo del capitolo.md>)`.
+**Per aggiungere un capitolo:** crea `NN Titolo.md` con la stessa struttura e aggiungi una riga alla tabella *Capitoli ragionati*. Nei link sostituisci gli spazi con `%20` (es. `[Titolo](06%20Token.md)`) così funzionano sia su GitHub sia negli editor.
+
+[↑ Torna al corso](../README.md)
