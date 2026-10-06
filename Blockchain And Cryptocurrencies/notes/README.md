@@ -12,10 +12,10 @@ Ogni capitolo corrisponde a una lezione e incrocia tre fonti: gli appunti presi 
 
 | Cap. | Titolo | Lezione | Slide principali | Appunti grezzi |
 |---|---|---|---|---|
-| 1 | [Il paradigma della decentralizzazione](<01 Il paradigma della decentralizzazione.md>) | 1 · 21/09/2026 | 01, 02, 07.a, 08.00, 08 | [Lezione 1](<2026.09.21 - Lezione 1 - Il paradigma della centralizzazione- Appunti da Panopoto.md>) |
+| 1 | [Il paradigma della decentralizzazione](<01 Il paradigma della decentralizzazione.md>) | 1 · 21/09/2026 | 01, 02, 07.a, 08 | [Lezione 1](<2026.09.21 - Lezione 1 - Il paradigma della centralizzazione- Appunti da Panopoto.md>) |
 | 2 | [DLT, smart contract e casi d'uso](<02 DLT, smart contract e use case.md>) | 2 (2.1 + 2.2) · 25/09/2026 | 02 | [2.1](<2026.09.25 - Lezione 2.1 - Smart Contracts - Appunti da Panopoto.md>) · [2.2](<2026.09.25 - Lezione 2.2 - Smart Contracts - Somo use cases - Appunti da Panopoto.md>) |
 | 3 | [Smart Transportation: dati personali su DFS e DLT](<03 Smart Transportation.md>) | 3 · 28/09/2026 | 03.00 (Mobi talk) | [Lezione 3](<2026.09.28 - Lezione 3 -  Supply Chain e Tracciabilità - Appunti da Panopoto.md>) |
-| 4 | [Modelli di stato: UTXO vs account-based](<04 Modelli di stato UTXO e account.md>) | 4 | 03.01 (Taxonomy) | [Lezione 4](<2026.10.02 - Lezione 4 - Criptocurrencies - Appunti da Panopoto.md>) |
+| 4 | [Criptovalute: modelli di stato, Bitcoin e stablecoin](<04 Modelli di stato UTXO e account.md>) | 4 · 02/10/2026 | 03.01 | [Lezione 4](<2026.10.02 - Lezione 4 - Criptocurrencies - Appunti da Panopoto.md>) |
 | 5 | Smart Contracts | 5 | 05.10 | [Lezione 5](<2026.10.05 - Lezione 5.md>) |
  
 5  (no presence friday)
@@ -58,20 +58,22 @@ Il corso segue un approccio **top-down**: dal problema alle applicazioni, fino a
 
 ## Struttura di ogni capitolo
 
+Ogni capitolo sta in **4–5 pagine** e si apre con una scheda: **data**, **macro tema** (la parte del corso) e **slide** di riferimento.
+
 1. **Fondamenti** — definizioni e concetti chiave.
 2. **Architettura** — schemi, modelli, componenti.
 3. **Trade-off e attacchi** — costi, limiti, superficie d'attacco.
-4. **Esempi e codice** — casi concreti e snippet eseguibili.
-5. **Quadro sintetico** — tabella dei concetti chiave, domande e tracce di risposta (nel Cap. 1 anche la checklist da ripetere).
+4. **Esempi e codice** — casi concreti e snippet eseguibili (l'esame sarà molto pratico).
+5. **Quadro di riepilogo** — tabella dei concetti chiave, **parole chiave**, **domande** con tracce di risposta.
 
-Solo il Capitolo 1 ha in più una sezione **0. Informazioni sul corso**.
+In fondo, un box **Fonti e verifica** separa ciò che viene dalle slide da ciò che viene dalla letteratura.
 
 ### Legenda dei box
 
 - ⚠️ **Punto da esame / Nota di rigore** — distinzioni sottili o errori tipici.
 - 💡 **Punto su cui insiste il Prof. / Il filo del corso** — ciò che Ferretti ripete a lezione e i collegamenti tra capitoli.
 
-I contenuti presi dalla letteratura generale e non dalle slide sono segnalati in fondo a ogni capitolo: vanno verificati prima di citarli all'esame.
+I contenuti presi dalla letteratura generale e non dalle slide sono segnalati nel box finale di ogni capitolo.
 
 ---
 

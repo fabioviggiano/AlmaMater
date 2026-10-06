@@ -1,8 +1,10 @@
-# Capitolo 4 — Modelli di stato, Bitcoin e stablecoin
+# Capitolo 4 — Criptovalute: modelli di stato, Bitcoin e stablecoin
 
-*Lezione 4 (02/10/2026) · Slide "03.01 – Cryptocurrencies": sezione "Taxonomy of Crypto Platforms" (slide 3–13, anticipata a fine della lezione precedente), Bitcoin, wallet, exchange, stablecoin e caso Terra. [Registrazione Panopto](https://unibo.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=c71434dc-97a7-4bf1-9658-b4d700985bcb)*
-
-> 🚧 **Capitolo in corso.** Copre la lezione fino alla slide *Terra Classic USD* (caso Terra) inclusa. Vedi la nota in fondo.
+| | |
+|---|---|
+| **Data** | Venerdì 02/10/2026 · Lezione 4 (con la tassonomia anticipata a fine lezione 3) |
+| **Macro tema** | Parte III — Criptovalute |
+| **Slide** | 03.01 – Cryptocurrencies (Taxonomy, Bitcoin, Wallets, Exchanges, Stablecoins, Terra) · [registrazione Panopto](https://unibo.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=c71434dc-97a7-4bf1-9658-b4d700985bcb) |
 
 [← Indice](README.md)
 
@@ -10,21 +12,9 @@
 
 ## 1. Fondamenti
 
-### 1.1 La domanda
+### 1.1 Tassonomia delle piattaforme crypto
 
-Ogni piattaforma crypto deve rappresentare lo **stato globale**: chi possiede quali token e, se ci sono smart contract, quali sono i valori delle loro variabili. Le slide classificano le piattaforme in base a **come** rappresentano questo stato. È la premessa necessaria per capire Bitcoin, che usa il modello UTXO.
-
-### 1.2 Tassonomia (slide 13)
-
-```
-                        Crypto platform
-               ┌───────────────┴───────────────┐
-           UTXO-based                     account-based
-               │                    ┌──────────┴──────────┐
-        Bitcoin, Cardano        stateful               stateless
-                          Ethereum, Avalanche,          Solana
-                          Hedera, Tezos, Algorand
-```
+Ogni piattaforma deve rappresentare lo **stato globale**: chi possiede quali token e, se ci sono contratti, i valori delle loro variabili.
 
 | Modello | Piattaforme (slide 13) |
 |---|---|
@@ -32,729 +22,238 @@ Ogni piattaforma crypto deve rappresentare lo **stato globale**: chi possiede qu
 | **Account-based stateful** | **Ethereum**, Avalanche, Hedera, Tezos, Algorand |
 | **Account-based stateless** | Solana |
 
-> 💡 Ethereum è evidenziato in blu nella slide: è il riferimento del modello account-based stateful e sarà la piattaforma usata nelle prossime lezioni (Solidity).
+### 1.2 Modello UTXO (*Unspent Transaction Output*)
 
-### 1.3 Bitcoin ad alto livello
+Non esistono conti: lo stato è l'insieme degli **output non ancora spesi** (UTXO set). Ogni output = **token** (es. `5:T`) + **condizione di spesa** (script, es. `→p1`: serve la firma di p1).
 
-- **Valuta completamente digitale**: non esistono monete o banconote fisiche. Bitcoin esiste solo come registrazioni sulla blockchain.
-- **Nessun governo la emette**: non c'è una banca centrale che stampa moneta o ne controlla l'offerta. Le regole di emissione sono scritte nel protocollo, con un tetto massimo di **21 milioni di BTC**.
-- **Nessuna banca gestisce conti e transazioni**: le transazioni passano direttamente da utente a utente (**peer-to-peer**). A validarle è una rete distribuita di nodi e miner, non un intermediario fidato.
-- **Nessuno sa chi l'ha inventata**: il whitepaper del 2008 (*"Bitcoin: A Peer-to-Peer Electronic Cash System"*) è firmato **Satoshi Nakamoto**, uno pseudonimo. Non si sa se dietro ci sia una persona o un gruppo.
+Per spendere (*"you have to do previous checks"*) una transazione: **riferisce** output precedenti, verifica che siano **non spesi**, ne **soddisfa la condizione**, li **consuma per intero** e crea nuovi output.
 
-### 1.4 Storia
-
-- **2008–2009 – Nascita**
-  - Fine 2008: pubblicazione del whitepaper.
-  - Gennaio 2009: rilascio del software e annuncio di Bitcoin.
-- **2009–2011 – Partenza lenta**
-  - **Gennaio 2009**: viene creato il **Genesis Block**, il primo blocco della catena, che dà avvio al **mining**. Pochi giorni dopo avviene la **prima transazione**: Satoshi invia BTC a **Hal Finney**, sviluppatore e attivista della crittografia.
-  - **Maggio 2010 – Primo acquisto di beni reali**: **Laszlo Hanyecz** (Florida) offre su *Bitcointalk* **10.000 BTC** a chi gli consegna "un paio di pizze". Un utente della West Coast accetta, per circa **25 $ di pizza**. Il **22 maggio** è ricordato come **Bitcoin Pizza Day**: oggi quei BTC varrebbero centinaia di milioni di dollari.
-- **2013 – Il prezzo esplode**: Bitcoin esce dalla nicchia e attira media e investitori.
-
-La slide *BTC / Real money* mostra l'andamento del valore nel tempo, senza scendere nei dettagli.
-
----
-
-## 2. Architettura
-
-### 2.1 Modello UTXO (*Unspent Transaction Output*)
-
-Nel modello UTXO **non esistono conti con un saldo**. Lo stato globale è l'insieme degli output di transazioni passate **non ancora spesi** (**UTXO set**).
-
-**Anatomia di un UTXO** (slide 9). Ogni output di una transazione è una coppia:
-
-- **token**: la quantità (es. `5:T` = 5 unità del token T);
-- **condizione di spesa** (*spending condition*, lo **script**): cosa bisogna dimostrare per spenderlo (es. `→p1`: serve la firma corrispondente a p1).
-
-```
-tx1
- └── 5:T → p1        ← UTXO: token (5:T) + condizione di spesa (p1)
-```
-
-**Come si spende** (slide 10–12). Una nuova transazione:
-
-1. **fa riferimento** a uno o più output precedenti (input);
-2. dimostra che sono **ancora non spesi** (altrimenti sarebbe double spending);
-3. **soddisfa la condizione di spesa** di ciascuno (es. con la firma di p1);
-4. li **consuma interamente** e crea **nuovi output**.
-
-> 💡 **Punto su cui insiste il Prof.** *"In order to spend data/tokens, you have to do previous checks."* Non si "scala" un saldo: si dimostra di avere diritto a un output precedente non speso e lo si consuma.
-
-**Esempio completo delle slide**
-
-| Passo | Consuma | Crea |
+| Tx | Consuma | Crea |
 |---|---|---|
 | `tx1` | — | `5:T→p1` |
-| `tx2` | `5:T→p1` | `3:T→p2`, `2:T→p3` |
+| `tx2` | `5:T→p1` | `3:T→p2`, `2:T→p3` (**split**, con eventuale resto) |
 | `tx3` | `3:T→p2` | `1:T→p4`, `2:T→p5` |
-| `tx4` | `2:T→p3`, `2:T→p5` | `4:T→p6` |
+| `tx4` | `2:T→p3`, `2:T→p5` | `4:T→p6` (**merge**: più input) |
 
-Alla fine l'UTXO set contiene solo `1:T→p4` e `4:T→p6`: totale 5, come all'inizio.
+UTXO set finale: `1:T→p4`, `4:T→p6` (totale 5). Somma output ≤ somma input; la differenza è la **fee**.
 
-- `tx2` mostra lo **split**: un output ne genera due (uno può essere il **resto**, *change*, che torna al mittente).
-- `tx4` mostra il **merge**: una transazione può avere **più input**.
-- **Conservazione del valore**: la somma degli output non può superare quella degli input; l'eventuale differenza è la **fee** per il miner.
+> ⚠️ **Punto da esame.** Un output si spende **sempre per intero**: il resto torna al mittente come nuovo output. Il saldo non è scritto da nessuna parte: il wallet lo calcola sommando gli UTXO che sa sbloccare.
 
-> ⚠️ **Nota di rigore** (sintesi mia). Un output si spende **sempre per intero**: non si possono spendere "2 dei 5 token" di `5:T→p1`. Si consuma tutto l'output e si crea un output di resto. Il "saldo" di un utente non è scritto da nessuna parte: il wallet lo calcola sommando gli UTXO che sa sbloccare.
+### 1.3 Modello account-based
 
-### 2.2 Modello account-based
+Lo stato è una **mappa indirizzo → account**; le transazioni aggiornano **in place**.
 
-Lo stato globale è una **mappa indirizzo → account**. Le transazioni **aggiornano in place** gli account esistenti, invece di consumare e creare output.
+- **User account (EOA):** controllato da chiavi; è l'unico che **avvia** una transazione firmandola.
+- **Contract account:** contiene codice, si attiva solo quando chiamato.
 
-**Tipi di account** (slide 4):
+Esempio (slide 5): `acct3.pay(acct1, acct2, 1)` → `acct1` da `5:T` a `4:T`, `acct2` da `1:T` a `2:T`; il resto invariato.
 
-- **User account (EOA, *Externally Owned Account*)**: controllato da una coppia di chiavi. È l'unico che può **iniziare** una transazione firmandola (e pagando le fee).
-- **Contract account**: contiene **codice** (lo smart contract). Non agisce mai da solo: si attiva quando riceve una chiamata da un EOA o da un altro contratto.
+> ⚠️ **Nota di rigore.** Nell'esempio chiunque chiami `pay` sposta token da `acct1`: manca il controllo `msg.sender == a` (primo esempio di bug di access control, tornerà in *DeFi Security*). Le variabili di stato sugli EOA sono una semplificazione del modello astratto: in Ethereum un EOA ha saldo e nonce (da Pectra, maggio 2025, con EIP-7702 può delegare l'esecuzione a codice di un contratto).
 
-Nelle slide ogni account ha uno **state** (variabili) e un **wallet** (token posseduti, anche di tipi diversi):
+**Stateful (slide 6–7):** *"Contract accounts can have code, state, and tokens."*
 
-- `acct1`: state `x=1, y=7`, wallet `5:T`
-- `acct2`: state `x=2, b=false`, wallet `1:T, 3:T'`
-- `acct3`: contratto con `pay(a,b,x) { transfer x:T from a to b }`
+```
+acct3   state: z=1   wallet: 10:T
+  pay(b,x) { if z==0 then abort else transfer x:T from acct3 to b }
+  lock()   { if signedBy(alice) z=0 }
+```
 
-> ⚠️ **Nota di rigore.** Lo schema delle slide è un **modello astratto**. In Ethereum reale un EOA ha solo saldo e nonce, **senza codice né storage**; le variabili di stato stanno solo nei contract account.
+`acct3.pay(acct2, 1)` paga dal **wallet del contratto** (10→9). Se Alice firma `lock()`, `z=0` e ogni `pay` abortisce: un contratto che custodisce fondi e cambia comportamento in base allo stato.
 
-**Transazione di esempio** (slide 5): `acct3.pay(acct1, acct2, 1)`
+**Stateless (slide 8):** *"Only code in contract accounts! No state, no tokens."* Stato e token stanno in altri account passati esplicitamente alla chiamata (Solana). Poiché ogni tx dichiara gli account che tocca, tx su account diversi girano **in parallelo**.
 
-| Account | Prima | Dopo |
+> ⚠️ **Attenzione.** "Stateless" qui **non** significa *stateless validation* (nodi che non conservano lo stato, tema di ricerca di Ethereum).
+
+---
+
+## 2. Architettura: Bitcoin, wallet, exchange
+
+### 2.1 Bitcoin ad alto livello
+
+- **Fully digital currency**, **no government** che la emette (tetto di 21 milioni nel protocollo), **no banks** (transazioni P2P), **no one knows who invented it** (Satoshi Nakamoto, pseudonimo di persona o gruppo).
+- **Caratteristiche (slide):** anonimato e privacy (**chiavi pubbliche come pseudonimi**), **apertura** (basta Internet), **decentralizzazione**, **forte volatilità**.
+- **Storia:** whitepaper fine 2008, annuncio 2009; gennaio 2009 **Genesis Block** e prima transazione Satoshi → **Hal Finney**; maggio 2010 primo acquisto reale: **Laszlo Hanyecz** paga **10.000 BTC** per pizze da ~25 $ (*Bitcoin Pizza Day*, 22 maggio); **2013** il prezzo esplode.
+
+**La rete.** Ogni nodo ha una copia del ledger (la blockchain). Le transazioni sono **broadcast** ai nodi, che le **validano** (firma, input UTXO non spesi, niente double spending), le inseriscono in un blocco e le ritrasmettono. Una tx è **accettata solo quando compare nella blockchain** (in pratica si attendono ~6 conferme). Obiettivo: **consenso globale** sulla storia.
+
+**Possibilità (slide):** rimesse, *bank the unbanked*, micropagamenti. **Governi:** il contante digitale "non tracciabile" aggira il **controllo dei capitali**; contromisura degli Stati: **scollegare BTC dalle istituzioni finanziarie in valuta fiat**.
+
+> ⚠️ **Nota di rigore.** Bitcoin è **pseudonimo**, non anonimo: le transazioni sono pubbliche e analizzabili. E con fee di 1–2 $ e ~1 h di latenza i micropagamenti on-chain non sono praticabili (da qui il livello 2, es. Lightning). Il Prof. insiste sul **valore sociale** del protocollo, non sul mercato.
+
+### 2.2 Wallet
+
+Bitcoin è un **protocollo**; il wallet è l'interfaccia più comune, come il **browser per HTTP**. Il wallet **non contiene bitcoin**: custodisce le **chiavi private** che sbloccano gli UTXO e firma le transazioni.
+
+| Tipo | Caratteristiche (slide) | Rischio |
 |---|---|---|
-| `acct1` | wallet `5:T` | wallet `4:T` |
-| `acct2` | wallet `1:T, 3:T'` | wallet `2:T, 3:T'` |
-| `acct3` | codice `pay` | invariato |
+| **Desktop** | Il primo tipo; funzioni, autonomia, controllo (es. Electrum) | Dispositivo perso → chiavi perse → fondi persi; OS general purpose insicuri → chiavi rubate |
+| **Mobile** | Il **più diffuso**, su smartphone; simile al desktop | Come il desktop |
+| **Web** | Wallet su **server di terzi**, come la webmail; niente da installare | I furti sono avvenuti **tutti dai siti di wallet**: non tenerci grandi somme |
+| **Hardware** | Dispositivo dedicato, via USB o NFC | Molto sicuro, adatto a grandi somme |
+| **Paper** | Chiavi stampate, *cold storage* a lungo termine | Perdita o deterioramento del foglio |
 
-Le variabili non coinvolte (`x, y`, `x, b`) e il token `T'` restano invariati; nessun account viene creato o distrutto.
+> 💡 **Lettura da esame.** Hot (desktop, mobile, web) vs **cold** (hardware, paper): comodità contro sicurezza. Il furto da web wallet non viola il protocollo: per Bitcoin chi ha la chiave è il proprietario. Il web wallet è un **honeypot** che reintroduce la TTP (caso **Mt.Gox**, 2014, ~850.000 BTC).
 
-> ⚠️ **Nota di rigore.** Nell'esempio chiunque chiami `pay` sposta token da `acct1`. È una semplificazione didattica: in un contratto reale bisogna controllare che chi chiama sia autorizzato (es. `msg.sender == a`). È il primo esempio di bug di controllo degli accessi, che tornerà in *DeFi Security*.
+### 2.3 Exchange
 
-### 2.3 Account-based **stateful** (slide 6–7)
+Marketplace dove si comprano e vendono cripto, con un **intermediario** che applica **commissioni**.
 
-> *"Contract accounts can have code, state, and tokens."*
-
-```
-acct3
-  state:  z=1
-  wallet: 10:T
-  code:
-    pay(b,x) { if z==0 then abort else transfer x:T from acct3 to b }
-    lock()   { if signedBy(alice) z=0 }
-```
-
-- **code**: la logica;
-- **state**: variabili persistenti (qui il flag `z`);
-- **wallet**: token posseduti **dal contratto stesso**.
-
-**Transazione:** `acct3.pay(acct2, 1)` con `z=1` → il contratto trasferisce 1 token dal **proprio** wallet: `acct3` passa da `10:T` a `9:T`, `acct2` da `1:T` a `2:T`.
-
-**Ruolo di `lock()`**: se Alice firma la chiamata, `z` diventa 0 e da quel momento ogni `pay` **abortisce**. È un esempio minimo di contratto che **custodisce fondi** e ha uno **stato che ne cambia il comportamento**, con un'operazione riservata a un utente specifico.
-
-### 2.4 Account-based **stateless** (slide 8)
-
-> *"Only code in contract accounts! No state, no tokens."*
-
-Nel modello stateless il contract account contiene **solo il codice**. Stato e token stanno in **altri account** (di dati o di utenti), che la transazione deve indicare esplicitamente; il codice li legge e li modifica.
-
-- **Esempio: Solana.** I *program* sono privi di stato; i dati vivono in account separati, "posseduti" dal programma, che vengono passati a ogni chiamata.
-- **Vantaggio**: dato che ogni transazione dichiara in anticipo quali account tocca, transazioni su account diversi possono essere eseguite **in parallelo**.
-
-> ⚠️ **Correzione rispetto agli appunti.** Negli appunti "stateless" era definito come "i validatori non conservano l'intero stato e le transazioni allegano una prova (witness)". Quello è un concetto diverso (*stateless clients / stateless validation*, un tema di ricerca per Ethereum). Nella tassonomia del corso **stateless significa: il contratto contiene solo codice, senza stato né token propri**.
-
-### 2.5 Bitcoin at a High-Level: la rete
-
-- **Bitcoin è una rete P2P di nodi** (i *client* Bitcoin).
-  - Ogni nodo conserva una copia del **ledger** di *tutte* le transazioni.
-  - Il ledger è la **blockchain**: distribuito e replicato, senza archivio centrale.
-- **Le transazioni vengono trasmesse (broadcast) ai nodi** (flooding sulla rete non strutturata, vedi Capitolo 1, §2.1.7).
-  - I nodi **validano** ogni transazione: firma corretta, fondi disponibili, nessun **double spending**. In termini del §2.1: gli input devono essere **UTXO non spesi** e le loro condizioni di spesa devono essere soddisfatte.
-  - Le transazioni valide vengono **inserite in un blocco**, aggiunte alla blockchain e **ritrasmesse**.
-  - Una transazione è **accettata solo quando compare nella blockchain**, non al semplice invio.
-- **Obiettivo: tutte le transazioni sono note e condivise dall'intera rete.**
-  - Si raggiunge un **consenso globale** sulla storia del ledger.
-  - Tutti i nodi concordano su chi possiede cosa, senza un'autorità centrale.
-
-> 💡 **Collegamento.** "Accettata solo quando compare nella blockchain" va letto insieme alla finalità probabilistica del PoW (Capitolo 1, §1.6): un blocco può ancora essere riorganizzato, per questo si attendono circa 6 conferme (la latenza "1 h" della tabella del Capitolo 2, §1.7).
-
-### 2.6 Wallet
-
-**Bitcoin wallet.**
-
-- **Bitcoin è un protocollo**: vi si accede tramite un'applicazione client in grado di "parlarlo".
-- **Il wallet è l'interfaccia utente più comune** verso il sistema Bitcoin. L'analogia della slide: il wallet sta a Bitcoin come il **browser** sta al protocollo **HTTP**.
-- Esistono **molte implementazioni** diverse di wallet.
-
-> ⚠️ **Nota di rigore** (sintesi mia). Il wallet **non contiene bitcoin**. I fondi sono UTXO registrati sulla blockchain (§2.1); il wallet custodisce le **chiavi private** che soddisfano le loro condizioni di spesa, calcola il saldo sommando gli UTXO che sa sbloccare e firma le nuove transazioni. Chi ha le chiavi controlla i fondi.
-
-**Tipologie di wallet: Desktop wallet.**
-
-- **Storia**: è stata la **prima** tipologia di wallet Bitcoin.
-- **Vantaggi**: molte funzionalità, **autonomia** e opzioni di **controllo** avanzate; pratico da usare. Esempio in slide: **Electrum**.
-- **Disponibilità**: limitata al **dispositivo** su cui è installato il software.
-  - **Dispositivo perso → chiavi perse → fondi persi.**
-- **Sicurezza**: gira su **sistemi operativi general purpose** (Windows, macOS), spesso insicuri o configurati male. Un malware sul computer può rubare le chiavi.
-
-> 💡 **Collegamento** (sintesi mia). La catena "dispositivo perso → fondi persi" è la conseguenza diretta dell'assenza di una TTP (Capitolo 1, §1.2): non esiste una banca a cui chiedere il recupero. Nella pratica la perdita si mitiga con un **backup delle chiavi**, tipicamente una *seed phrase* di 12–24 parole da cui il wallet rigenera tutte le chiavi.
-
-**Tipologie di wallet: Web wallet.**
-
-- Si usa **dal browser** e conserva il wallet dell'utente su un **server di terze parti**.
-- È come la **webmail**: dipende interamente dal server di qualcun altro.
-- **Comodo**: niente da installare, funziona su più dispositivi.
-- **Problemi di sicurezza**: *"what's up with the stolen bitcoins?"*
-  - i furti di bitcoin sono avvenuti **tutti dai siti di wallet**;
-  - gli hacker entrano nel server, **rubano le chiavi private** e trasferiscono i bitcoin a sé stessi;
-  - **non conviene tenere grandi quantità di bitcoin su sistemi di terze parti**.
-- Loghi in slide: Coinbase, Electrum, **Mt.Gox**.
-
-> ⚠️ **Nota di rigore** (sintesi mia). Il furto avviene **sul server**, non sulla blockchain: il protocollo non viene violato, perché chi ha la chiave privata è, per il protocollo, il legittimo proprietario. Il web wallet reintroduce proprio la TTP che Bitcoin voleva eliminare, ed è un **honeypot** (Capitolo 1, §2.1.2): tante chiavi in un solo posto. Il caso storico è **Mt.Gox** (2014): circa 850.000 BTC persi, all'epoca il principale exchange al mondo. Electrum in realtà è un desktop wallet, non custodial.
-
-**Altre tipologie: hardware e paper wallet.**
-
-- **Hardware wallet**: dispositivi fisici dedicati, simili a una **chiavetta USB**, che custodiscono le chiavi offline. La chiave privata non esce mai dal dispositivo: le transazioni vengono firmate al suo interno.
-- **Paper wallet**: le chiavi (spesso come QR code) sono **stampate su carta**. Completamente offline, quindi immune ai malware, ma vulnerabile a perdita, furto o deterioramento del foglio.
-
-> 💡 **Lettura da esame** (sintesi mia). Hardware e paper wallet sono **cold wallet** (offline); desktop e web wallet sono **hot wallet** (connessi). Il trade-off è sempre comodità contro sicurezza, e custodia propria contro custodia di terzi: *not your keys, not your coins*.
-
-### 2.7 Exchange centralizzati (*Centralized Crypto Exchanges*)
-
-Gli exchange sono **marketplace** dove si comprano e vendono criptovalute, anche contro valute tradizionali. C'è un **intermediario**, che applica **commissioni** sugli scambi.
-
-- **Order book**: gli ordini di acquisto e vendita sono elencati e ordinati per prezzo.
-  - Un **matching engine** abbina compratori e venditori al miglior prezzo eseguibile per la quantità richiesta (*lot size*).
-  - Il prezzo di un asset dipende dalla **domanda e offerta** rispetto a un altro asset.
-- Molti offrono anche **web wallet custodial**: le chiavi le tiene l'exchange.
-- 💡 **Punto evidenziato in slide:** le transazioni sull'exchange **di solito non vengono registrate sulla blockchain**. L'exchange tiene un **registro o database centrale** con le operazioni dei suoi utenti.
-
-> ⚠️ **Nota di rigore** (sintesi mia). Comprare bitcoin su un exchange significa avere una **riga nel database dell'exchange**, non un UTXO a proprio nome. Solo con un **prelievo** verso un proprio indirizzo la transazione va on-chain. È un sistema **centralizzato** costruito sopra un sistema decentralizzato, con tutti i rischi di una TTP (insolvenza, hack, blocco dei fondi). È anche il motivo per cui l'exchange è veloce ed economico: non paga fee né attende conferme per ogni scambio interno.
-
-### 2.8 Exchange decentralizzati (*Decentralized Crypto Exchanges*, DEX)
-
-- Le transazioni avvengono **direttamente sulla blockchain**, tramite **smart contract**.
-- La slide si ferma qui: *"To look for the details, we need to introduce some concepts, first"*. I dettagli (es. liquidity pool e AMM) arriveranno con la parte su DeFi.
-
-**Centralizzati vs decentralizzati**
-
-| | **Exchange centralizzato (CEX)** | **Exchange decentralizzato (DEX)** |
+| | **Centralizzato (CEX)** | **Decentralizzato (DEX)** |
 |---|---|---|
-| **Chi gestisce** | Un'azienda intermediaria | Smart contract sulla blockchain |
-| **Dove si registrano gli scambi** | Database centrale dell'exchange | On-chain |
-| **Custodia delle chiavi** | Dell'exchange (custodial) | Dell'utente (non custodial) |
-| **Prezzo** | Order book + matching engine | Definito dalla logica del contratto (dettagli più avanti) |
-| **Fiducia** | Nell'exchange (TTP) | Nel codice e nel consenso |
-| **Rischi tipici** | Hack del server, insolvenza, blocco dei fondi | Bug nel contratto, fee e latenza on-chain |
+| Meccanismo | **Order book** ordinato per prezzo + **matching engine** sul miglior prezzo per il *lot size* | Scambi **on-chain tramite smart contract** (dettagli con la DeFi) |
+| Dove si registrano gli scambi | **Database centrale** dell'exchange, di solito non on-chain | Sulla blockchain |
+| Chiavi | Spesso custodial (web wallet dell'exchange) | Dell'utente |
+| Fiducia / rischi | Nell'exchange: hack, insolvenza, blocco fondi | Nel codice: bug, fee e latenza on-chain |
 
-> 💡 **Lettura da esame** (sintesi mia). È la distinzione del Capitolo 1 applicata agli scambi: il CEX è un client/server con una TTP, il DEX sostituisce l'intermediario con il protocollo. In cambio paga i costi della blockchain (fee, latenza, codice immutabile).
+> ⚠️ **Punto da esame.** Comprare BTC su un CEX significa avere una **riga nel suo DB**, non un UTXO a proprio nome: si va on-chain solo con depositi e prelievi.
 
-### 2.9 Non solo Bitcoin: le altre criptovalute
+---
 
-Bitcoin è solo la prima di **moltissime** criptovalute (spesso chiamate *altcoin*). Il Prof. ne mostra tanti esempi. Guardando i prezzi, salta all'occhio che **alcune valgono stabilmente circa 1 (dollaro)**: sono le **stablecoin** (§2.11).
+## 3. Stablecoin e il caso Terra
 
-### 2.10 I limiti delle cripto volatili (*Drawbacks of Volatile Cryptos*)
+### 3.1 Perché servono
 
-- **La speculazione alimenta la volatilità**: chi compra per rivendere amplifica le oscillazioni di prezzo.
-- **Rischio di cambio inutile** (*unnecessary currency risk*). Domanda della slide: *"Can you pay someone salary in Bitcoin?"* Se il valore cambia molto in pochi giorni, né chi paga né chi riceve sa quanto vale davvero lo stipendio.
-- **Difficili da usare negli scambi**: la volatilità ostacola **prestiti, derivati, prediction market** e in generale tutti i **contratti che richiedono stabilità del prezzo**.
-- **Molti utenti non vogliono speculare**: vogliono solo **conservare denaro su un registro resistente alla censura**, ad esempio per **sottrarsi al sistema bancario** (vedi i casi di Cipro e Argentina, §3.4).
+**Drawbacks of volatile cryptos:** la speculazione alimenta la volatilità; rischio di cambio inutile (*"can you pay someone salary in Bitcoin?"*); prestiti, derivati, prediction market e contratti richiedono stabilità; molti utenti vogliono solo **conservare denaro su un registro resistente alla censura**, fuori dal sistema bancario.
 
-> 💡 **Collegamento** (sintesi mia). È la contraddizione delle "possibilità offerte" del §3.2: rimesse, unbanked e micropagamenti richiedono una moneta stabile, mentre BTC è soprattutto un asset speculativo.
+**Stablecoin:** cripto con prezzo **agganciato** (*peg*) a un altro asset, es. 1 token ≈ 1 USD. Per il Prof. sono le cripto davvero utili come servizio.
 
-### 2.11 Stablecoin
+### 3.2 I tre tipi (triangolo della slide)
 
-**Definizione.** Una stablecoin è una criptovaluta progettata per avere un **valore stabile**, agganciato (*peg*) a un riferimento esterno, di solito una valuta tradizionale: **1 stablecoin ≈ 1 USD** (o 1 EUR).
-
-Unisce i vantaggi della blockchain (trasferimento P2P, senza intermediari bancari, resistenza alla censura) a quelli di una moneta stabile (prezzi, stipendi e contratti si possono esprimere senza rischio di cambio).
-
-> 💡 **Punto su cui insiste il Prof.** Le stablecoin sono le criptovalute **davvero utili come servizio sociale**: è qui che le promesse di §3.2 (rimesse, unbanked, pagamenti) diventano praticabili.
-
-#### Tipi di stablecoin (slide *Types of Stablecoins*)
-
-La slide le dispone su un **triangolo**: tre tipi ai vertici, e ogni lato indica la proprietà che i due vertici hanno in comune.
-
-```
-                    Fiat/asset-collateralized
-                   (Digix, Tether, TrueUSD)
-                      ╱                  ╲
-          Collateralized              Capital-efficient
-                    ╱                      ╲
-   Crypto-collateralized ─── Decentralized ─── Non-collateralized
-   (MakerDAO, bitUSD)            (Terra)         (Basis, Carbon)
-          └──────── algoritmiche (ellisse rossa) ────────┘
-```
-
-| Tipo | Su cosa si basa il valore | Esempi in slide |
-|---|---|---|
-| **Fiat/asset-collateralized** | Riserve in valuta reale (es. USD) o in un bene (es. oro) | Digix, Tether, TrueUSD |
-| **Crypto-collateralized** | Garanzie in altre criptovalute | MakerDAO, bitUSD |
-| **Non-collateralized** | Nessuna garanzia: il valore è regolato da **algoritmi** | Basis, Carbon |
-
-**I lati del triangolo:**
-
-- **Collateralized** (fiat ↔ crypto): entrambi hanno una **garanzia** dietro ogni token.
-- **Capital-efficient** (fiat ↔ non-collateralized): entrambi emettono un token per ogni unità di valore, senza bisogno di **bloccare più capitale** di quello emesso.
-- **Decentralized** (crypto ↔ non-collateralized): entrambi vivono **interamente on-chain**, senza un custode centrale.
-
-**Stablecoin algoritmiche.** L'ellisse rossa racchiude le **non-collateralized** e la zona di confine con le crypto-collateralized: sono le **stablecoin algoritmiche**, dette anche **ibride**, in cui il valore è mantenuto da **algoritmi** che regolano l'offerta. **Terra** sta proprio sul lato *Decentralized*, a metà tra i due vertici.
-
-> ⚠️ **Nota di rigore** (sintesi mia).
-> - Nessun tipo ha tutte e tre le proprietà: è un altro **trilemma**, simile a quello del Capitolo 1.
-> - Le **fiat-collateralized** sono le più stabili, ma reintroducono un emittente centralizzato: può congelare indirizzi e la stabilità dipende dalle sue riserve.
-> - Le **crypto-collateralized** sono decentralizzate ma poco efficienti: servono garanzie superiori al valore emesso (*sovra-collateralizzazione*), perché il collaterale è volatile.
-> - Le **algoritmiche** sono efficienti e decentralizzate, ma fragili: **Terra (UST)** ha perso il peg ed è collassata nel 2022 (vedi il caso di studio più avanti).
-> - Digix in realtà è agganciata all'**oro**: è per questo che il vertice si chiama *fiat/asset*.
-
-#### Fiat-asset collateralized currency
-
-**Idea.** La stablecoin è legata al valore di una **valuta reale**. Per creare una stablecoin agganciata al dollaro si **depositano dollari su un conto bancario** e si emette una quantità corrispondente di moneta digitale: **1 USD depositato = 1 stablecoin**.
-
-Gli attori sono tre: l'**utente**, il **custode** (*custodian*, una banca o l'emittente che usa una banca) che conserva i dollari, e uno **smart contract** che tiene il registro dei saldi in token (`_balances`).
-
-Le slide (animate) mostrano tre operazioni.
-
-**1. Deposito ed emissione (*mint*).** L'utente deposita USD presso il custode. Il custode chiama lo smart contract, che **crea** (*mint*) la stessa quantità di token a nome dell'utente.
-
-<img width="1303" height="898" alt="image" src="https://github.com/user-attachments/assets/ef186399-e348-4985-8083-0cc14bbe0c92" />
-
-<img width="1407" height="846" alt="image" src="https://github.com/user-attachments/assets/7510b29f-ec08-4690-a639-96723da043e1" />
-
-**2. Trasferimento (*transfer*).** I token passano da un utente all'altro **on-chain**: lo smart contract aggiorna `_balances`. **Non serve passare dal sistema bancario**: la banca resta solo il custode dei dollari che garantiscono i token.
-
-<img width="1398" height="881" alt="image" src="https://github.com/user-attachments/assets/47e07c37-b135-465f-936d-776230315d71" />
-
-**3. Prelievo e distruzione (*withdrawal / burn*).** Esempio della slide *Withdrawal*:
-
-- Bob chiede al custode di ritirare **60 USD**;
-- il custode gli restituisce i 60 USD e chiama **`burn(Bob, 60)`**: i 60 token di Bob vengono **distrutti** (l'icona della fiamma).
-
-| | Prima | Dopo |
-|---|---|---|
-| Bob | 85 token | 25 token |
-| Alice | 35 token | 35 token |
-| Carol | 15 token | 15 token |
-| **Token in circolazione** | **135** | **75** |
-| **USD nella riserva del custode** | **135** | **75** |
-
-> 💡 **La regola che tiene in piedi tutto** (sintesi mia): **USD in riserva = token in circolazione**. Il *mint* aggiunge a entrambi, il *burn* toglie a entrambi, il *transfer* sposta solo token tra utenti. Finché la regola regge, ogni token vale 1 USD.
-
-**Pro** (slide *Pros*):
-
-<img width="1295" height="743" alt="image" src="https://github.com/user-attachments/assets/14a4b8a4-77d6-442e-8574-1f0d63d865e7" />
-
-- tutto è **digitale**;
-- **semplicità**;
-- prezzo **stabile al 100%**;
-- **less** … *(voce troncata negli appunti: probabilmente "less prone to hacks", perché la garanzia non sta sulla blockchain ma in banca; da verificare sulla slide)*.
-
-**Contro** (slide *Cons*):
-
-<img width="1335" height="763" alt="image" src="https://github.com/user-attachments/assets/82133f5a-78b9-419a-a981-e1b6e9f5e3bd" />
-
-- **Centralizzata**: un **custode fidato** deve conservare la valuta fiat.
-- **Servono audit** per garantire trasparenza: bisogna verificare che il custode abbia davvero **abbastanza denaro in riserva**.
-- **Molto regolamentata**: vincolata ai circuiti di pagamento tradizionali (*legacy payment rails*).
-- **Conversione in fiat costosa e lenta** (*liquidation to fiat*).
-
-> ⚠️ **Nota di rigore** (sintesi mia). La blockchain garantisce solo il registro dei token, non la riserva: se il custode spende i dollari o ne ha meno dei token emessi, il peg salta. È di nuovo il *Garbage In, Garbage Out* del Capitolo 2 e una TTP che rientra dalla porta: per questo servono gli audit.
-
-#### Crypto-collateralized currency
-
-<img width="1241" height="995" alt="image" src="https://github.com/user-attachments/assets/0adbe52e-8f0f-434f-aa33-a0919aac2cf5" />
-
-- La garanzia **non è un bene reale** (valuta, oro) ma **un'altra criptovaluta**, ad esempio ETH.
-- Al posto della banca c'è uno **smart contract** (l'icona della checklist con l'ingranaggio), che tiene bloccata la garanzia ed emette le stablecoin.
-- **Il problema** (slide): *"Stablecoin as volatile as the collateral cryptocurrency backing it"*. Se blocco 4 ETH per emettere 4 stablecoin, le stablecoin valgono quanto quei 4 ETH: se ETH scende, scendono anche loro.
-
-#### Collateralization ratio
-
-<img width="1412" height="1001" alt="image" src="https://github.com/user-attachments/assets/0f2809ef-1dbb-4849-990c-08023d7375e1" />
-
-**La soluzione: bloccare più garanzia di quanto si emette.** Le stablecoin crypto-collateralized sono **sovra-collateralizzate** (*over-collateralized*): per ogni stablecoin c'è in riserva **più di una moneta** di cripto.
-
-**In parole semplici.** Il *collateralization ratio* è il rapporto tra **quanto vale la garanzia bloccata** e **quanto valgono le stablecoin emesse**:
-
-```
-collateralization ratio = valore della garanzia / valore delle stablecoin emesse
-```
-
-**Esempio numerico** (sintesi mia). ETH vale 1.000 $ e voglio 1.000 stablecoin (= 1.000 $).
-
-| | Garanzia bloccata | Ratio | ETH scende del 20% | Ogni stablecoin è coperta da |
+| Tipo | Garanzia | Esempi | Pro (slide) | Contro (slide) |
 |---|---|---|---|---|
-| **Senza margine** | 1 ETH = 1.000 $ | 100% | 1 ETH = 800 $ | **0,80 $** → peg perso |
-| **Sovra-collateralizzata** | 1,5 ETH = 1.500 $ | 150% | 1,5 ETH = 1.200 $ | **1,20 $** → ancora coperta |
+| **Fiat/asset-collateralized** | Valuta reale (o oro, Digix) in banca, **1:1** | Tether, TrueUSD, Digix | Il più semplice; **100% stabile** (1 $ in riserva per token, rimborsabile); meno esposto agli hack (collaterale non on-chain) | **Centralizzato** (custode fidato); servono **audit** delle riserve; molto regolato (*legacy payment rails*); conversione in fiat lenta e costosa |
+| **Crypto-collateralized** | Altra cripto in uno **smart contract**, **> 100%** | MakerDAO (CDP), bitUSD | Più decentralizzato; liquidazione nel collaterale rapida ed economica; trasparente (ratio ispezionabile) | Meno stabile; **auto-liquidazione** in un crollo (si perde il collaterale); legato a un'altra cripto; capitale inefficiente; complessità massima |
+| **Non-collateralized (algoritmica)** | Nessuna: un algoritmo regola l'offerta | Basis, Carbon, Terra | Nessuna garanzia; il più decentralizzato e indipendente; non legato a fiat o cripto; nessun incentivo a inflazionare | **Più vulnerabile a un crollo, senza poter liquidare**; complesso; limiti di sicurezza difficili da analizzare; **richiede crescita continua** |
 
-Il margine in più fa da **cuscinetto**: assorbe i cali di prezzo della garanzia, così ogni stablecoin resta coperta da almeno 1 $.
+Lati del triangolo: **collateralized** (fiat–crypto), **capital-efficient** (fiat–algoritmica), **decentralized** (crypto–algoritmica). Nessun tipo ha tutte e tre le proprietà.
 
-**Lettura della slide.** A sinistra il caso fiat: la garanzia sta in banca e basta l'**1:1** perché il dollaro non oscilla rispetto a sé stesso. A destra il caso cripto: **6 ETH** nello smart contract per **4 stablecoin**, cioè un ratio del **150%**.
+**Fiat-collateralized: mint, transfer, burn.** Deposito di USD al custode → **mint** dello stesso numero di token; **transfer** on-chain tra utenti senza banca; prelievo → il custode paga e fa **burn** (es. Bob ritira 60 $: `burn(Bob, 60)`, riserva e token in circolazione da 135 a 75). Invariante: **USD in riserva = token in circolazione**. La blockchain garantisce i token, non la riserva: da qui gli audit.
 
-> 💡 **Regola della slide:** *"The more volatile the crypto, the higher this ratio should be"*. Più la garanzia oscilla, più grande deve essere il cuscinetto.
+**Collateralization ratio** = valore della garanzia / valore delle stablecoin emesse. *"The more volatile the crypto, the higher this ratio should be."*
 
-> 💡 **Analogia** (sintesi mia). È come un prestito su pegno: per avere 100 € in prestito lasci in garanzia un oggetto che vale 150 €, così il prestatore è coperto anche se l'oggetto perde un po' di valore.
-
-> ⚠️ **Nota** (sintesi mia, dalla letteratura).
-> - Se la garanzia scende troppo e il ratio va sotto una soglia minima, lo smart contract **liquida** la posizione: vende la garanzia per ripagare le stablecoin. È il meccanismo di **MakerDAO (DAI)**.
-> - Il prezzo da pagare è il **capitale bloccato**: per 1.000 $ di stablecoin ne immobilizzi 1.500. Ecco perché, nel triangolo, le crypto-collateralized **non** stanno sul lato *capital-efficient*.
-
-#### Non-collateralized currency
-
-**Obiettivo:** mantenere la stabilità **senza una riserva di garanzia** (*without relying on a collateral reserve*).
-
-**Il modello di riferimento è la banca centrale.** Le valute fiat ci riescono perché le **banche centrali**, in quanto **autorità monetaria**, controllano l'offerta di moneta (*money supply*):
-
-- il valore della moneta è determinato da **domanda e offerta**:
-  - più domanda → il prezzo della valuta **sale**;
-  - meno domanda → il prezzo **scende**;
-- la banca centrale reagisce:
-  - se il prezzo sale, **stampa nuova moneta** (più offerta → prezzo giù);
-  - se il prezzo scende, **compra e distrugge moneta** (meno offerta → prezzo su).
-
-Le stablecoin non-collateralized fanno la stessa cosa con un **algoritmo in uno smart contract** al posto della banca centrale: se il token vale più di 1 $ ne emettono altri, se vale meno ne ritirano dalla circolazione. Per questo si chiamano **algoritmiche**.
-
-**Pro** (slide *Pros*):
-
-- **Nessuna garanzia** richiesta.
-- La forma **più decentralizzata e indipendente**.
-- **Non legata** a nessuna valuta fiat né a un'altra criptovaluta.
-- **Nessun incentivo a inflazionare o deflazionare** la valuta: l'algoritmo punta solo alla **stabilità**.
-
-> ⚠️ **Nota di rigore** (sintesi mia). Una banca centrale può difendere la propria valuta anche con riserve, tassi e poteri legali; l'algoritmo ha solo la leva dell'offerta. Se la fiducia crolla e tutti vendono, il meccanismo può avvitarsi su sé stesso: è quello che è successo a **Terra (UST)** nel 2022.
-
-#### Caso di studio: Terra, UST e Luna
-
-**L'ecosistema Terra.** Il Prof. lo presenta come un ecosistema **molto attivo e interessante**, con diverse stablecoin (**UST**, la principale, più altre come Altered e Soluna). La mappa *Terra DeFi Ecosystem* (tweet di @Terrians_, 4 marzo 2022) mostra decine di progetti divisi per categoria: lending, derivati, DEX/liquidità, wallet, stablecoin, gambling, social, privacy, saving/payment, tooling, yield farming, assicurazioni, charity, bridge e altro.
-
-**Luna: il token di staking di Terra.** Viene usato per scopi diversi:
-
-- **regolare le stablecoin**: l'offerta di UST si aggiusta **coniando o bruciando Luna**, quindi **Luna assorbe la volatilità** di Terra;
-- **pagare le ricompense di staking** a delegatori e validatori;
-- **governance**: ogni decisione richiede di **bloccare prima dei Luna**.
-
-**USD Luna e UST: il meccanismo di stabilità.** In qualsiasi momento si può scambiare **1 USD di Luna con 1 UST** e viceversa:
-
-| Scambio | Cosa succede |
-|---|---|
-| 1 USD di Luna → 1 UST | si **bruciano** Luna per 1 USD, si **conia** 1 UST |
-| 1 UST → 1 USD di Luna | si **brucia** 1 UST, si **coniano** Luna per 1 USD |
-
-> 💡 **Perché tiene il prezzo a 1 $** (sintesi mia). È un incentivo all'**arbitraggio**:
-> - se UST vale **0,98 $**, conviene comprarlo e convertirlo in 1 $ di Luna: guadagno 0,02 $, e gli UST bruciati **riducono l'offerta**, facendo risalire il prezzo;
-> - se UST vale **1,02 $**, conviene bruciare 1 $ di Luna per coniare 1 UST e venderlo: gli UST nuovi **aumentano l'offerta**, facendo scendere il prezzo.
->
-> È la "banca centrale algoritmica" vista sopra: Luna fa da cuscinetto al posto delle riserve.
-
-**Perché UST era così richiesto: l'ecosistema.** La slide *"To understand why, we should probably look at the Terra ecosystem"* elenca cosa si poteva fare con Terra: **lending, assicurazioni, investimenti, cause benefiche** e altro.
-
-**Anchor**, il progetto principale:
-
-- un **conto di risparmio DeFi** che funziona come un normale conto bancario: si possono **chiedere prestiti** e **depositare risparmi** per ottenere un rendimento;
-- offriva un **rendimento del 20% annuo (APY)** a chi depositava UST;
-- il rendimento veniva dagli **interessi pagati da chi prendeva in prestito**.
-
-**Anchor Ponzinomics** (slide):
-
-- la grande **domanda di UST era trainata dall'APY di Anchor**: la gente **comprava UST per parcheggiarli in Anchor**;
-- rendimenti **artificiali, non sostenibili**;
-- citazione da un articolo di *Wired*: *"When you pay money for nothing, and stash your nothing in a protocol with the expectation that it will give you a 20% yield — all you end up with is 20% of nothing."*
-
-> 💡 **Lettura** (sintesi mia). UST non aveva valore proprio: la domanda veniva quasi tutta dal rendimento promesso. Il termine *Ponzinomics* indica proprio questo, un sistema che regge finché entrano nuovi depositi.
-
-> ⚠️ **Nota** (sintesi mia). Un 20% stabile su una stablecoin non era sostenibile con i soli interessi dei prestiti e veniva in parte sussidiato.
-
-**La caduta** (slide *The fall*):
-
-- all'improvviso, **enormi prelievi di UST da Anchor**;
-- c'è chi parla di **complotto** (articoli di Decrypt, Forbes, Cryptonews, CNET);
-- in slide i tweet di **Do Kwon**, cofondatore di Terra (14 maggio 2022): si dice *"heartbroken"* per il danno causato dal *depeg* e ammette che *"$UST in its current form will not be that money"*.
-
-**La caduta di UST** (slide *The fall of UST*):
-
-| Data | Cosa succede |
-|---|---|
-| **7 maggio 2022** | Oltre **2 miliardi di $** di UST vengono ritirati (*unstaked*) da Anchor; centinaia di milioni vengono venduti subito |
-| | Il prezzo scende a **0,91 $** |
-| | I trader provano l'**arbitraggio**: danno 0,90 $ di UST in cambio di 1 $ di Luna |
-| | **Ma** non funziona per tutti: si possono bruciare per Luna **solo 100 milioni di $ di UST al giorno** |
-| **26 maggio 2022** | UST vale circa **0,086 €** |
-
-**Peggio per chi aveva Luna** (slide *Worse for Luna Holders*):
-
-- tweet di Watcher.Guru (12 maggio 2022): una settimana prima Luna valeva **82,55 $**, ora **0,01 $**;
-- **26 maggio 2022**: Luna vale circa **0,000146 €**.
-
-> 💡 **Perché il meccanismo si è rotto** (sintesi mia, collegata al §"USD Luna e UST").
-> - L'arbitraggio funziona solo se è abbastanza **veloce**: con il tetto di 100 milioni al giorno, a fronte di miliardi venduti, non riusciva ad assorbire le vendite e il prezzo restava sotto 1 $.
-> - Ogni UST bruciato **conia nuovi Luna**. Più UST venivano convertiti, più Luna entravano in circolazione, e il prezzo di Luna crollava.
-> - Con Luna che vale sempre meno, per "1 $ di Luna" servono sempre più Luna: è la **spirale della morte** (*death spiral*). Il cuscinetto che doveva assorbire la volatilità (Luna) è crollato insieme a ciò che doveva proteggere (UST).
-
-**Un attacco speculativo?** (slide *A Speculation Attack?*). Alcuni ipotizzano questo scenario:
-
-1. un attaccante voleva **rompere UST** per guadagnare **scommettendo sul ribasso di Bitcoin** (*shorting*: vendere prima con l'intenzione di ricomprare a un prezzo più basso);
-2. gli attaccanti avrebbero accumulato una **grande posizione in UST** e poi ritirato **2 miliardi di $ in un colpo solo**, causando il *depeg*;
-3. a quel punto il team di Terra avrebbe dovuto **vendere parte delle sue riserve in Bitcoin** per ripristinare il peg;
-4. gli investitori, vedendo UST perdere valore, avrebbero venduto ancora, costringendo a vendere altri Bitcoin e aumentando la **pressione al ribasso** sul prezzo di BTC, a vantaggio di chi aveva scommesso sul ribasso.
-
-> ⚠️ **Nota** (sintesi mia). È un'ipotesi ("some suppose"), non un fatto accertato. Mostra però il punto debole del modello: una stablecoin algoritmica regge sulla **fiducia**, e un'uscita coordinata e improvvisa può innescare un panico che si autoalimenta (come una corsa agli sportelli, *bank run*). Il riferimento alle riserve in Bitcoin indica che Terra aveva comunque costituito una riserva di emergenza, non sufficiente.
-
-**Dopo** (slide *Terra Classic USD (3 months)*): il grafico CoinMarketCap fino a ottobre 2022 mostra UST, ribattezzato *Terra Classic USD*, fermo tra **0,02 e 0,065 $**, lontanissimo dal peg di 1 $.
-
-
----
-
-## 3. Trade-off e implicazioni
-
-### 3.1 UTXO vs account
-
-| Caratteristica | UTXO-based | Account-based |
-|---|---|---|
-| **Unità di stato** | Output non speso (token + condizione di spesa) | Account (indirizzo + wallet + state + eventuale codice) |
-| **Come si spende** | Si referenziano output non spesi e si soddisfano le loro condizioni (*previous checks*) | Una transazione firmata aggiorna i saldi, se sufficienti |
-| **Effetto della transazione** | Consuma input interi, crea nuovi output | Modifica in place saldi e variabili |
-| **Saldo** | Somma degli UTXO sbloccabili (calcolata dal wallet) | Scritto esplicitamente nell'account |
-| **Parallelismo** | Naturale: transazioni su UTXO diversi sono indipendenti | Più difficile: transazioni sullo stesso account sono in conflitto (lo stateless aiuta dichiarando gli account toccati) |
-| **Double spending** | Un output si spende una sola volta | Serve un contatore per account (**nonce**) per evitare replay |
-| **Privacy** | Migliore: si possono usare indirizzi nuovi per ogni resto | Peggiore: un account accumula tutta la storia |
-| **Programmabilità** | Script associati ai singoli output; Bitcoin Script non Turing-completo | Contratti con stato condiviso, tipicamente Turing-completi |
-| **Piattaforme** | Bitcoin, Cardano | Ethereum, Avalanche, Hedera, Tezos, Algorand (stateful); Solana (stateless) |
-
-> ⚠️ **Nota** (sintesi mia). Cardano usa un **eUTXO** (*extended UTXO*): gli output possono portare dati e i validatori (in Plutus) sono molto più espressivi di Bitcoin Script. Quindi "UTXO = non programmabile" vale per Bitcoin, non per il modello in generale.
-
-### 3.2 Bitcoin: possibilità offerte
-
-- **Rimesse** (*remittances*): invio di denaro all'estero senza intermediari e con costi ridotti.
-- **Bank the unbanked**: servizi finanziari per chi non ha un conto bancario.
-- **Micropagamenti**: importi molto piccoli, poco sostenibili con i circuiti tradizionali.
-
-> ⚠️ **Nota di rigore** (sintesi mia). Sono le promesse originarie. Con fee di 1–2 $ e latenza di circa un'ora (Capitolo 2, §1.7), i micropagamenti sulla catena principale non sono praticabili; per questo sono nate soluzioni di livello 2 come Lightning Network.
-
-### 3.3 Bitcoin e governi
-
-**Elusione del controllo dei capitali**: essendo digitale e decentralizzato, Bitcoin rende difficile agli Stati bloccare il flusso di valore in entrata e in uscita dai propri confini.
-
-> ⚠️ **Nota di rigore.** Bitcoin non è "non tracciabile". È **pseudonimo**: tutte le transazioni sono pubbliche e analizzabili, ma gli indirizzi non sono legati direttamente a un'identità. Il punto è che non serve un intermediario autorizzato dallo Stato per spostare valore. È la *censorship resistance* del Capitolo 1 applicata al denaro.
-
-### 3.4 Implicazioni
-
-- Le cripto **non sono un investimento economicamente sicuro**, ma molti le percepiscono come bene rifugio rispetto alle banche.
-- Esempi citati: **Argentina** e **Cipro**, dove le crisi bancarie hanno spinto le persone verso Bitcoin *(da verificare)*.
-
-> ⚠️ **Nota** (sintesi mia). A Cipro nel 2013 c'è stato il prelievo forzoso sui depositi (*bail-in*), in concomitanza con la prima impennata di BTC. In Argentina i fattori sono stati inflazione, *corralito* e controlli sui cambi. Da confrontare con quanto detto in aula.
-
-- 💡 **Punto su cui insiste il Prof.:** l'attenzione va spostata dal mercato finanziario al **valore sociale** di Bitcoin. La parte davvero interessante è il protocollo.
-- **Impatto energetico**: crescita dei data center e della potenza di calcolo per il mining, con conseguente aumento del consumo di energia negli ultimi anni (vedi i Wh/tx nel Capitolo 2, §1.7).
-
-### 3.5 Confronto tra i tipi di stablecoin
-
-| | **Fiat/asset-collateralized** | **Crypto-collateralized** | **Non-collateralized (algoritmiche)** |
+| ETH = 1.000 $, emetto 1.000 stablecoin | Garanzia | Ratio | Dopo −20% su ETH |
 |---|---|---|---|
-| **Garanzia** | Valuta o bene reale in banca, 1:1 | Cripto in uno smart contract, > 100% | Nessuna |
-| **Chi la custodisce** | Un custode centralizzato | Lo smart contract | Nessuno: un algoritmo regola l'offerta |
-| **Stabilità** | Massima (100%) | Dipende dal ratio e dalla volatilità della garanzia | Regge sulla fiducia e sull'arbitraggio |
-| **Decentralizzazione** | Bassa | Alta | Massima |
-| **Efficienza del capitale** | Alta (1:1) | Bassa (capitale bloccato) | Alta |
-| **Rischio principale** | Riserve insufficienti, custode, regolamentazione | Crollo della garanzia, liquidazioni | Perdita di fiducia → death spiral |
-| **Esempi in slide** | Tether, TrueUSD, Digix | MakerDAO, bitUSD | Basis, Carbon, Terra (UST) |
+| Senza margine | 1 ETH | 100% | 0,80 $ per token → peg perso |
+| Sovra-collateralizzata | 1,5 ETH | 150% | 1,20 $ per token → ancora coperta |
 
-> 💡 **Lettura da esame** (sintesi mia). Ogni tipo rinuncia a una delle tre proprietà del triangolo: la fiat rinuncia alla decentralizzazione, la crypto all'efficienza del capitale, l'algoritmica alla garanzia, e quindi alla robustezza. Terra mostra cosa succede quando l'unica difesa è la fiducia.
+**Algoritmiche.** Imitano una **banca centrale**: se il prezzo sale si emette moneta, se scende la si ricompra e distrugge. Lo smart contract usa **oracoli** per monitorare il prezzo sugli exchange.
+
+### 3.3 Caso di studio: Terra (UST) e Luna
+
+- **Terra:** blockchain su **Cosmos SDK + Tendermint**, con oltre 100 progetti nativi (NFT, DeFi, Web3) e più stablecoin: **UST** (USD), TerraEUR, TerraCNY, TerraJPY, TerraKRW, TerraSDR…
+- **Luna**, token di staking: regola le stablecoin con mint/burn (**assorbe la volatilità**), paga le ricompense di staking, va bloccato per la **governance**.
+- **Meccanismo:** in ogni momento **1 $ di Luna ↔ 1 UST** (si brucia uno, si conia l'altro).
+  - **Espansione** (1 UST = 1,01 $): brucio 1 $ di Luna, conio 1 UST, lo vendo a 1,01 → +0,01; l'offerta di UST sale, il prezzo scende.
+  - **Contrazione** (1 UST = 0,99 $): compro UST a 0,99, lo converto in 1 $ di Luna → +0,01; l'offerta di UST cala, il prezzo sale.
+- **Anchor:** "conto di risparmio DeFi" con **20% APY** sugli UST depositati, pagato dagli interessi dei debitori. La domanda di UST era trainata dall'APY: **Anchor Ponzinomics**, rendimenti artificiali (*"20% of nothing"*, Wired).
+
+**La caduta (maggio 2022).**
+
+| Data | Evento |
+|---|---|
+| **7 maggio** | > 2 mld $ di UST ritirati da Anchor, centinaia di milioni venduti subito; UST a **0,91 $**. L'arbitraggio (0,90 $ di UST → 1 $ di Luna) era limitato a **100 mln $ al giorno** |
+| **12 maggio** | Luna da **82,55 $** a **0,01 $** in una settimana |
+| **26 maggio** | UST ≈ **0,086 €**, Luna ≈ **0,000146 €** |
+| **Settembre 2022** | UST, ribattezzato *Terra Classic USD*, resta lontanissimo dal peg (grafici CoinMarketCap del 10/09/2022) |
+
+> 💡 **Death spiral.** Ogni UST bruciato conia nuovi Luna: più si vende UST, più Luna entra in circolo e il suo prezzo crolla, quindi servono ancora più Luna per "1 $". Il cuscinetto (Luna) cade insieme a ciò che doveva proteggere, e il tetto giornaliero rende l'arbitraggio troppo lento.
+
+**Attacco speculativo?** Ipotesi (*"some suppose"*): un attaccante accumula UST, ritira 2 mld $ in un colpo per rompere il peg, costringe Terra a vendere le **riserve in BTC**, il panico forza altre vendite e il calo di Bitcoin premia chi era **short** su BTC. È un'ipotesi, non un fatto accertato. Le ultime slide mostrano un'**analisi del sentiment e della geolocalizzazione dei tweet** durante il collasso.
 
 ---
 
-## 4. Esempi e codice
+## 4. Trade-off ed esempi
 
-### 4.1 UTXO: riproduzione dell'esempio delle slide
+### 4.1 UTXO vs account
+
+| | UTXO | Account |
+|---|---|---|
+| Stato | Output non spesi | Saldo e variabili per indirizzo |
+| Spesa | Consuma input interi, crea output | Aggiorna in place |
+| Double spending / replay | Un output si spende una volta | Serve un **nonce** per account |
+| Parallelismo | Naturale | Difficile (lo stateless aiuta) |
+| Privacy | Migliore (indirizzi nuovi per il resto) | Peggiore (storia accumulata) |
+| Programmabilità | Script limitati (Bitcoin); eUTXO espressivo (Cardano) | Contratti con stato condiviso |
+
+### 4.2 Simulazione UTXO (esempio delle slide)
 
 ```python
-utxo = {}                                   # (txid, indice) -> (importo, proprietario)
+utxo = {("tx1", 0): (5, "p1")}                 # (txid, indice) -> (importo, owner)
 
 def tx(txid, inputs, outputs, firme):
-    tot_in = 0
-    for ref in inputs:                      # "previous checks"
+    tot = 0
+    for ref in inputs:                          # previous checks
         assert ref in utxo, f"{ref} speso o inesistente"
         importo, owner = utxo[ref]
         assert owner in firme, f"manca la firma di {owner}"
-        tot_in += importo
-    assert sum(a for a, _ in outputs) <= tot_in, "output > input"
-    for ref in inputs:
-        del utxo[ref]                       # spent
-    for i, out in enumerate(outputs):
-        utxo[(txid, i)] = out               # unspent
+        tot += importo
+    assert sum(a for a, _ in outputs) <= tot, "output > input"
+    for ref in inputs: del utxo[ref]
+    for i, out in enumerate(outputs): utxo[(txid, i)] = out
 
-tx("tx1", [], [], set()); utxo[("tx1", 0)] = (5, "p1")      # output iniziale (es. coinbase)
 tx("tx2", [("tx1", 0)], [(3, "p2"), (2, "p3")], {"p1"})
 tx("tx3", [("tx2", 0)], [(1, "p4"), (2, "p5")], {"p2"})
 tx("tx4", [("tx2", 1), ("tx3", 1)], [(4, "p6")], {"p3", "p5"})
 print(utxo)   # {('tx3', 0): (1, 'p4'), ('tx4', 0): (4, 'p6')}
-# tx("tx5", [("tx1", 0)], [(5, "p9")], {"p1"}) -> AssertionError: già speso
+# tx("tx5", [("tx1", 0)], [(5, "p9")], {"p1"})  -> AssertionError: già speso
 ```
-
-### 4.2 Account stateful: il contratto `acct3` con `lock()`
-
-```python
-state = {
-    "acct2": {"wallet": {"T": 1, "T'": 3}},
-    "acct3": {"wallet": {"T": 10}, "z": 1},
-}
-
-def pay(b, x):
-    c = state["acct3"]
-    if c["z"] == 0:
-        raise RuntimeError("abort")
-    assert c["wallet"]["T"] >= x
-    c["wallet"]["T"] -= x
-    state[b]["wallet"]["T"] += x
-
-def lock(signer):
-    if signer == "alice":
-        state["acct3"]["z"] = 0
-
-pay("acct2", 1)
-print(state["acct3"]["wallet"], state["acct2"]["wallet"])  # {'T': 9} {'T': 2, "T'": 3}
-lock("alice")
-# pay("acct2", 1) -> RuntimeError: abort
-```
-
-### 4.3 Stablecoin algoritmica: la death spiral di UST/Luna (toy)
-
-```python
-def swap_ust_for_luna(ust, luna_price):
-    """Brucia `ust` UST e conia Luna per lo stesso valore in dollari (1 UST = 1 $)."""
-    return ust / luna_price            # Luna coniati
-
-luna_supply, luna_price = 350e6, 80.0  # ordini di grandezza indicativi
-for giorno in range(1, 6):
-    coniati = swap_ust_for_luna(100e6, luna_price)   # tetto: 100 mln $ di UST al giorno
-    luna_supply += coniati
-    luna_price *= 0.3                  # il mercato vende Luna per panico (ipotesi)
-    print(f"giorno {giorno}: +{coniati:,.0f} Luna, supply {luna_supply:,.0f}, prezzo {luna_price:.4f} $")
-```
-
-Più il prezzo di Luna scende, più Luna vanno coniati per ogni UST bruciato: l'offerta esplode e il prezzo crolla ancora. I numeri sono inventati; serve solo a vedere il meccanismo di retroazione.
 
 ---
 
-## 5. Active Recall
+## 5. Quadro di riepilogo
 
 ### 5.1 Concetti chiave
 
 | Concetto | In sintesi |
 |---|---|
-| **Tassonomia** | UTXO (Bitcoin, Cardano) vs account; account stateful (Ethereum, Avalanche, Hedera, Tezos, Algorand) vs stateless (Solana) |
-| **UTXO** | Output non speso = token + condizione di spesa (script) |
-| **Previous checks** | Per spendere: riferire un output, verificare che sia non speso, soddisfarne la condizione |
-| **Spent / unspent** | Gli input vengono consumati per intero; si creano nuovi output (split, merge, resto) |
-| **Conservazione** | Output ≤ input; la differenza è la fee |
-| **Account-based** | Mappa indirizzo → account; aggiornamenti in place |
-| **EOA vs contract account** | L'EOA firma e avvia le transazioni; il contratto reagisce alle chiamate |
-| **Stateful** | Il contratto ha codice, stato e token propri (`acct3` con `z` e `lock()`) |
-| **Stateless** | Il contratto ha solo codice; stato e token stanno in altri account (Solana) |
-| **Trade-off** | UTXO: parallelismo, privacy, semplicità di verifica. Account: programmabilità, saldi espliciti, stato condiviso |
-| **Bitcoin** | Moneta digitale, nessun emittente, P2P, tetto di 21 milioni, autore pseudonimo (Satoshi Nakamoto) |
-| **Storia** | Whitepaper 2008, Genesis Block 2009, prima tx a Hal Finney, Pizza Day 22/05/2010, boom 2013 |
-| **Rete Bitcoin** | P2P, ledger replicato, broadcast, validazione (firma, UTXO non spesi), accettazione solo in blocco, consenso globale |
-| **Pseudonimato** | Transazioni pubbliche e analizzabili; indirizzi non legati direttamente all'identità |
-| **Valore sociale** | Rimesse, unbanked, micropagamenti, resistenza al controllo dei capitali; il Prof. insiste sul protocollo più che sul mercato |
-| **Wallet** | Interfaccia verso il protocollo (come il browser per HTTP); custodisce le chiavi, non i bitcoin |
-| **Desktop wallet** | Il primo tipo (es. Electrum): autonomia e controllo, ma legato al dispositivo (perso → fondi persi) e a OS poco sicuri |
-| **Web wallet** | Chiavi sul server di terzi (come la webmail): comodo, ma i furti sono avvenuti tutti lì (Mt.Gox) |
-| **Hardware / paper wallet** | Cold wallet: chiavi offline su dispositivo dedicato o su carta |
-| **Exchange centralizzati** | Order book + matching engine, commissioni, custodia delle chiavi; scambi interni non on-chain ma in un DB centrale |
-| **Exchange decentralizzati** | Scambi on-chain tramite smart contract, senza intermediario; l'utente tiene le chiavi |
-| **Limiti della volatilità** | Speculazione, rischio di cambio (stipendio in BTC?), difficile per prestiti e contratti; molti vogliono solo un registro anti-censura |
-| **Stablecoin** | Valore agganciato a una valuta (≈ 1 USD); per il Prof. le cripto davvero utili come servizio sociale |
-| **Tipi di stablecoin** | Fiat/asset, crypto-collateralized, non-collateralized (algoritmiche/ibride); lati: collateralized, capital-efficient, decentralized |
-| **Fiat-collateralized** | 1 USD in banca = 1 token; mint al deposito, transfer on-chain, burn al prelievo; stabile ma centralizzata, servono audit |
-| **Crypto-collateralized** | Garanzia in cripto dentro uno smart contract; con 1:1 sarebbe volatile quanto la garanzia |
-| **Collateralization ratio** | Valore garanzia / valore stablecoin emesse; > 100% (es. 150%) come cuscinetto; più volatile la cripto, più alto il ratio |
-| **Non-collateralized** | Stabilità senza riserva: un algoritmo emette o distrugge token come una banca centrale; più decentralizzata e indipendente |
-| **Terra / Luna / UST** | UST algoritmica; Luna token di staking che assorbe la volatilità (1 $ di Luna ↔ 1 UST con burn/mint), paga lo staking e serve per la governance |
-| **Caduta di Terra (maggio 2022)** | 2 mld $ ritirati da Anchor, UST a 0,91 $; arbitraggio limitato a 100 mln $/giorno; Luna coniati in massa → death spiral (Luna da 82 $ a 0,01 $); ipotesi di attacco speculativo |
-| **Anchor** | Conto di risparmio DeFi su Terra: prestiti e depositi, 20% APY sugli UST; domanda di UST trainata dall'APY, rendimenti artificiali e insostenibili (*Ponzinomics*) |
+| Tassonomia | UTXO (Bitcoin, Cardano) · account stateful (Ethereum…) · stateless (Solana) |
+| UTXO | Token + condizione di spesa; previous checks; spesa per intero, resto, fee |
+| Stateful vs stateless | Contratto con codice, stato e token vs solo codice |
+| Bitcoin | Digitale, senza emittente né banche, pseudonimo, aperto, volatile; tx accettata solo in blocco |
+| Wallet | Interfaccia al protocollo; custodisce chiavi; desktop/mobile/web (hot) vs hardware/paper (cold) |
+| CEX vs DEX | Order book e DB centrale vs smart contract on-chain |
+| Stablecoin | Fiat (1:1, centralizzata) · crypto (> 100%, ratio) · algoritmica (offerta, oracoli) |
+| Terra | 1 $ Luna ↔ 1 UST; Anchor 20% APY; tetto 100 mln $/giorno → death spiral (maggio 2022) |
 
-### 5.2 Domande e risposte
+### 5.2 Parole chiave
 
-1. Descrivi la tassonomia delle piattaforme crypto e colloca Bitcoin, Ethereum, Cardano e Solana.
-2. Cos'è un UTXO e da quali due elementi è composto?
-3. Cosa significa "previous checks" e perché previene il double spending?
-4. Perché nel modello UTXO un output si spende per intero? Come si gestisce il resto?
-5. Ricostruisci l'esempio tx1–tx4: quale UTXO set rimane alla fine?
-6. Come si calcola il saldo di un utente nel modello UTXO?
-7. Che differenza c'è tra EOA e contract account?
-8. Nell'esempio `acct3.pay(acct1, acct2, 1)` cosa cambia nello stato? Quale problema di sicurezza ha il codice?
-9. Cosa significa che un contract account è stateful? Spiega il ruolo di `z` e `lock()`.
-10. Cosa significa stateless nella tassonomia del corso? Perché Solana è in quella categoria?
-11. Perché il modello UTXO si presta meglio al parallelismo?
-12. Il modello UTXO implica l'assenza di smart contract? (Pensa a Cardano.)
-13. Quali sono le quattro caratteristiche di alto livello di Bitcoin?
-14. Quando una transazione Bitcoin si considera accettata? Cosa verificano i nodi?
-15. Bitcoin è anonimo? Motiva.
-16. Quali possibilità offre Bitcoin secondo le slide, e quali limiti pratici hanno?
-17. Perché il Prof. insiste sul valore sociale più che sul mercato?
-18. Che ruolo ha un wallet rispetto al protocollo Bitcoin? Cosa custodisce davvero?
-19. Pro e contro di un desktop wallet.
-20. Perché i web wallet sono il punto debole da cui sono stati rubati i bitcoin? Il protocollo è stato violato?
-21. Che differenza c'è tra hot e cold wallet? Fai un esempio per tipo.
-22. Come funziona un exchange centralizzato? Le transazioni tra utenti finiscono sulla blockchain?
-23. Che differenza c'è tra exchange centralizzati e decentralizzati?
-24. Quali sono i limiti delle criptovalute volatili secondo la slide?
-25. Cos'è una stablecoin e perché il Prof. la considera utile come servizio sociale?
-26. Descrivi i tre tipi di stablecoin e le proprietà sui lati del triangolo della slide.
-27. Descrivi deposito, trasferimento e prelievo di una stablecoin fiat-collateralized. Cosa fanno mint e burn?
-28. Pro e contro delle fiat-collateralized.
-29. Perché una stablecoin crypto-collateralized 1:1 non è stabile? Cos'è il collateralization ratio e da cosa dipende?
-30. Come mantiene la stabilità una stablecoin non-collateralized? Che analogia fa la slide con le banche centrali?
-31. A cosa serve Luna nell'ecosistema Terra?
-32. Spiega lo scambio 1 USD di Luna ↔ 1 UST e perché dovrebbe tenere UST a 1 $.
-33. Cos'era Anchor, da dove veniva il suo rendimento e perché la slide parla di *Ponzinomics*?
-34. Ricostruisci la caduta di UST e Luna nel maggio 2022. Perché l'arbitraggio non ha salvato il peg?
-35. In cosa consiste l'ipotesi dell'attacco speculativo?
-36. Confronta i tre tipi di stablecoin per garanzia, stabilità, decentralizzazione ed efficienza del capitale.
+`UTXO` · `spending condition` · `previous checks` · `change` · `fee` · `EOA` · `contract account` · `stateful / stateless` · `nonce` · `Genesis Block` · `pseudonimato` · `capital control` · `hot / cold wallet` · `custodial` · `order book` · `matching engine` · `CEX / DEX` · `peg` · `mint / burn` · `audit delle riserve` · `collateralization ratio` · `CDP` · `stablecoin algoritmica` · `oracolo` · `UST / Luna` · `Anchor` · `arbitraggio` · `death spiral`
+
+### 5.3 Domande
+
+1. Descrivi la tassonomia e colloca Bitcoin, Ethereum, Cardano e Solana.
+2. Cos'è un UTXO e cosa significa "previous checks"? Ricostruisci tx1–tx4.
+3. Come si calcola il saldo nel modello UTXO? Perché un output si spende per intero?
+4. EOA vs contract account; stateful vs stateless. Quale bug ha `acct3.pay(acct1, acct2, 1)`?
+5. Perché il modello UTXO si presta al parallelismo? UTXO implica assenza di smart contract?
+6. Quando una transazione Bitcoin è accettata e cosa verificano i nodi? Bitcoin è anonimo?
+7. Cosa custodisce davvero un wallet? Confronta i cinque tipi della slide.
+8. Le transazioni su un exchange centralizzato finiscono sulla blockchain? Differenze con un DEX.
+9. Perché servono le stablecoin? Confronta i tre tipi con pro e contro.
+10. Descrivi mint, transfer e burn di una fiat-collateralized e l'invariante che le regge.
+11. Cos'è il collateralization ratio e perché deve crescere con la volatilità?
+12. Come mantiene il peg Terra? Perché l'arbitraggio non l'ha salvata nel maggio 2022?
 
 <details>
 <summary><b>Tracce di risposta</b></summary>
 
-1. UTXO (Bitcoin, Cardano) vs account; account stateful (Ethereum…) vs stateless (Solana).
-2. Un output di una transazione non ancora speso: token + condizione di spesa (script).
-3. Per spendere si deve riferire un output precedente, verificare che sia ancora non speso e soddisfarne la condizione; un output speso esce dall'UTXO set e non si può riusare.
-4. Gli output sono indivisibili: si consuma tutto e si crea un output di resto verso il mittente.
-5. `1:T→p4` e `4:T→p6` (tx4 unisce `2:T→p3` e `2:T→p5`).
-6. Sommando gli UTXO la cui condizione di spesa l'utente sa soddisfare; non è scritto da nessuna parte.
-7. L'EOA è controllato da chiavi e può avviare transazioni; il contract account contiene codice e si attiva solo se chiamato.
-8. acct1 da 5 a 4 T, acct2 da 1 a 2 T, il resto invariato. Manca il controllo che chi chiama sia autorizzato a spendere da acct1.
-9. Ha codice, stato e token propri. `pay` trasferisce dal wallet del contratto se `z≠0`; `lock()`, se firmata da Alice, pone `z=0` e blocca i pagamenti.
-10. Il contratto contiene solo codice; stato e token stanno in account separati passati alla chiamata. In Solana i programmi non hanno stato proprio.
-11. Transazioni che consumano UTXO diversi non hanno dipendenze; negli account più transazioni toccano lo stesso saldo o le stesse variabili.
-12. No: Cardano usa l'eUTXO con validatori Plutus molto espressivi; Bitcoin Script invece è volutamente limitato.
-13. Completamente digitale; nessun governo la emette (tetto 21 milioni); nessuna banca, transazioni P2P validate da nodi e miner; inventore pseudonimo.
-14. Solo quando compare in un blocco della blockchain. I nodi verificano firma, disponibilità dei fondi (input UTXO non spesi) e assenza di double spending. Per sicurezza si attendono circa 6 conferme.
-15. No, è pseudonimo: le transazioni sono pubbliche e tracciabili, ma gli indirizzi non sono direttamente legati a un'identità.
-16. Rimesse, bank the unbanked, micropagamenti. Limiti: fee e latenza sulla catena principale rendono poco praticabili i micropagamenti (da cui soluzioni di livello 2).
-17. Perché l'innovazione sta nel protocollo: trasferire valore senza intermediari e senza poter essere bloccati, non nella speculazione sul prezzo.
-18. È il client che "parla" il protocollo, come il browser per HTTP. Custodisce le chiavi private (i fondi sono UTXO sulla blockchain), calcola il saldo e firma le transazioni.
-19. Pro: prima tipologia, ricca di funzioni, autonomia e controllo (es. Electrum). Contro: disponibile solo sul dispositivo (perso → chiavi e fondi persi) e gira su OS general purpose spesso insicuri.
-20. Le chiavi di molti utenti stanno su un server di terzi (honeypot): gli hacker lo violano, prendono le chiavi e spostano i fondi. Il protocollo non è violato: per Bitcoin chi ha la chiave è il proprietario.
-21. Hot = connesso (desktop, web wallet), comodo ma esposto. Cold = offline (hardware, paper wallet), più sicuro ma meno pratico.
-22. Order book ordinato per prezzo, matching engine che abbina gli ordini, commissioni. Di solito no: l'exchange registra gli scambi in un database centrale; si va on-chain solo con depositi e prelievi.
-23. CEX: intermediario, DB centrale, custodia delle chiavi, fiducia nell'exchange. DEX: scambi on-chain tramite smart contract, l'utente tiene le chiavi, fiducia nel codice e nel consenso.
-24. La speculazione alimenta la volatilità; rischio di cambio (non si può pagare uno stipendio in BTC con serenità); prestiti, derivati e contratti richiedono stabilità; molti utenti vogliono solo conservare valore su un registro anti-censura, fuori dal sistema bancario.
-25. Una cripto con valore agganciato a una valuta (≈ 1 USD). Toglie il rischio di cambio mantenendo i vantaggi della blockchain, quindi rende davvero praticabili rimesse, pagamenti e accesso per gli unbanked.
-26. Tre tipi sul triangolo della slide: fiat/asset-collateralized (Tether, TrueUSD, Digix; fiducia nell'emittente), crypto-collateralized (MakerDAO, bitUSD; crollo del collaterale), non-collateralized/algoritmiche (Basis, Carbon, Terra; perdita del peg, Terra 2022). Lati: collateralized, capital-efficient, decentralized; nessun tipo li ha tutti e tre.
-27. Deposito: l'utente versa USD al custode, che fa mint dello stesso numero di token. Trasferimento: i token passano tra utenti on-chain, senza banca. Prelievo: il custode restituisce gli USD e fa burn dei token (es. Bob ritira 60 USD → burn(Bob, 60), riserva e token passano da 135 a 75). Regola: USD in riserva = token in circolazione.
-28. Pro: tutto digitale, semplice, prezzo stabile al 100%. Contro: centralizzata (custode fidato), servono audit sulle riserve, molto regolamentata, conversione in fiat lenta e costosa.
-29. Con 1:1 la stablecoin vale quanto la garanzia, quindi segue la sua volatilità. Il ratio è valore della garanzia / valore delle stablecoin: si tiene sopra il 100% (es. 6 ETH per 4 stablecoin = 150%) così un calo della garanzia non scopre i token. Più la cripto è volatile, più il ratio deve essere alto.
-30. Senza riserva, regolando l'offerta: come una banca centrale stampa moneta quando il prezzo sale e la ritira quando scende, un algoritmo emette o distrugge token per tenere il prezzo a 1 $. Pro: nessuna garanzia, la più decentralizzata e indipendente, non legata a fiat o cripto, nessun incentivo a inflazionare o deflazionare.
-31. È il token di staking: l'offerta di UST si regola coniando/bruciando Luna (che assorbe la volatilità), paga le ricompense di staking a delegatori e validatori, e va bloccato per partecipare alla governance.
-32. Si può sempre bruciare 1 $ di Luna per coniare 1 UST, o bruciare 1 UST per coniare 1 $ di Luna. Se UST < 1 $ conviene comprarlo e convertirlo in Luna (l'offerta di UST cala, il prezzo sale); se UST > 1 $ conviene coniarlo e venderlo (l'offerta sale, il prezzo scende): arbitraggio.
-33. Un conto di risparmio DeFi: depositi e prestiti in UST, con 20% APY per chi depositava, pagato dagli interessi dei debitori. La domanda di UST veniva quasi solo da lì: si compravano UST per parcheggiarli in Anchor. Rendimenti artificiali e insostenibili (*Ponzinomics*): "20% of nothing".
-34. Il 7 maggio 2022 oltre 2 mld $ di UST escono da Anchor e vengono in parte venduti: UST scende a 0,91 $. L'arbitraggio (0,90 $ di UST → 1 $ di Luna) era limitato a 100 mln $ al giorno, troppo poco; e ogni UST bruciato coniava nuovi Luna, facendone crollare il prezzo (da 82,55 $ a 0,01 $ in una settimana): death spiral. A fine maggio UST ~0,086 €, Luna ~0,000146 €.
-35. Qualcuno avrebbe accumulato UST e ritirato 2 mld $ in un colpo per rompere il peg, costringendo Terra a vendere le sue riserve in BTC; le vendite a catena avrebbero fatto scendere Bitcoin, facendo guadagnare chi aveva aperto posizioni short su BTC. È un'ipotesi, non un fatto accertato.
-36. Fiat: garanzia reale 1:1 in banca, massima stabilità ed efficienza, poco decentralizzata. Crypto: garanzia cripto > 100% in smart contract, decentralizzata ma capitale bloccato. Algoritmica: nessuna garanzia, massima decentralizzazione ed efficienza, ma fragile (Terra). Ognuna rinuncia a una proprietà del triangolo.
+1. UTXO: Bitcoin, Cardano. Account stateful: Ethereum. Stateless: Solana.
+2. Output non speso = token + script. Si riferisce un output, si verifica che non sia speso, se ne soddisfa la condizione. Finale: `1:T→p4`, `4:T→p6`.
+3. Somma degli UTXO sbloccabili. Gli output sono indivisibili: si consuma tutto e si crea il resto.
+4. EOA firma e avvia; il contratto reagisce. Stateful: codice, stato, token; stateless: solo codice. Manca il controllo su chi chiama.
+5. Tx su UTXO diversi non hanno dipendenze. No: Cardano (eUTXO) è programmabile.
+6. Solo quando è in un blocco; firma, input non spesi, niente double spending. Pseudonimo, non anonimo.
+7. Le chiavi private. Vedi tabella §2.2.
+8. Di solito no (DB centrale); on-chain solo depositi e prelievi. Il DEX scambia on-chain via smart contract.
+9. Volatilità, rischio di cambio, contratti, registro anti-censura. Vedi tabella §3.2.
+10. Deposito → mint; transfer on-chain; prelievo → burn. USD in riserva = token in circolazione.
+11. Garanzia / emesso; il margine assorbe i cali del collaterale.
+12. 1 $ di Luna ↔ 1 UST con arbitraggio. Il tetto di 100 mln $/giorno era troppo basso rispetto a miliardi venduti, e i Luna coniati ne facevano crollare il prezzo: death spiral.
 
 </details>
 
 ---
 
-## 🚧 Da completare
-
-**Riprendere dopo la slide *Terra Classic USD (3 months)*** ([registrazione Panopto](https://unibo.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=c71434dc-97a7-4bf1-9658-b4d700985bcb)). Restano i contro delle non-collateralized (slide non ancora vista) e il resto della slide *03.01 – Cryptocurrencies*.
-
-> Nota: nonce, privacy degli UTXO, eUTXO di Cardano, il modello a program/account di Solana, Lightning Network, la seed phrase, hot/cold wallet, i dettagli su Mt.Gox, Cipro e Argentina, i dettagli sulle stablecoin (liquidazione in MakerDAO, collasso di Terra, Digix legata all'oro), l'esempio numerico sul collateralization ratio, l'analogia del pegno la nota sui limiti dell'analogia con la banca centrale, l'esempio di arbitraggio UST/Luna, la spiegazione della death spiral, il paragone con il bank run, la tabella di confronto §3.5 e il codice §4.3 vengono dalla letteratura generale, non dalle slide.
-
----
+> **Fonti e verifica.** Verificato su 03.01 – Cryptocurrencies e 08 – Blockchain. **Correzioni rispetto alla versione precedente:** completati i contro delle algoritmiche e i pro/contro delle crypto-collateralized (dalle slide); aggiunti mobile wallet, caratteristiche di Bitcoin, oracoli, Cosmos SDK/Tendermint; le stablecoin di Terra in slide sono TerraEUR, TerraCNY ecc. (non "Altered e Soluna"); il grafico di Terra Classic è del 10/09/2022; esempio di arbitraggio allineato alla slide (1,01/0,99). Le immagini delle slide sulle stablecoin sono state tolte per stare nelle 5 pagine. Dalla letteratura: Mt.Gox, Lightning, EIP-7702, eUTXO, nonce, esempio numerico del ratio, death spiral, codice.
 
 [← Indice](README.md)

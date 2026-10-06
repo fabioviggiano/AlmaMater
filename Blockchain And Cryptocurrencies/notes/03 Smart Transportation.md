@@ -1,332 +1,214 @@
 # Capitolo 3 — Smart Transportation: dati personali su DFS e DLT
 
-*Lezione 3 (28/09/2026) · Slide "03.00 – The Use of Decentralized Systems to Develop Smart Transportation" (Mobi talk 2021, Prof. S. Ferretti), con i lavori Zichichi–Ferretti–D'Angelo del gruppo AnaNSi. In apertura, ripresa della parte su supply chain e tracciabilità di "02 – Introduction Blockchain".*
+| | |
+|---|---|
+| **Data** | Lunedì 28/09/2026 · Lezione 3 |
+| **Macro tema** | Parte II — Applicazioni: architettura DFS + DLT + smart contract |
+| **Slide** | 03.00 – The Use of Decentralized Systems to Develop Smart Transportation (Mobi talk 2021, Prof. Ferretti) · ripresa di supply chain da 02 |
 
 [← Indice](README.md)
 
 ---
 
-## 0. Raccordo con la lezione precedente: supply chain e tracciabilità
-
-La lezione riparte dai casi d'uso di filiera, trattati per esteso nel [Capitolo 2](<02 DLT, smart contract e use case.md>) (§2.1–2.3):
-
-- **TradeLens (IBM + Maersk):** notarizzazione di polizze, documenti e passaggi doganali dei container;
-- **IBM Food Trust:** storia del lotto dal campo allo scaffale, consultabile dal consumatore tramite QR code;
-- **prototipi didattici:** [AgroChain](https://github.com/Kerala-Blockchain-Academy/AgroChain) e [Hackinators-Farming-Dapp](https://github.com/ShubhamKarala/Hackinators-Farming-Dapp).
-
-> 💡 **Punto su cui insiste il Prof.** La blockchain garantisce l'**immutabilità del registro**, non la veridicità del dato fisico a monte (*Garbage In, Garbage Out*).
-
-Il filo che collega le due parti: anche nella smart transportation i dati sono prodotti da molti attori (i veicoli), ma qui sono **dati personali**. Il problema si sposta dalla tracciabilità alla **sovranità del dato**.
-
----
-
 ## 1. Fondamenti
 
-### 1.1 Lo scenario: Intelligent Transportation Systems (ITS)
+### 1.1 Raccordo con la lezione precedente
 
-I veicoli raccolgono continuamente **dati sensoriali** (*sensed data*): posizione, velocità, condizioni della strada, meteo, incidenti. Questi dati, condivisi, abilitano **servizi smart**, che le slide raggruppano in tre famiglie:
+La lezione riparte dalla tracciabilità di filiera ([Capitolo 2](<02 DLT, smart contract e use case.md>), §2.1–2.2) e dal principio **Garbage In, Garbage Out**: la blockchain garantisce l'immutabilità del registro, non la verità del dato fisico. Anche qui i dati sono prodotti da molti attori (i veicoli), ma sono **dati personali**: il problema si sposta dalla tracciabilità alla **sovranità del dato**.
 
-| Famiglia | Esempi dalla slide |
-|---|---|
-| **Safety** | Crash alert, sicurezza agli incroci, contrasto alla guida contromano, allerte meteo stradali |
-| **Info e ottimizzazione** | Analisi del traffico, ottimizzazione dei percorsi, manutenzione, PoI e infotainment |
-| **Trasporto per servizi smart** | Veicoli come *(trusted) data mules* (trasportano dati per altri), *(Crowd-)Sensing as a Service* |
+### 1.2 Lo scenario: Intelligent Transportation Systems
 
-### 1.2 Desiderata, proprietà, tecnologie
+I veicoli raccolgono **sensed data** (posizione, velocità, strada, meteo, incidenti) che, condivisi, abilitano **smart services**: safety (crash alert, incroci, contromano), informazione e ottimizzazione (traffico, percorsi, manutenzione, infotainment), veicoli come *(trusted) data mules* e *(crowd-)sensing as a service*.
 
-La slide costruisce una tabella a tre livelli, che è la chiave di lettura dell'intera lezione:
+La slide costruisce una tabella a tre livelli, chiave di tutta la lezione:
 
 | Livello | Contenuto |
 |---|---|
-| **Desiderata** (cosa si vuole fare con i dati) | **Sharing**, **aggregation**, **trading** |
-| **Features** (proprietà necessarie) | **Access control**, **authenticity**, **verifiability**, **immutability** |
-| **Technologies** (con cosa si ottengono) | **DLT**, **distributed storage**, **smart contract**, **authorization** |
+| **Desiderata** | Sharing · aggregation · trading |
+| **Features** | Access control · authenticity · verifiability · immutability |
+| **Technologies** | DLT · distributed storage · smart contracts · authorization |
 
-Il problema di fondo: sono **dati personali** (dove sono stato, quando, come guido). Chi li conserva? In sintesi servono quattro garanzie, che strutturano il resto del capitolo:
+Ma sono **personal data**: dove si conservano (*data storage*)?
 
-1. **sovranità**: l'utente mantiene il controllo dei propri dati;
-2. **integrità**: il dato non è stato manomesso (§2.1);
-3. **controllo degli accessi**: si decide chi può leggere (§2.2);
-4. **persistenza**: i dati restano disponibili nel tempo (§2.3).
+### 1.3 Quattro opzioni
 
-### 1.3 Quattro opzioni per conservare i dati
+| Opzione | Pro | Contro |
+|---|---|---|
+| **Opt1** — entità centrale | Semplice | Gli utenti **perdono la sovranità**: il *data controller* ha tutti i dati, può alterarli, bisogna fidarsi di lui |
+| **Opt2** — dati in locale, distribuiti su richiesta | Mantieni i tuoi dati | Poco pratico: devi essere sempre raggiungibile; servono storage, calcolo, banda |
+| **Opt3** — dati registrati su un ledger | Abbastanza semplice, integrità, tracciabilità | Solo **dati piccoli**; **niente diritto all'oblio/rettifica**; **latenze** |
+| **Opt4** — DFS per i dati crowdsourced | Scalabile, dati rimovibili | Bisogna garantire **integrità**, **controllo degli accessi**, **persistenza** |
 
-**Opt1 — Un'entità centrale conserva i dati crowdsourced.** Gli utenti **perdono la sovranità** sui propri dati:
-
-- il titolare (*data controller*) ottiene tutti i dati;
-- può alterarli;
-- gli utenti devono fidarsi di lui.
-
-**Opt2 — Ognuno tiene i dati in locale e li distribuisce su richiesta.**
-
-- **Pro:** mantieni i tuoi dati.
-- **Contro:** poco pratico, devi essere sempre raggiungibile; servono capacità di storage, calcolo e comunicazione sul dispositivo.
-
-**Opt3 — Registrare i dati su un ledger.**
-
-- **Pro:** abbastanza semplice; integrità dei dati; tracciabilità.
-- **Contro:** va bene **solo per dati piccoli** (payload, video o stream di telemetria costerebbero troppo in storage e gas); **niente diritto all'oblio né alla rettifica**; **latenze** e throughput limitato.
-
-**Opt4 — Usare un file system decentralizzato (DFS) per i dati.** Resta da risolvere come:
-
-1. garantire l'**integrità** dei dati (§2.1);
-2. controllare **chi può accedervi** (§2.2);
-3. garantire la **persistenza** dei dati (§2.3).
-
-> 💡 **Lettura da esame.** Le quattro opzioni sono lo stesso ragionamento del Capitolo 1 applicato a un caso concreto: Opt1 = client/server (SPOF di controllo), Opt2 = P2P puro (churn e disponibilità), Opt3 = tutto on-chain (costo, GDPR), Opt4 = architettura ibrida. Il resto della lezione risolve i tre problemi di Opt4.
+> 💡 **Lettura da esame.** È il Capitolo 1 applicato: Opt1 = client/server (SPOF di controllo), Opt2 = P2P puro (churn), Opt3 = tutto on-chain (costo, GDPR), Opt4 = architettura ibrida. Il resto della lezione risolve i tre problemi di Opt4.
 
 ---
 
 ## 2. Architettura
 
-### 2.1 Integrità: content-based addressing e hash pointer
+### 2.1 Integrità: content addressing + hash pointer
 
-- Sul DFS (es. **IPFS**, **Sia**) i dati sono suddivisi in chunk, ciascuno identificato dall'**hash del suo contenuto** (*content-based addressing*, invece di *location-based*: vedi Capitolo 2, §1.3). Gli identificatori nella slide (`QmW98pJ…`, `887K215…`, `abc45j…`) sono di questo tipo.
-- Sulla **DLT** si registrano solo gli **hash pointer**, non i dati.
+- Sul DFS (**IPFS**, **Sia**) ogni chunk è identificato dall'**hash del contenuto** (*content based addressing instead of location based*): gli ID in slide (`QmW98pJ…`, `abc45j…`) sono di questo tipo.
+- Sulla **DLT** si registrano solo gli **hash pointer**.
+- Vantaggi (slide): **possibile rimuovere/modificare i dati**; **upload veloce** sul DFS; le **latenze per registrare gli hash** diventano **meno problematiche**.
+- **Verifica:** chi scarica ricalcola l'hash e lo confronta con quello sul ledger (*tamper-evident*).
 
-Vantaggi indicati nella slide:
-
-- è **possibile rimuovere o modificare i dati** sul DFS (a differenza di Opt3);
-- il **caricamento sul DFS è veloce**;
-- le **latenze per registrare gli hash** sulla DLT diventano **meno problematiche**, perché si scrive poco e non serve attendere per usare il dato.
-
-**Verifica dell'integrità.** Chi scarica un chunk ricalcola l'hash e lo confronta con quello registrato sul ledger: se anche un bit è cambiato, i valori non coincidono (*tamper-evident*).
-
-> ⚠️ **Nota di rigore** (sintesi mia). Con il content addressing un chunk è già auto-verificabile rispetto al proprio CID. La DLT aggiunge ciò che il DFS da solo non dà: **quale** CID è quello "ufficiale", **chi** l'ha registrato (firma) e **quando** (ordine e timestamp concordati dal consenso).
-
-> ⚠️ **Nota di rigore sulla cancellazione.** "Rimuovere il dato dal DFS" significa smettere di ospitarlo (*unpin*) sui propri nodi; non si può obbligare gli altri nodi che ne hanno una copia a cancellarla. Per questo i dati si **cifrano prima del caricamento**: distruggendo la chiave (*crypto-shredding*) il dato diventa illeggibile ovunque si trovi. Il riferimento on-chain resta, ma punta a un contenuto inutilizzabile. Attenzione anche all'hash: se il dato ha poca entropia, l'hash rimasto on-chain può essere forzato (Capitolo 2, §2.5).
+> ⚠️ **Nota di rigore.** Un chunk è già auto-verificabile rispetto al proprio CID. La DLT aggiunge **quale** CID è quello ufficiale, **chi** l'ha registrato (firma) e **quando** (ordine concordato). Inoltre "rimuovere" dal DFS significa smettere di ospitarlo (*unpin*): altri nodi possono averne copie. Per l'oblio si **cifra prima del caricamento** e si distrugge la chiave (*crypto-shredding*).
 
 ### 2.2 Controllo degli accessi: DFS + cifratura + autorizzazione
 
-Sul DFS i dati sono **cifrati**; il problema diventa: **come ottiene la chiave per decifrarli chi è autorizzato?**
+I dati sul DFS sono **cifrati**. Domanda della slide: **how to decrypt?**
 
-```
-[ Veicolo ] ──(dato cifrato)──▶ [ DFS (IPFS/Sia) ]
-      │
-      └──(hash / digest)──────▶ [ DLT ]
-```
+- **Opt4.1 — server centrale di autorizzazione** che fornisce le chiavi a chi è nella sua ACL. Semplice, ma di nuovo **SPOF** e fiducia unica.
+- **Secret sharing tra più server** (dal paper NCA 2020): la chiave è divisa con **Shamir (k, n)**; servono k quote, con k−1 non si ottiene nulla. Tollera fino a **k−1 server compromessi** e **n−k offline**.
+- **Opt4.2 — security-by-contract su un ledger (privato):** la **ACL sta in uno smart contract**; gli *auth. servers* rilasciano la propria quota solo se il contratto conferma il permesso.
 
-Il Prof. presenta tre modelli in sequenza.
+**Benefici di Opt4.2 (slide):**
+- **decentralizzazione della custodia delle chiavi**: i server **non hanno i dati**, **nessun single point of failure**, **mitigazione della privacy leakage**;
+- **trasparenza**: **auditability** dei permessi di accesso.
 
-**Opt4.1 — Server centrale di autorizzazione.** L'utente scarica il dato cifrato e contatta un server, che consulta la propria ACL e, se l'utente è autorizzato, gli fornisce la chiave. Semplice, ma è di nuovo **SPOF** e punto di fiducia unico: il server vede tutte le chiavi.
-
-**Passaggio intermedio — più server con secret sharing** (dal lavoro *Personal Data Access Control Through Distributed Authorization*, 2020). La chiave è divisa con **Shamir (k, n)** tra n server di autorizzazione: nessuno la conosce per intero. L'utente contatta almeno k server; ognuno verifica l'autorizzazione e restituisce la propria quota; con k quote il client ricompone la chiave. Con meno di k quote non si ottiene nulla. Lo schema tollera fino a **k−1 server compromessi** (non bastano per ricostruire la chiave) e fino a **n−k server offline** (gli altri bastano a servire la richiesta).
-
-**Opt4.2 — Security-by-contract su un ledger (privato).** La **ACL sta in uno smart contract**. I server di autorizzazione (*Auth. servers*), o i proxy di re-encryption, interrogano il contratto prima di rilasciare la propria parte di chiave. Nessuna singola entità può cambiare i permessi senza che la modifica resti registrata sul ledger.
-
-Benefici elencati nella slide:
-
-- **decentralizzazione della custodia delle chiavi**:
-  - i server **non hanno i dati** (stanno sul DFS);
-  - si **mitiga la fuga di informazioni** (*privacy leakage*);
-- **trasparenza**: i permessi di accesso ai dati sono **verificabili** (*auditability*), perché la ACL sta sul ledger.
-
-> ⚠️ **Nota di rigore** (sintesi mia). La fiducia non sparisce del tutto: si distribuisce sui server di autorizzazione (con l'ipotesi che meno di k colludano) e si sposta su chi governa il ledger privato e il contratto ACL.
-
-> 💡 **Collegamento.** È la **Decentralized Authorization** proposta come tema di progetto nel [Capitolo 1](<01 Il paradigma della decentralizzazione.md>) (§0.4). Con la **Proxy Re-Encryption** il proxy può ricifrare il dato per il destinatario senza vederlo in chiaro, evitando di distribuire la chiave originale.
+> ⚠️ **Nota di rigore.** La fiducia non sparisce: si distribuisce sui server (ipotesi: meno di k colludono) e su chi governa il ledger privato. Con la **Proxy Re-Encryption** un proxy può ricifrare il dato per il destinatario senza vederlo in chiaro. Questo tema (*Decentralized Authorization*) è tra le proposte di project work del gruppo AnaNSi.
 
 ### 2.3 Persistenza: incentivi a cooperare
 
-In una rete P2P nessuno è obbligato a conservare i file altrui: i nodi escono (churn, Capitolo 1) o liberano spazio cancellando la cache locale. La slide *"Data persistence: we'd like to avoid this"* mostra lo studio di Guo et al. (2007) su BitTorrent: la disponibilità di un contenuto **decade nel tempo** quando i peer se ne vanno.
+Nessuno è obbligato a conservare i file altrui: la slide *"Data persistence: we'd like to avoid this"* mostra (Guo et al., 2007) come la disponibilità di un contenuto BitTorrent **decada nel tempo**. Soluzione: **incentivi con token su blockchain**, es. **Filecoin, Sia, Storj, Swarm (??)**. I nodi vengono pagati per conservare i dati e devono dimostrarlo (in Filecoin: *Proof-of-Replication*, *Proof-of-Spacetime*).
 
-**Soluzione: incentivi economici tramite token su blockchain.** Esempi della slide: **Filecoin, Sia, Storj** (e Swarm, con un punto interrogativo). I nodi di storage vengono pagati in token per conservare i dati e devono **dimostrare** di farlo (in Filecoin: *Proof-of-Replication* e *Proof-of-Spacetime*).
-
-### 2.4 Il sistema complessivo (*The overall system*)
+### 2.4 Il sistema complessivo
 
 ```
-            ┌───────────────────────────┐
-            │   DFS (IPFS, Sia)         │  dati cifrati, chunk con content addressing
-            └────────────┬──────────────┘
-                         │ hash pointer
-                         ▼
-            ┌───────────────────────────┐
-            │   DLT "free, fast"        │  registrazione continua degli hash (integrità)
-            │   (es. IOTA)              │
-            └───────────────────────────┘
-            ┌───────────────────────────┐
-            │   DLT con smart contract  │  • smart contract ACL (autorizzazione)
-            │   (es. Ethereum)          │  • smart contract per i token (persistenza)
-            └───────────────────────────┘
+   DFS (IPFS, Sia)            dati cifrati, chunk con content addressing
+        │ hash pointer
+        ▼
+   DLT "free, fast" (IOTA)    notarizzazione continua degli hash  → integrità
+   DLT con smart contract     contratto ACL                       → autorizzazione
+                              contratto/token di storage          → persistenza
 ```
 
-| Strato | Tecnologia | Proprietà garantita |
-|---|---|---|
-| **Storage** | DFS (IPFS, Sia) | Dati voluminosi e cifrati fuori dalla catena; cancellabili |
-| **Integrità** | DLT veloce e senza fee (IOTA) | Notarizzazione continua degli hash dei flussi dei veicoli |
-| **Autorizzazione** | Smart contract ACL + auth server | Chi può leggere cosa, in modo verificabile |
-| **Persistenza** | Smart contract / token di storage | Incentivi a conservare i dati nel tempo |
-
-> ⚠️ **Punto da esame: separazione delle responsabilità.** Non esiste una DLT buona per tutto. I dati grezzi su Ethereum costerebbero troppo; una DLT pensata per micro-transazioni IoT senza fee (IOTA nella versione dell'epoca) non gestisce logica contrattuale complessa. Si combinano: DFS per lo storage, DLT veloce per gli hash, DLT programmabile per ACL e incentivi. **Gli utenti mantengono la sovranità sui propri dati.**
+> ⚠️ **Punto da esame: separazione delle responsabilità.** Nessuna DLT è buona per tutto: i dati grezzi su Ethereum costerebbero troppo; una DLT veloce e senza fee per l'IoT (IOTA all'epoca) non gestisce logica contrattuale. Si combinano DFS + DLT veloce + DLT programmabile, e **gli utenti mantengono la sovranità** sui dati.
 
 ---
 
 ## 3. Trade-off e risultati sperimentali
 
-### 3.1 "Does it work?" "Yes!" "Does it scale?" "…"
+**"Does it work?" "Yes!" "Does it scale?" "…"** L'aspetto più critico è il **caricamento dei dati**. Test su un dataset reale: **tracce di mobilità degli autobus di Rio de Janeiro**.
 
-Il Prof. ammette che l'aspetto più critico è la **scalabilità del caricamento dei dati** nel sistema decentralizzato. Test su un dataset reale: **tracce di mobilità degli autobus di Rio de Janeiro**.
+- **Opt3 → DLT (IOTA):** con una **buona selezione dei full node** gli aggiornamenti del ledger sono **affidabili** (pochi errori), ma le **latenze misurate sono rilevanti**.
+- **Opt4 → DFS (IPFS, Sia):** confronto tra JSON piccoli (~100 B: latitudine, longitudine, timestamp) e file da 1 MB.
 
-**Cosa è stato testato**
-
-- **Opt3 → DLT:** IOTA (in questo contesto dovrebbe andare meglio delle blockchain tradizionali).
-- **Opt4 → DFS:** IPFS e Sia.
-
-**Risultati**
-
-- **IOTA:** scegliendo bene i full node a cui inviare le transazioni si ottengono aggiornamenti del ledger **affidabili** (pochi errori), ma le **latenze misurate sono rilevanti**.
-- **DFS:** confronto tra dati piccoli (JSON di circa 100 B con latitudine, longitudine, timestamp) e file più grandi (1 MB).
-
-### 3.2 Conclusioni della slide
-
-- DLT, DFS, smart contract e schemi di autorizzazione permettono di costruire servizi di smart transportation affidabili.
-- Architettura **a strati** DFS + DLT.
-- Gli utenti **mantengono la sovranità** sui propri dati.
-- **Criticità:**
-  - scalabilità e reattività: serve migliorare la **gestione del churn**;
-  - attenzione nel trattare **dati sensibili**.
-
-### 3.3 Tabella dei trade-off
+**Conclusioni della slide:** DLT, DFS, smart contract e schemi di autorizzazione permettono servizi affidabili; architettura **a strati** DFS + DLT; utenti sovrani sui propri dati. Restano aperti **scalabilità/reattività (gestione del churn)** e il trattamento dei **dati sensibili**.
 
 | Scelta | Guadagno | Costo |
 |---|---|---|
-| Tutto on-chain (Opt3) | Semplicità, integrità, tracciabilità | Solo dati piccoli, niente oblio/rettifica, latenza |
-| DFS + hash on-chain (Opt4) | Scalabilità, dati cancellabili | Serve gestire accesso e persistenza |
-| Server di autorizzazione centrale | Semplice | SPOF, fiducia, privacy leakage |
-| Secret sharing + ACL on-chain | Nessuno ha la chiave intera, permessi verificabili | Più componenti, latenza, coordinamento dei server |
-| Incentivi in token | Persistenza senza server centrale | Dipendenza da un'economia di token e dal suo valore |
+| Tutto on-chain (Opt3) | Integrità, tracciabilità | Solo dati piccoli, niente oblio, latenza |
+| DFS + hash on-chain (Opt4) | Scalabilità, dati cancellabili | Gestire accesso e persistenza |
+| Server di autorizzazione centrale | Semplicità | SPOF, fiducia, privacy leakage |
+| Secret sharing + ACL on-chain | Nessuno ha la chiave intera; permessi verificabili | Più componenti, latenza, coordinamento |
+| Incentivi in token | Persistenza senza server centrale | Dipendenza dal valore del token |
 
 ---
 
 ## 4. Esempi e codice
 
-### 4.1 Integrità: DFS simulato + hash registrato
+### 4.1 Integrità: DFS simulato + hash sul ledger
 
 ```python
 import hashlib
-
-dfs, ledger = {}, []
+dfs, ledger = {}, set()
 
 def upload(dato: bytes) -> str:
-    cid = hashlib.sha256(dato).hexdigest()   # content-based addressing
+    cid = hashlib.sha256(dato).hexdigest()   # content addressing
     dfs[cid] = dato
-    ledger.append(cid)                       # sulla DLT solo l'hash pointer
+    ledger.add(cid)                          # sulla DLT solo l'hash pointer
     return cid
 
-def download_e_verifica(cid: str) -> bytes:
+def download(cid: str) -> bytes:
     dato = dfs[cid]
-    assert cid in ledger, "CID non registrato sul ledger"
+    assert cid in ledger, "CID non registrato"
     assert hashlib.sha256(dato).hexdigest() == cid, "dato manomesso"
     return dato
 
 cid = upload(b'{"lat":-22.976509,"lon":-43.19902,"ts":"2020-04-05T14:54:11Z"}')
-print(download_e_verifica(cid))
 dfs[cid] = b'{"lat":0,"lon":0}'              # manomissione sul DFS
-# download_e_verifica(cid) -> AssertionError: dato manomesso
+# download(cid) -> AssertionError: dato manomesso
 ```
 
-### 4.2 Secret sharing (k, n) di Shamir, versione didattica
+### 4.2 Shamir (k, n), versione didattica
 
 ```python
 import random
-P = 2**127 - 1                                      # primo (campo finito)
+P = 2**127 - 1                                       # primo
 
 def split(secret, k, n):
     coeffs = [secret] + [random.randrange(P) for _ in range(k - 1)]
     f = lambda x: sum(c * pow(x, i, P) for i, c in enumerate(coeffs)) % P
-    return [(x, f(x)) for x in range(1, n + 1)]    # una quota per server
+    return [(x, f(x)) for x in range(1, n + 1)]     # una quota per server
 
-def combine(shares):                                # interpolazione di Lagrange in x = 0
+def combine(shares):                                 # Lagrange in x = 0
     s = 0
     for i, (xi, yi) in enumerate(shares):
         num = den = 1
         for j, (xj, _) in enumerate(shares):
             if i != j:
-                num = num * -xj % P
-                den = den * (xi - xj) % P
+                num, den = num * -xj % P, den * (xi - xj) % P
         s = (s + yi * num * pow(den, -1, P)) % P
     return s
 
-chiave = 123456789
-quote = split(chiave, k=3, n=5)
-print(combine(quote[:3]) == chiave)                 # True: 3 quote bastano
-print(combine(quote[:2]) == chiave)                 # False: 2 quote non bastano
+q = split(123456789, k=3, n=5)
+print(combine(q[:3]) == 123456789, combine(q[:2]) == 123456789)   # True False
 ```
 
-Il segreto è il termine noto di un polinomio di grado k−1; servono k punti per ricostruirlo. Con k−1 punti qualunque valore del segreto è ugualmente possibile.
+Il segreto è il termine noto di un polinomio di grado k−1: servono k punti per ricostruirlo.
 
 ---
 
-## 5. Active Recall
+## 5. Quadro di riepilogo
 
 ### 5.1 Concetti chiave
 
 | Concetto | In sintesi |
 |---|---|
-| **Raccordo supply chain** | TradeLens, Food Trust, prototipi; GIGO: immutabilità del registro, non verità del dato |
-| **ITS** | Veicoli che producono dati per servizi di safety, ottimizzazione e sensing |
-| **Desiderata → features → tecnologie** | Sharing/aggregation/trading → access control, authenticity, verifiability, immutability → DLT, DFS, smart contract, authorization |
-| **Quattro garanzie** | Sovranità, integrità, controllo degli accessi, persistenza |
-| **Opt1** | Entità centrale: gli utenti perdono la sovranità sui dati |
-| **Opt2** | Dati in locale: sovranità, ma bisogna essere sempre raggiungibili |
-| **Opt3** | Tutto sul ledger: integrità, ma solo dati piccoli, niente oblio, latenze |
-| **Opt4** | DFS + hash sulla DLT; restano integrità, accesso, persistenza |
-| **Integrità** | Content addressing + hash pointer sul ledger; verifica ricalcolando l'hash |
-| **Accesso** | Dati cifrati; Opt4.1 server centrale; secret sharing tra più server; Opt4.2 ACL in smart contract + server con quote della chiave |
-| **Persistenza** | Incentivi in token (Filecoin, Sia, Storj) con prove di storage |
-| **Overall system** | DFS + DLT veloce senza fee (IOTA) + DLT programmabile (Ethereum) |
-| **Risultati** | IOTA affidabile con buona scelta dei nodi ma con latenze rilevanti; problema aperto: scalabilità e churn |
+| Desiderata → features → tecnologie | Sharing/aggregation/trading → access control, authenticity, verifiability, immutability → DLT, DFS, smart contract, authorization |
+| Opt1–Opt4 | Centrale (perdi sovranità) · locale (sempre raggiungibile) · ledger (dati piccoli, niente oblio, latenze) · DFS (integrità, accessi, persistenza) |
+| Integrità | Content addressing sul DFS + hash pointer sulla DLT |
+| Accessi | Dati cifrati; Opt4.1 server centrale; Shamir tra più server; Opt4.2 ACL in smart contract |
+| Persistenza | Token di incentivo (Filecoin, Sia, Storj) con prove di storage |
+| Overall system | DFS + DLT veloce senza fee (IOTA) + DLT programmabile |
+| Risultati | IOTA affidabile con buoni full node ma latenze rilevanti; aperti scalabilità e churn |
 
-### 5.2 Domande e risposte
+### 5.2 Parole chiave
 
-1. Quali famiglie di servizi abilitano i dati dei veicoli?
-2. Collega desiderata, features e tecnologie della tabella del Prof.
-3. Quali sono le quattro opzioni per conservare i dati? Pro e contro di ciascuna.
-4. Perché Opt3 (tutto sul ledger) non è adatta ai dati personali dei veicoli?
-5. Come si verifica che un chunk scaricato dal DFS non sia stato alterato?
-6. Cosa aggiunge la DLT rispetto al solo content addressing?
-7. "Rimuovere il dato dal DFS" basta per il diritto all'oblio?
-8. Confronta Opt4.1 e Opt4.2 per il controllo degli accessi.
-9. Come funziona lo schema (k, n) di Shamir e perché elimina lo SPOF sulla chiave? Quanti server compromessi o offline tollera?
-10. Quali benefici elenca la slide per la security-by-contract?
-11. Perché serve un meccanismo di persistenza in un DFS? Come lo si ottiene?
-12. Descrivi l'overall system e il ruolo di ciascuno strato.
-13. Perché non si usa un'unica blockchain per tutto?
-14. Cosa hanno mostrato i test su IOTA con le tracce degli autobus di Rio?
-15. Quali criticità restano aperte secondo le conclusioni?
+`ITS` · `sensed data` · `data mules` · `crowdsensing` · `sovranità del dato` · `data controller` · `DFS` · `IPFS` · `Sia` · `content addressing` · `hash pointer` · `unpin` · `crypto-shredding` · `ACL` · `authorization server` · `Shamir (k, n)` · `security-by-contract` · `proxy re-encryption` · `data persistence` · `Filecoin` · `IOTA` · `separazione delle responsabilità`
+
+### 5.3 Domande
+
+1. Collega desiderata, features e tecnologie della tabella del Prof.
+2. Pro e contro delle quattro opzioni di storage.
+3. Perché Opt3 non è adatta ai dati personali dei veicoli?
+4. Come si verifica l'integrità di un chunk e cosa aggiunge la DLT al solo content addressing?
+5. "Rimuovere il dato dal DFS" basta per il diritto all'oblio?
+6. Confronta Opt4.1 e Opt4.2 e indica i benefici della security-by-contract.
+7. Come funziona Shamir (k, n)? Quanti server compromessi e offline tollera?
+8. Perché serve un meccanismo di persistenza e come lo si ottiene?
+9. Descrivi l'overall system: perché non si usa un'unica blockchain?
+10. Cosa hanno mostrato i test con le tracce degli autobus di Rio?
 
 <details>
 <summary><b>Tracce di risposta</b></summary>
 
-1. Safety (crash alert, incroci, contromano, meteo), info e ottimizzazione (traffico, percorsi, manutenzione, infotainment), trasporto per servizi (data mules, crowd-sensing as a service).
-2. Per condividere, aggregare e vendere dati servono controllo degli accessi, autenticità, verificabilità e immutabilità, ottenuti con DLT, storage distribuito, smart contract e schemi di autorizzazione.
-3. Opt1 centrale (perdita di sovranità); Opt2 locale (sempre raggiungibili, risorse sul dispositivo); Opt3 ledger (solo dati piccoli, niente oblio, latenze); Opt4 DFS (da risolvere integrità, accesso, persistenza).
-4. Costi e dimensioni, latenze, e l'append-only impedisce cancellazione e rettifica (GDPR).
-5. Si ricalcola l'hash del chunk e lo si confronta con l'hash registrato sulla DLT.
-6. Quale CID è quello valido, chi l'ha registrato e quando, con ordine concordato dal consenso.
-7. No: altri nodi possono averne copie. Si cifra il dato e si distrugge la chiave (crypto-shredding).
-8. 4.1: un server con ACL propria fornisce le chiavi (SPOF, fiducia totale). 4.2: ACL nello smart contract, più server di autorizzazione che rilasciano quote della chiave solo se il contratto conferma i permessi.
-9. La chiave è il termine noto di un polinomio di grado k−1; ogni server ha un punto. Servono k punti per ricostruirla, con meno non si ottiene nulla. Nessun server ha la chiave intera. Tollera fino a k−1 server compromessi e fino a n−k offline.
-10. Custodia decentralizzata delle chiavi (i server non hanno i dati, meno privacy leakage) e trasparenza (permessi verificabili).
-11. Senza obblighi i nodi abbandonano i contenuti (studio su BitTorrent). Si pagano i nodi in token (Filecoin, Sia, Storj) chiedendo prove crittografiche di conservazione.
-12. DFS per i dati cifrati; DLT veloce senza fee per gli hash; DLT con smart contract per ACL e token.
-13. Ogni piattaforma ottimizza cose diverse: separazione delle responsabilità.
-14. Aggiornamenti affidabili con una buona scelta dei full node, ma latenze rilevanti.
-15. Scalabilità e reattività (gestione del churn) e trattamento dei dati sensibili.
+1. Per condividere, aggregare e vendere dati servono controllo accessi, autenticità, verificabilità, immutabilità, ottenuti con DLT, storage distribuito, smart contract, autorizzazione.
+2. Vedi tabella §1.3.
+3. Costi/dimensioni, latenze, e l'append-only impedisce oblio e rettifica.
+4. Si ricalcola l'hash e lo si confronta col ledger. La DLT dice quale CID è ufficiale, chi l'ha registrato e quando.
+5. No: altri nodi possono avere copie; si cifra e si distrugge la chiave.
+6. 4.1: un server con ACL propria (SPOF, fiducia totale). 4.2: ACL nello smart contract, server con quote della chiave. Benefici: custodia decentralizzata, server senza dati, nessun SPOF, meno privacy leakage, permessi verificabili.
+7. Chiave = termine noto di un polinomio di grado k−1; ogni server ha un punto. Tollera k−1 compromessi e n−k offline.
+8. Senza incentivi i peer abbandonano i contenuti (Guo et al.); token di storage con prove crittografiche.
+9. DFS per i dati, DLT veloce per gli hash, DLT programmabile per ACL e token: ogni piattaforma ottimizza cose diverse.
+10. Aggiornamenti IOTA affidabili con buona scelta dei full node, ma latenze rilevanti; confronto DFS tra JSON da 100 B e file da 1 MB.
 
 </details>
 
 ---
 
-## Riferimenti di approfondimento
-
-- Zichichi, Ferretti, D'Angelo, *A Framework based on Distributed Ledger Technologies for Data Management and Services in Intelligent Transportation Systems*, IEEE Access, vol. 8 (2020)
-- Zichichi, Ferretti, D'Angelo, Rodríguez-Doncel, *Personal Data Access Control Through Distributed Authorization*, IEEE NCA (2020)
-- Zichichi, Ferretti, D'Angelo, *Are Distributed Ledger Technologies Ready for Intelligent Transportation Systems?*, CryBlock @ MobiCom (2020)
-- Zichichi, Ferretti, D'Angelo, *On the Efficiency of Decentralized File Storage for Personal Information Management Systems*, ISCC (2020)
-- Guo et al., *A performance study of BitTorrent-like peer-to-peer systems*, IEEE JSAC 25 (2007)
-
-> Nota: Proof-of-Replication e Proof-of-Spacetime, la precisazione su unpin e crypto-shredding, le soglie di tolleranza di Shamir e il codice vengono dalla letteratura generale, non dalle slide.
-
----
+> **Fonti e verifica.** Verificato su 03.00 (Mobi talk 2021). Dalla letteratura (non in slide): unpin, crypto-shredding, PRE, soglie di tolleranza di Shamir, Proof-of-Replication/Spacetime, codice. Riferimenti: Zichichi, Ferretti, D'Angelo, *A Framework based on DLTs for Data Management and Services in ITS*, IEEE Access 2020; Zichichi et al., *Personal Data Access Control Through Distributed Authorization*, IEEE NCA 2020; Zichichi et al., *On the Efficiency of Decentralized File Storage for Personal Information Management Systems*, IEEE ISCC 2020; Guo et al., *A performance study of BitTorrent-like peer-to-peer systems*, IEEE JSAC 2007.
 
 [← Indice](README.md)

@@ -1,40 +1,12 @@
 # Capitolo 1 — Il paradigma della decentralizzazione
 
-*Lezione 1 · Slide "Roadmap", "What is this course all about?", "Problems of Centralized Solutions", "Peer-to-Peer Model", "Overlay", "Service Evolution" e "The Public Ledger", incrociate con 01 – Preliminaries, 02 – Introduction Blockchain, 07.a – DHT short intro, 08.00 – Consensus short e 08 – Blockchain.*
+| | |
+|---|---|
+| **Data** | Lunedì 21/09/2026 · Lezione 1 |
+| **Macro tema** | Parte I — Problem statement e preliminari |
+| **Slide** | 01 – Preliminaries · 02 – Introduction Blockchain (apertura) · 07.a – DHT short intro · 08 – Blockchain (rete P2P di Bitcoin) |
 
 [← Indice](README.md)
-
----
-
-## 0. Informazioni sul corso
-
-### 0.1 Organizzazione
-
-- **Durata:** 36 ore d'aula.
-- **Orari indicativi:** 11:00–12:30 e 16:00–17:30.
-- **Registrazioni e materiali:** tutto su [virtuale.unibo.it](https://virtuale.unibo.it), dove si trovano anche le comunicazioni e i link per le attività.
-
-### 0.2 Modalità d'esame
-
-1. **Project work (obbligatorio).** Si svolge da soli o in gruppo, da 1 a 3 persone. Le specifiche verranno comunicate a breve.
-2. **Prova a scelta tra due opzioni:**
-   - **Opzione A:** presentare durante il corso un paper o un approfondimento su blockchain e tecnologie correlate. Ci si prenota tramite un link su Virtuale.
-   - **Opzione B:** orale tradizionale sui contenuti del corso.
-
-### 0.3 Testo di riferimento
-
-Narayanan, Bonneau, Felten, Miller, Goldfeder, [*Bitcoin and Cryptocurrency Technologies*](https://d28rh4a8wq0iu5.cloudfront.net/bitcointech/readings/princeton_bitcoin_book.pdf), Princeton University Press (2016). Il libro è gratuito e copre crittografia, consenso ed economia di Bitcoin. È la base per la parte "Blockchain and DLT Internals".
-
-### 0.4 Proposte di progetto e tesi
-
-Il gruppo di ricerca [AnaNSi](https://site.unibo.it/anansi/en) mantiene un [documento con le tracce aperte](https://docs.google.com/document/d/1pVmz_EDe3jqoWOdTANTmmjBvxHhV8QYLLQlY18cmVlY/edit), utilizzabile sia per il project work sia per la tesi. I temi sono indicativi: si possono proporre varianti o idee proprie.
-
-**Hot topic (magistrale): Decentralized Authorization.** L'obiettivo è condividere dati cifrati e concederne l'accesso in modo selettivo, **senza un server centrale di autorizzazione**. Si basa su due primitive.
-
-- **Secret Sharing (Shamir, schema (k, n)).** Il segreto, ad esempio una chiave, viene diviso in n frammenti. Per ricostruirlo ne servono almeno k; con k−1 frammenti non si ottiene alcuna informazione. In questo modo nessun nodo detiene da solo la chiave.
-- **Proxy Re-Encryption (PRE).** Un proxy trasforma un ciphertext cifrato per Alice in uno decifrabile da Bob, senza mai vedere il plaintext. Serve a delegare l'accesso ai dati memorizzati su un DFS.
-
-Questo tema si collega direttamente all'architettura DFS + DLT + ACL del Prof. (§2.3 e [Capitolo 3](<03 Smart Transportation.md>)) ed è un ottimo candidato per il project work.
 
 ---
 
@@ -42,393 +14,169 @@ Questo tema si collega direttamente all'architettura DFS + DLT + ACL del Prof. (
 
 ### 1.1 Distribuito ≠ decentralizzato
 
-La slide dice che il corso tratta ciò che si vuole **decentralizzare**, *not only distribute*. È la distinzione su cui si regge tutto il corso.
+Il corso tratta ciò che si vuole **decentralizzare**, *not only distribute*. È la distinzione su cui si regge tutto il resto.
 
-- Un sistema **distribuito** ripartisce stato e calcolo su più nodi, per ottenere scalabilità, disponibilità e l'assenza di uno SPOF tecnico. I nodi però possono appartenere tutti allo stesso soggetto e fidarsi l'uno dell'altro. Esempio: un database replicato di Google.
-- Un sistema **decentralizzato** è quello in cui **nessuna singola entità ha il controllo**. I partecipanti non si fidano l'uno dell'altro e possono essere pseudonimi, malevoli o soggetti a churn. Qui il problema non è solo tecnico: è un problema di **fiducia**.
+- **Distribuito:** stato e calcolo ripartiti su più nodi per scalabilità e disponibilità. I nodi possono appartenere tutti allo stesso soggetto e fidarsi l'uno dell'altro (es. il database replicato di Google).
+- **Decentralizzato:** **nessuna singola entità ha il controllo**. I partecipanti non si fidano tra loro e possono essere pseudonimi, malevoli o soggetti a churn: il problema è di **fiducia**, non solo tecnico.
 
-In breve: la distribuzione riguarda *dove* stanno dati e calcolo, la decentralizzazione riguarda *chi* li controlla e di chi ci si deve fidare.
+In breve: la distribuzione riguarda *dove* stanno dati e calcolo, la decentralizzazione *chi* li controlla.
 
-### 1.2 Il problema della fiducia
+### 1.2 Fiducia senza terza parte
 
-Nel modello classico la fiducia è delegata a una **Trusted Third Party (TTP)**: una banca, un notaio, una piattaforma. Il desiderata delle slide è:
+Nel modello classico la fiducia è delegata a una **Trusted Third Party (TTP)**: banca, notaio, piattaforma. Il desiderata delle slide è *"Users are able to build trust without involving a third party"*, con la provocazione: **"possiamo costruire Uber senza Uber, o Airbnb senza Airbnb?"**
 
-> *Users are able to build trust without involving a third party.*
+**Consensus defines trust.** Senza TTP la fiducia non scompare, **si sposta dall'istituzione al protocollo**: l'algoritmo di consenso stabilisce lo stato "vero" (contenuto e ordine del ledger). Non ci si fida di un nodo, ma del fatto che la maggioranza segua le regole. **Maggioranza di cosa?** In un sistema permissionless contare le identità non ha senso (**Sybil attack**): si contano risorse, cioè potenza di calcolo (PoW) o stake (PoS).
 
-La provocazione del Prof. è: *"Possiamo costruire Uber senza Uber, o Airbnb senza Airbnb?"* Cioè: si può mantenere il servizio eliminando l'intermediario che fa da garante e che ne trae una rendita?
+### 1.3 Terminologia di base (*Preliminaries*)
 
-### 1.3 Consensus defines trust
+| Termine | Definizione |
+|---|---|
+| **Scalability** | Mantenere le prestazioni al crescere del carico (orizzontale: più nodi; verticale: macchine più potenti) |
+| **Availability** | Probabilità che il sistema sia operativo e raggiungibile quando serve |
+| **SPOF** | Componente il cui guasto blocca tutto; può essere tecnico o **amministrativo** (chi può spegnere o censurare) |
+| **Bottleneck** | Punto di congestione che limita il throughput complessivo |
+| **Churn** | Arrivi e partenze indipendenti di molti peer; difficile da gestire |
 
-Senza una TTP la fiducia non scompare: **si sposta dall'istituzione al protocollo**. È l'algoritmo di consenso a stabilire quale sia lo stato "vero" del sistema, cioè l'ordine delle transazioni e il contenuto del ledger. Non ci si fida di un singolo nodo, ma del fatto che la maggioranza segua le regole.
+> ⚠️ **Punto da esame.** Eliminare lo SPOF *tecnico* è una ragione per **distribuire** (basta replicare, restando sotto un unico gestore). La **decentralizzazione** elimina lo SPOF *di controllo e di fiducia*.
 
-La domanda che tornerà per tutto il corso è: **maggioranza di cosa?** In un sistema permissionless contare le identità non ha senso, per via del **Sybil attack**. Si contano invece le risorse: potenza di calcolo nel PoW, stake nel PoS.
+### 1.4 Cryptoeconomics
 
-### 1.4 Terminologia di base (da *Preliminaries*)
+Le slide definiscono la *cryptoeconomics* come l'incontro di quattro discipline: **crittografia** (transazioni sicure e pseudo-anonime), **sistemi distribuiti** (molti host su Internet), **economia** (criptovalute e smart contract) e **teoria dei giochi** (incentivi basati su razionalità e interesse personale per validare le transazioni: sono i meccanismi di auto-regolazione). Le "economie digitali" risultanti richiedono politiche monetarie, fiscali, di privacy e una governance efficace.
 
-- **Scalability:** la capacità di mantenere o migliorare le prestazioni al crescere del carico (transazioni al secondo, utenti, volume di dati). Si può scalare orizzontalmente, aggiungendo nodi, o verticalmente, potenziando le singole macchine.
-- **Availability:** la frazione di tempo in cui il servizio o il dato è raggiungibile e funzionante per gli utenti legittimi. La si massimizza tollerando guasti parziali.
-- **Single Point of Failure (SPOF):** un componente il cui guasto blocca l'intero sistema. Può essere hardware, software o anche **amministrativo**, cioè un'entità in grado di spegnere o censurare il servizio.
-- **Bottleneck:** la risorsa che limita il throughput complessivo, ad esempio la banda del nodo centrale, l'I/O su disco o il throughput del consenso.
-- **Churn:** l'ingresso (join) e l'uscita (leave) continui e imprevedibili dei nodi, comprese disconnessioni temporanee e guasti. Il protocollo deve tollerarlo senza perdere dati né bloccare il consenso.
+### 1.5 Service Evolution
 
-> ⚠️ **Nota di rigore** (sintesi mia, non frase del Prof.). Eliminare lo SPOF *tecnico* è una motivazione per la **distribuzione**: basta replicare i server, e resta comunque tutto nelle mani di un'unica entità. La **decentralizzazione** serve a eliminare lo SPOF *di controllo e di fiducia*. Collegare "niente SPOF" direttamente a "decentralizzazione" è proprio la confusione su cui il Prof. insiste con *not only distribute*.
+| Fase | Cosa cambia | Chi detiene dati e fiducia |
+|---|---|---|
+| **1. Communication** | Internet per comunicare (email, chat) | Provider |
+| **2. Web 2.0** | Gli utenti producono contenuti | La piattaforma possiede i contenuti |
+| **3. Share economy** | Piattaforme che mettono in contatto offerta e domanda (Uber, Airbnb) | La piattaforma come intermediario |
+| **4. Decentralization** | Servizi *blockchain-based* | Protocollo + consenso |
 
-### 1.5 Service Evolution: come siamo arrivati alla decentralizzazione
+Esempi di fase 4 nelle slide: **Steemit** (social), **Ripple** e **Circle** (pagamenti), **burstIQ** (dati sanitari), **Mediachain** (royalty agli artisti tramite smart contract, acquisita da Spotify nel 2017), **Propy** (registro immobiliare decentralizzato).
 
-Alla fine della parte sui termini il Prof. presenta l'evoluzione dei servizi digitali in quattro fasi. Serve a motivare perché oggi si parla di decentralizzazione.
+> 💡 **Punto su cui insiste il Prof.** *"Are we sure it is a sharing economy? It is rather a matching economy."* Uber non condivide nulla, **abbina** due utenti che vanno in posti vicini. Il matching è centralizzato, quindi chi lo controlla estrae rendita e dati. La fase 4 chiede se il matching possa farlo un protocollo.
 
-| Fase | Cosa cambia | Esempi | Chi detiene dati e fiducia |
-|---|---|---|---|
-| **1. Communication** | Internet come mezzo per comunicare | Email, chat, VoIP | Provider del servizio |
-| **2. Web 2.0** | Gli utenti producono contenuti (UGC) e interagiscono | Social network, blog, wiki | La piattaforma possiede i contenuti degli utenti |
-| **3. Share economy** | Le piattaforme mettono in contatto chi offre e chi chiede un bene o servizio | Uber, Airbnb | La piattaforma come intermediario, che trattiene una commissione |
-| **4. Decentralization** | Servizi blockchain-based: il protocollo sostituisce l'intermediario | Criptovalute, DeFi, dApp | Protocollo + consenso |
+### 1.6 Il registro pubblico (*The Public Ledger*)
 
-> 💡 **Punto su cui insiste il Prof.** *"Are we sure it is a sharing economy? It is rather a matching economy."* Uber non condivide nulla: **abbina** due utenti che devono andare in posti vicini. Il valore sta nel matching, e il matching è centralizzato, quindi chi lo controlla estrae una rendita, raccoglie i dati e decide le regole.
->
-> La fase 4 si chiede se il matching stesso possa essere svolto da un protocollo, senza un matcher centrale. È la domanda "Uber senza Uber" del §1.2, vista in prospettiva storica.
+Ogni nodo della rete P2P mantiene **una copia della stessa catena**; non esiste un DB centrale. Dalla slide: *nodes need to agree on the updates (additions) to the ledger → Consensus*.
 
-Il filo logico è questo: a ogni fase gli utenti contribuiscono di più (prima comunicano, poi producono contenuti, poi mettono a disposizione beni), ma il controllo resta centralizzato. La decentralizzazione punta a riallineare le due cose: **chi contribuisce al servizio partecipa anche al suo controllo**.
+1. **Append-only:** il ledger cambia solo per aggiunta (*additions*).
+2. **Accordo:** senza autorità, i nodi devono concordare **quali** dati aggiungere e **in quale ordine**.
+3. **Consenso:** decide come le transazioni sono **ricevute, ordinate, replicate e registrate in modo permanente** (*received → ordered → replicated → committed*, slide 08.00).
 
-### 1.6 Il registro pubblico condiviso (*The Public Ledger*)
+> 💡 **Perché conta l'ordine.** In un double spending una parte della rete vede A→B, un'altra A→C: entrambe valide da sole. Entra nel ledger solo la prima nell'ordine concordato.
 
-In chiusura di lezione il Prof. mette insieme i pezzi (P2P + fiducia + consenso) nella slide *The Public Ledger* (02 – Introduction Blockchain).
+> ⚠️ **Nota di rigore.** L'append-only è garantito da **catena di hash** (manomissione *evidente*) + **consenso** (riscrittura *troppo costosa*). In Bitcoin (PoW) i fork temporanei sono normali e la finalità è **probabilistica** (convenzione: ~6 conferme); in PBFT un blocco concordato è **subito finale**. *Il consenso non impedisce i fork, li risolve.*
 
-**Cosa mostra lo schema**
-
-- **La rete dei nodi.** I cilindri blu interconnessi sono i nodi della rete peer-to-peer (§2.1.3).
-- **La catena di dati (ledger).** I blocchi scuri collegati da frecce sono il registro storico delle transazioni, o dello stato: la catena di blocchi.
-- **La replica dello stato.** Ogni nodo mantiene **una copia locale della stessa catena**. Non esiste un database centrale unico.
-
-**Il principio chiave: dagli aggiornamenti al consenso**
-
-> *Nodes need to agree on the updates (additions) to the ledger → Consensus*
-
-Il ragionamento si sviluppa in tre passaggi.
-
-1. **Solo aggiunte (append-only).** I dati storici non vengono modificati né cancellati. Il ledger cambia soltanto aggiungendo nuove informazioni in coda: nuove transazioni, nuovi blocchi. Per questo la slide scrive *updates* e specifica tra parentesi *additions*.
-2. **Necessità di accordo (agreement).** Non esiste un'autorità centrale che stabilisca quale sia la versione corretta. Tutti i nodi devono quindi concordare su **quali** dati aggiungere e **in quale ordine**.
-3. **Il consenso.** Il meccanismo con cui i nodi raggiungono un accordo vincolante e coerente è il **protocollo di consenso**. Senza consenso le copie locali divergerebbero (fork permanenti, disallineamento dello stato) e il ledger perderebbe integrità e fiducia.
-
-La slide *Distributed Consensus* (08.00 – Consensus short) scompone lo stesso problema in quattro fasi. Il consenso decide come le transazioni vengono:
-
-1. **ricevute** (*initially received*);
-2. **ordinate** nel ledger (*ordered*);
-3. **replicate** su tutti i nodi (*replicated*);
-4. **registrate in modo permanente** (*committed*).
-
-> 💡 **Perché conta l'ordine.** Accordarsi sul *contenuto* non basta. Nel double spending del §2.1.7 una parte della rete vede A→B, un'altra A→C: entrambe le transazioni sono valide prese singolarmente, ma solo **la prima nell'ordine concordato** entra nel ledger. Il consenso sul ledger è, prima di tutto, **consenso sull'ordine**.
-
-> ⚠️ **Nota di rigore** (sintesi mia). *Append-only* è una proprietà **logica**, garantita da due meccanismi insieme:
-> - la **catena di hash**: ogni blocco contiene l'hash del precedente, quindi modificare un blocco invalida tutti i successivi. Questo rende la manomissione **evidente**, non impossibile (§4.4);
-> - il **consenso**: è ciò che rende troppo costoso riscrivere l'intera catena da quel punto in poi.
->
-> In Bitcoin (PoW) i **fork temporanei** fanno parte del funzionamento normale: due miner possono trovare un blocco quasi insieme, e la coda della catena può essere riorganizzata (*reorg*). L'immutabilità è quindi **probabilistica** e cresce con le conferme (la convenzione è 6 blocchi). Nei protocolli BFT come PBFT, invece, un blocco concordato è **subito finale** (slide 08.00). Frase da esame: *il consenso non impedisce i fork, li risolve*.
-
-**Anteprima: chi legge e chi scrive.** La slide *How Many Blockchains?* (02) distingue due assi, approfonditi nel [Capitolo 2](<02 DLT, smart contract e use case.md>):
-
-- **public / private** riguarda l'**accesso in lettura** al ledger;
-- **permissionless / permissioned** riguarda il **diritto di modificarlo**, cioè di proporre e accettare aggiornamenti.
-
-Il tipo di consenso dipende soprattutto dal secondo asse: con identità note (permissioned) si possono usare protocolli a voto come PBFT; senza identità (permissionless) serve una risorsa scarsa come PoW o PoS (§1.3).
+**Anteprima (slide *How Many Blockchains?*):** *public/private* = chi **legge**; *permissionless/permissioned* = chi **scrive** (accetta aggiornamenti). Vedi [Capitolo 2](<02 DLT, smart contract e use case.md>).
 
 ---
 
 ## 2. Architettura
 
-### 2.1 Le due tipologie di sistemi distribuiti
-
-Le slide individuano due famiglie di architetture: **client/server** e **peer-to-peer**. Sono i due estremi di uno spettro che comprende molti ibridi.
-
-#### 2.1.1 Modello client/server
-
-Il modello si basa su **richiesta e risposta**: più client inviano una *request* a un server, che restituisce una *answer*. I ruoli sono asimmetrici e fissi.
-
-```
-   Client ──request──▶
-   Client ──request──▶   [ SERVER ]   ──answer──▶ ai rispettivi client
-   Client ──request──▶
-```
-
-**Punti di forza.** Il sistema è semplice da progettare e gestire. Lo stato è unico, quindi la consistenza è banale. Le query complesse sono facili perché il server vede tutti i dati. Controllo degli accessi, aggiornamenti e sicurezza sono gestiti in un solo punto.
-
-**Punti deboli:**
-
-- **SPOF**: se il server cade, il servizio si ferma.
-- **Bottleneck**: tutto il traffico converge sul server, e il costo di banda e CPU cresce con il numero di client.
-- **Fiducia totale nel gestore**, che può censurare, alterare o spegnere il servizio. È uno SPOF **amministrativo**.
-
-> ⚠️ **Punto da esame.** Il server può essere un cluster replicato su molti datacenter. In quel caso il sistema è **distribuito** ma resta **logicamente centralizzato**, perché c'è un solo gestore e un'unica fonte di fiducia. È il concetto di *not only distribute* applicato all'architettura.
-
-Esempio canonico di client/server: il **Web**. Il browser è il client e invia richieste HTTP; il web server risponde.
-
-#### 2.1.2 Problemi delle soluzioni centralizzate
-
-Le slide *Problems of Centralized Solutions* mettono in evidenza due problemi che vanno oltre lo SPOF tecnico.
-
-**1. Information collected by big servers.** I dati di tutti gli utenti si concentrano nei datacenter di pochi grandi operatori. Da questo derivano diverse conseguenze:
-
-- **privacy e profilazione**: il gestore vede tutto, e i dati degli utenti diventano il suo asset economico;
-- **honeypot**: un unico database contiene tutto, quindi un singolo data breach espone milioni di utenti;
-- **lock-in**: l'utente non controlla né può portare altrove i propri dati.
-
-È il problema che l'architettura DFS + DLT + ACL del Prof. (§2.3) vuole risolvere con la **sovranità del dato**.
-
-**2. Censorship.** L'esempio della slide è il grafico del traffico Internet da e verso l'**Egitto** il 27–28 gennaio 2011 (Primavera araba). Intorno alle 17:20 EST del 27 (notte tra il 27 e il 28, ora locale) il traffico attraverso circa 80 provider crolla quasi a zero: il governo ha "spento" Internet nel Paese. Dove esiste un punto di controllo, qualcuno può usarlo per censurare.
-
-> ⚠️ **Sfumatura da esame.** Lo shutdown egiziano è avvenuto a livello di **ISP e routing** (ritiro degli annunci BGP), cioè nella rete fisica (*underlay*). In quel caso anche una rete P2P costruita come overlay su Internet sarebbe stata tagliata fuori. Un overlay decentralizzato protegge dalla censura **applicativa** (blocco di un sito, di un server, di un account). Contro lo spegnimento dell'infrastruttura servono reti che non dipendono da Internet, come le mesh di FireChat (§2.1.4).
-
-#### 2.1.3 Modello peer-to-peer
-
-Tutti i nodi (**peer**) sono pari. Ciascuno è insieme client e server (**servent**) e mette a disposizione della rete le proprie risorse: banda, storage e CPU.
-
-Dalla slide del Prof.:
-
-> *P2P networks replace centralization and hierarchy with distribution and collaboration. At a philosophical level they replace centralized control with responsibility and freedom.*
-
-**"The P2P concept in images".** La vignetta mostra una partita di baseball in cui ogni giocatore lancia, riceve e batte, e le palline girano in tutte le direzioni. Non esiste un lanciatore fisso: ogni ruolo è intercambiabile. È la metafora del *servent*, che è client e server allo stesso tempo.
-
-**Overlay network.** Una rete P2P è una **rete logica a livello applicativo** (livello 7) costruita sopra Internet. I link dell'overlay sono connessioni tra peer, di solito TCP, e **non corrispondono alla topologia fisica**: due peer vicini nell'overlay possono trovarsi in continenti diversi.
-
-Il Prof. usa un aneddoto per mostrare questa **trasparenza rispetto ai protocolli sottostanti**. In un keynote a IEEE P2P 2012, Bram Cohen, l'inventore di BitTorrent, ha raccontato che mentre sviluppava BitTorrent non sapeva come funzionasse TCP.
-
-**Punti di forza.** Non esiste un centro critico, quindi la rete è robusta ai guasti dei singoli peer. Le risorse crescono insieme agli utenti, perché ogni peer porta sia domanda sia capacità. La rete è difficile da censurare o spegnere.
-
-**Punti deboli:**
-
-- **Churn**: disponibilità e persistenza dei dati non sono garantite.
-- **Discovery e lookup**: bisogna trovare peer e risorse senza un indice centrale.
-- **Nodi non fidati**: la rete è esposta a Sybil, Eclipse e *free rider*.
-- **Coordinamento e consistenza**: sono difficili da ottenere, ed è esattamente il problema che il consenso dovrà risolvere.
-
-#### 2.1.4 Applicazioni P2P (slide *Peer-to-Peer Model*)
-
-La slide elenca sistemi molto diversi tra loro. Il messaggio è che il P2P non si usa solo per il file sharing: è un **paradigma trasversale**.
-
-| Sistema | Cosa si condivide o decentralizza | Nota critica |
-|---|---|---|
-| **BitTorrent, eMule** | File sharing (banda e storage) | I casi classici. BitTorrent incentiva lo scambio (*tit-for-tat*) contro i free rider |
-| **Spotify** | Distribuzione dello streaming musicale | Nei primi anni usava il P2P tra client per scaricare meno i server; poi lo ha abbandonato (2014). È un **ibrido**: catalogo, account e diritti restano centralizzati |
-| **Google Talk** | Voce e chat | Media diretti tra peer, ma login e segnalazione passano per server centrali. Anche questo è un **ibrido** |
-| **SETI@home** | Potenza di calcolo (*volunteer computing*) | I volontari mettono a disposizione la CPU, ma un server centrale distribuisce i task e raccoglie i risultati. Dal punto di vista della topologia è più vicino al client/server |
-| **FireChat** | Messaggistica su rete **mesh** (Bluetooth/Wi-Fi tra smartphone) | Funziona **senza Internet**. È stato usato nelle proteste di Hong Kong del 2014 (articolo CNN sulla slide). È la risposta alla censura dell'underlay del §2.1.2 |
-| **OpenBazaar** | Marketplace decentralizzato, senza intermediario | Un esempio di "Amazon/eBay senza Amazon/eBay", con pagamenti in cripto |
-| **Bitcoin, Ethereum** | Moneta e calcolo (ledger e smart contract) | Qui il P2P è accompagnato dal **consenso**: si decentralizza anche la fiducia |
-
-> 💡 **Lettura da esame.** Gli esempi si dispongono lungo uno **spettro di decentralizzazione**:
-> - **ibridi**, dove il P2P serve all'efficienza e il controllo resta centrale (Spotify, Google Talk, SETI@home);
-> - **P2P puri** per la condivisione di risorse (BitTorrent, eMule, FireChat);
-> - sistemi che **decentralizzano anche la fiducia** (OpenBazaar, Bitcoin, Ethereum).
->
-> Solo nell'ultimo gruppo si parla di decentralizzazione nel senso pieno del corso.
-
-#### 2.1.5 Tassonomia delle reti P2P
-
-Questa parte integra le slide con la letteratura classica. Le DHT vengono approfondite nella slide *07.a*.
-
-| Tipo | Idea | Esempio storico | Nota |
-|---|---|---|---|
-| **Ibrido / centralizzato** | Indice centrale, trasferimento diretto tra peer | Napster | L'indice è uno SPOF: Napster fu chiuso per via legale (2001), quindi è uno SPOF **amministrativo** |
-| **Puro non strutturato** | Nessun indice; la ricerca avviene per *flooding* (inoltro a tutti i vicini, con TTL) | Gnutella 0.4 | Molto robusto, ma genera traffico enorme |
-| **Ibrido a super-peer** | Alcuni peer più potenti fanno da indice locale | Kazaa, Gnutella 0.6 (ultrapeer) | Compromesso tra i due modelli precedenti |
-| **Strutturato (DHT)** | Chiavi e nodi mappati via hash su uno spazio logico (ad esempio un anello) | Chord, Kademlia | Lookup deterministico in O(log N) |
-
-#### 2.1.6 Confronto quantitativo (slide *07.a*)
-
-| Approccio | Memoria per nodo | Overhead di comunicazione | Query complesse | Robustezza |
-|---|---|---|---|---|
-| Server centrale | O(N) | O(1) | ✔ | ✘ |
-| P2P puro (flooding) | O(1) | O(N²) | ✔ | ✔ |
-| DHT | O(log N) | O(log N) | ✘ | ✔ |
-
-Nessun approccio domina gli altri. Il **server** è efficiente ma fragile. Il **flooding** è robusto e flessibile ma costosissimo. La **DHT** è efficiente e robusta, ma supporta solo il lookup esatto per chiave e non la ricerca per keyword. È una tabella tipica da esame.
-
-#### 2.1.7 Collegamento con la blockchain: la rete P2P di Bitcoin
-
-Lo stack di Bitcoin (slide *08*) è: **Internet (TCP/IP) → rete P2P → algoritmo di consenso → ledger delle transazioni**. Il P2P è quindi lo strato di comunicazione su cui poggia tutto il resto.
-
-- È una **rete non strutturata**. Le transazioni si propagano per **flooding** (gossip): ogni peer le inoltra ai propri vicini finché tutta la rete le conosce.
-- Il wallet di Alice non deve essere connesso a quello di Bob: basta inviare la transazione a un nodo qualsiasi.
-- **Non esiste un leave esplicito.** Un nodo di cui non si hanno notizie da circa **3 ore** viene dimenticato; il churn è gestito "per oblio".
-- Nodi diversi possono avere **mempool diverse**: in un tentativo di double spending alcuni vedranno A→B, altri A→C. Il consenso serve proprio a decidere quale delle due transazioni entra nel ledger (§1.6).
-- Secondo le stime delle slide, forse datate, i full node permanentemente connessi sono circa 10.000, a fronte di molti più indirizzi IP transitori.
-
-> 💡 **Il filo del corso.** Il P2P risolve la *comunicazione* senza un centro, ma **non** l'*accordo*. Senza un server che faccia da arbitro, peer diversi vedono stati diversi. Il consenso aggiunge l'accordo sopra l'overlay: ecco perché *consensus defines trust*.
-
-#### 2.1.8 Sintesi: client/server vs P2P
-
-```
-      Client / Server                  Peer-to-Peer (P2P)
-
-        [ Client ]                  [ Peer ] ─── [ Peer ]
-            │                          │   ╲     ╱   │
-            ▼                          │    [Peer]   │
-     [ Central Server ]                │   ╱     ╲   │
-            ▲                       [ Peer ] ─── [ Peer ]
-            │
-        [ Client ]
-```
+### 2.1 Client/server vs peer-to-peer
 
 | Proprietà | Client/Server | Peer-to-Peer |
 |---|---|---|
-| **Topologia** | Centralizzata / gerarchica | Rete a maglia (mesh) / overlay |
-| **Ruoli** | Asimmetrici (il client chiede, il server risponde) | Simmetrici (ogni peer è client e server, *servent*) |
-| **SPOF** | Il server | Nessun centro critico |
-| **Scalabilità** | Il server diventa collo di bottiglia | Ogni nuovo nodo porta sia domanda sia risorse |
-| **Fiducia** | Delegata all'autorità centrale | Regolata da crittografia e consenso |
-| **Punto debole tipico** | Censura, disponibilità del server | Churn, discovery, attacchi Sybil ed Eclipse |
+| **Ruoli** | Asimmetrici: il client chiede, il server risponde | Simmetrici: ogni peer è client e server (*servent*) |
+| **SPOF** | Il server (anche amministrativo) | Nessun centro critico |
+| **Scalabilità** | Il server è il collo di bottiglia | Ogni nuovo peer porta domanda **e** risorse |
+| **Fiducia** | Nel gestore | In crittografia e consenso |
+| **Punti forti** | Semplice, stato unico, query complesse facili | Robusto, difficile da censurare |
+| **Punti deboli** | Censura, disponibilità del server | Churn, discovery, Sybil/Eclipse, consistenza |
 
-> ⚠️ **Nota di rigore.** "Il P2P scala con i partecipanti" è vero per il file sharing e le DHT. Nelle blockchain con **replicazione totale**, invece, ogni nodo valida ed esegue tutto: aggiungere nodi aumenta la resilienza ma **non** il throughput (vedi il trilemma, §3.1). Inoltre P2P non implica decentralizzazione della fiducia: una rete P2P i cui nodi sono tutti controllati dallo stesso soggetto è distribuita, non decentralizzata.
+Esempio canonico di client/server: **il Web**. Dalla slide sul P2P: *"P2P networks replace centralization and hierarchy with distribution and collaboration. At a philosophical level they replace centralized control with responsibility and freedom."*
 
-### 2.2 Il modello della slide: consenso, calcolo, storage
+> ⚠️ **Punto da esame.** Un server replicato su molti datacenter è **distribuito** ma **logicamente centralizzato**: un solo gestore, una sola fonte di fiducia.
+
+**Problemi del centralizzato** (oltre allo SPOF tecnico):
+1. **Information collected by big servers:** privacy e profilazione, *honeypot* (un breach espone tutti), lock-in.
+2. **Censorship:** l'esempio è lo shutdown di Internet in **Egitto** (27–28 gennaio 2011, Primavera araba): il traffico verso il Paese crolla quasi a zero in una notte.
+
+> ⚠️ **Sfumatura.** Lo shutdown egiziano è avvenuto a livello di **ISP e routing** (underlay): anche un overlay P2P su Internet sarebbe stato tagliato fuori. Un overlay protegge dalla censura *applicativa*; contro lo spegnimento dell'infrastruttura servono reti mesh indipendenti da Internet (FireChat).
+
+### 2.2 Overlay network
+
+Una rete P2P è una **rete logica a livello applicativo (L7)** sopra Internet; i link dell'overlay non coincidono con la topologia fisica. Aneddoto del Prof. sulla **trasparenza rispetto ai protocolli sottostanti**: Bram Cohen, inventore di BitTorrent, ha raccontato (keynote IEEE P2P 2012) di non sapere come funzionasse TCP mentre lo sviluppava.
+
+### 2.3 Applicazioni P2P e spettro di decentralizzazione
+
+| Gruppo | Esempi | Cosa resta centrale |
+|---|---|---|
+| **Ibridi** (P2P per efficienza) | Spotify (P2P tra client fino al 2014), Google Talk, SETI@home | Catalogo/login/distribuzione dei task |
+| **P2P puri** (condivisione risorse) | BitTorrent, eMule, FireChat (mesh Bluetooth/Wi-Fi, proteste di Hong Kong 2014) | Nulla, ma non c'è accordo su uno stato comune |
+| **Fiducia decentralizzata** | OpenBazaar, Bitcoin, Ethereum | Nulla: il P2P è affiancato dal **consenso** |
+
+Solo l'ultimo gruppo è decentralizzazione nel senso pieno del corso.
+
+### 2.4 Tassonomia P2P e confronto quantitativo (slide 07.a)
+
+| Tipo | Idea | Esempio |
+|---|---|---|
+| Ibrido centralizzato | Indice centrale, trasferimento tra peer | Napster (chiuso per via legale: SPOF amministrativo) |
+| Puro non strutturato | Ricerca per *flooding* con TTL | Gnutella 0.4 |
+| Super-peer | Alcuni peer fanno da indice | Kazaa, Gnutella 0.6 |
+| Strutturato (DHT) | Chiavi e nodi mappati via hash su uno spazio logico | Chord, Kademlia |
+
+| Approccio | Memoria/nodo | Overhead | Query complesse | Falsi negativi evitati | Robustezza |
+|---|---|---|---|---|---|
+| Server centrale | O(N) | O(1) | ✔ | ✔ | ✘ |
+| P2P puro (flooding) | O(1) | O(N²) | ✔ | ✘ (il TTL può non trovare la risorsa) | ✔ |
+| DHT | O(log N) | O(log N) | ✘ (solo lookup esatto per chiave) | ✔ | ✔ |
+
+Nessun approccio domina: tabella tipica da esame.
+
+### 2.5 La rete P2P di Bitcoin (slide 08)
+
+- Stack: **TCP/IP → rete P2P → consenso → ledger**.
+- Rete **non strutturata**: il wallet invia la transazione a un nodo qualsiasi, che la propaga per **flooding** ai vicini.
+- **Nessun leave esplicito:** un nodo non sentito da circa **3 ore** (valore hardcoded nei client) viene dimenticato.
+- I nodi possono avere **pool di transazioni diversi** (A→B vs A→C): serve il consenso.
+- Dimensione: fino a ~1M IP al mese, ma solo **~10K full node** permanentemente connessi (stima forse datata).
+
+> 💡 **Il filo del corso.** Il P2P risolve la *comunicazione* senza un centro, non l'*accordo*. Il consenso aggiunge l'accordo sopra l'overlay.
+
+### 2.6 Consenso, calcolo, storage
 
 ```
-                 ┌──────────────────────┐
-                 │      CONSENSUS       │  ← definisce la fiducia
-                 └──────────┬───────────┘
-          ┌─────────────────┴─────────────────┐
-     COMPUTATION                           STORAGE
- smart contract, off-chain,          distributed file system,
- verifiable computing, oracoli       data availability
-          └─────────────────┬─────────────────┘
+                 CONSENSUS  ← definisce la fiducia
+          ┌──────────┴──────────┐
+     COMPUTATION             STORAGE
+ smart contract, off-chain,  DFS (IPFS), data availability
+ verifiable computing, oracoli
    APPLICAZIONI: Finance · Identity · Governance · Learning · Sensing
 ```
 
-**Computation**
+- **Oracoli:** portano dati esterni on-chain, ma reintroducono un punto di fiducia.
+- **Data availability:** il dato deve essere *ottenibile* da chi vuole verificare, non solo esistere.
+- **Pattern ricorrente del Prof.:** dati sul **DFS**, hash e permessi (ACL) su **DLT + smart contract**, sovranità all'utente ([Capitolo 3](<03 Smart Transportation.md>)).
 
-- **Smart contract:** codice eseguito in modo deterministico e replicato su tutti i nodi, quindi costoso.
-- **Off-chain computation:** sposta l'esecuzione fuori dalla catena per scalare.
-- **Verifiable computing:** permette di verificare un calcolo senza rieseguirlo, ad esempio con prove zk.
-- **Oracoli:** portano dati esterni on-chain, ma così reintroducono un punto di fiducia.
-
-**Storage**
-
-- **DFS** (ad esempio IPFS): contiene i dati voluminosi, mentre il ledger conserva solo hash e riferimenti.
-- **Data availability:** i dati necessari a verificare lo stato devono essere *ottenibili* da chiunque voglia verificare, non solo esistere da qualche parte.
-
-### 2.3 Pattern ricorrente del Prof.: DFS + DLT + smart contract + ACL
-
-Nel materiale sulla Smart Transportation ([Capitolo 3](<03 Smart Transportation.md>)) il Prof. usa un'architettura a strati:
-
-- i dati personali stanno sul **DFS**;
-- riferimenti e permessi (**ACL**) stanno su una **DLT** con smart contract;
-- l'utente mantiene la **sovranità** sui propri dati.
-
-La Decentralized Authorization (§0.4) è il pezzo che completa lo schema: risolve il problema di concedere l'accesso a un dato cifrato senza un server che custodisca le chiavi.
-
-### 2.4 Domini applicativi
-
-| Area | Cosa si decentralizza | Pilastro dominante |
-|---|---|---|
-| **Finance (DeFi)** | Pagamenti, incentivi, tokenomics, staking | Computation + Consensus |
-| **Identity & Access Control** | DID, verifiable credentials | Storage + Consensus |
-| **Governance** | Voto, DAO, processi legislativi | Computation |
-| **Learning** | Federated learning, training e inferenza decentralizzati | Computation (off-chain) |
-| **Sensing & Context Awareness** | Mobile crowdsensing, edge computing | Storage + Computation |
-
-### 2.5 Roadmap: approccio top-down
-
-Il corso segue questo percorso: problem statement → preliminari → applicazioni → cripto → smart contract (Ethereum, Solidity) → internals di blockchain e DLT (Bitcoin come catena lineare, IOTA come DAG/Tangle) → schemi di consenso → altri dettagli.
-
-Il consenso è concettualmente al centro, ma viene studiato **per ultimo**. Nei primi capitoli lo si tratta quindi come una scatola nera affidabile; solo alla fine se ne aprono le ipotesi: modello bizantino, asincronia, Sybil resistance.
+Roadmap **top-down**: problema → applicazioni → cripto → smart contract → internals → **consenso per ultimo** (finché non lo si studia, è una scatola nera affidabile).
 
 ---
 
 ## 3. Trade-off e attacchi
 
-### 3.1 Il costo della decentralizzazione
+**Costi della decentralizzazione:** replicazione (throughput basso), latenza di finalità, costi economici (fee, energia PoW, capitale PoS), codice immutabile. Da qui il **trilemma** decentralizzazione–sicurezza–scalabilità (formulazione resa popolare da Buterin).
 
-Decentralizzare ha dei costi:
+> ⚠️ **Nota di rigore.** "Il P2P scala con i partecipanti" vale per file sharing e DHT. In una blockchain a replicazione totale ogni nodo valida tutto: più nodi = più resilienza, **non** più throughput.
 
-- **replicazione ridondante**, che abbassa il throughput;
-- **latenza di finalità**, dovuta ai round di consenso e alle conferme;
-- **costi economici**: fee, energia nel PoW, capitale bloccato nel PoS;
-- **complessità**: il codice è immutabile e i bug sono difficili da correggere (serve un redeploy, vedi [Capitolo 2](<02 DLT, smart contract e use case.md>)).
+**Quando non decentralizzare:** serve una DLT solo se (1) più parti scrivono uno stato condiviso, (2) non si fidano tra loro, (3) una TTP non esiste o non è desiderabile. Flowchart completo nel [Capitolo 2](<02 DLT, smart contract e use case.md>).
 
-Da qui il **trilemma** (formulazione resa popolare da Buterin) tra decentralizzazione, sicurezza e scalabilità: tipicamente se ne ottengono due su tre. Il Prof. lo riassume così: *"Does it work?" "Yes!" "Does it scale?" "…"*
-
-### 3.2 Quando non decentralizzare
-
-Se esiste una TTP affidabile e accettata da tutti, un database centralizzato è quasi sempre la scelta migliore. La decentralizzazione ha senso solo quando valgono **tutte e tre** queste condizioni:
-
-1. più parti scrivono uno stato condiviso;
-2. queste parti non si fidano tra loro;
-3. una TTP non esiste o non è desiderabile.
-
-Il flowchart completo (Wüst & Gervais) è nel [Capitolo 2](<02 DLT, smart contract e use case.md>).
-
-### 3.3 Superficie d'attacco (anteprima)
-
-| Attacco / rischio | Idea | Dove si approfondisce |
-|---|---|---|
-| **Sybil** | Molte identità controllate da un solo attore | Consenso (PoW/PoS come difesa) |
-| **51% / majority** | Chi ha la maggioranza della risorsa può riscrivere la storia | Bitcoin, consenso |
-| **Eclipse** | Un nodo viene isolato e circondato da peer malevoli | P2P, networking |
-| **Oracle manipulation** | Il dato esterno è falso, ma il contratto lo esegue fedelmente | Smart contract, DeFi Security |
-| **Data withholding** | Viene pubblicato l'hash ma il dato non è disponibile | Storage, data availability |
-| **Centralizzazione di fatto** | Pochi pool, pochi validatori, governance oligarchica | Trasversale |
-
-L'ultima riga è quella più "da Ferretti": un sistema può essere **architetturalmente distribuito ma politicamente centralizzato**.
+| Attacco / rischio | Idea |
+|---|---|
+| **Sybil** | Molte identità controllate da un solo attore |
+| **51%** | Chi ha la maggioranza della risorsa riscrive la storia |
+| **Eclipse** | Un nodo isolato e circondato da peer malevoli |
+| **Oracle manipulation** | Dato esterno falso eseguito fedelmente dal contratto |
+| **Data withholding** | Hash pubblicato, dato non disponibile |
+| **Centralizzazione di fatto** | Pochi pool o validatori: architetturalmente distribuito, politicamente centralizzato |
 
 ---
 
 ## 4. Esempi e codice
 
-### 4.1 Stesso servizio, tre architetture
-
-Servizio di riferimento: un registro delle corse di ride-sharing.
-
-| | Centralizzato (Uber) | Distribuito (Uber con DB replicato) | Decentralizzato |
-|---|---|---|---|
-| **Chi scrive lo stato** | Uber | Uber (su N server) | Chiunque, secondo le regole |
-| **Di chi ci si fida** | Uber | Uber | Protocollo + maggioranza onesta |
-| **Guasti tollerati** | Nessuno (SPOF) | Crash di alcuni server | Crash e nodi bizantini |
-| **Censura** | Possibile | Possibile | Difficile |
-
-### 4.2 Toy simulation: il consenso "definisce" la verità
-
-```python
-from collections import Counter
-
-def consensus(votes, f):
-    """Accetta un valore solo se lo sostengono almeno 2f+1 nodi su n >= 3f+1."""
-    n = len(votes)
-    assert n >= 3*f + 1, "troppi nodi bizantini: nessuna garanzia"
-    value, count = Counter(votes).most_common(1)[0]
-    return value if count >= 2*f + 1 else None
-
-onesti = ["tx_A"] * 5
-bizantini = ["tx_FAKE"] * 2
-print(consensus(onesti + bizantini, f=2))   # -> tx_A
-```
-
-Il valore accettato è "vero" perché lo sostiene un quorum sufficiente. Il vincolo **n ≥ 3f+1** è quello classico del consenso BFT. Nei sistemi permissionless, però, n non è noto e le identità non costano nulla: per questo Bitcoin conta la potenza di calcolo invece dei voti.
-
-### 4.3 Il costo del flooding
-
-```python
-import random
-
-def flood(n=200, degree=6, ttl=7, seed=1):
-    random.seed(seed)
-    nbrs = {i: random.sample([j for j in range(n) if j != i], degree) for i in range(n)}
-    seen, frontier, msgs = {0}, [0], 0
-    for _ in range(ttl):
-        nxt = []
-        for u in frontier:
-            for v in nbrs[u]:
-                msgs += 1
-                if v not in seen:
-                    seen.add(v); nxt.append(v)
-        frontier = nxt
-    return len(seen), msgs
-
-print(flood())   # (nodi raggiunti, messaggi inviati)
-```
-
-I messaggi inviati superano di molto i nodi raggiunti, perché una volta raggiunta gran parte della rete quasi tutti sono duplicati verso nodi già visitati: è l'overhead del P2P puro. Il **TTL** limita il costo, ma può impedire di trovare la risorsa cercata.
-
-### 4.4 Un ledger append-only con catena di hash
+### 4.1 Ledger append-only con catena di hash
 
 ```python
 import hashlib, json
@@ -438,147 +186,95 @@ def h(block):
 
 def append(chain, txs):
     prev = h(chain[-1]) if chain else "0" * 64
-    chain.append({"prev": prev, "txs": txs})   # unica operazione ammessa: aggiunta in coda
+    chain.append({"prev": prev, "txs": txs})      # unica operazione ammessa
 
 def verify(chain):
-    return all(chain[i]["prev"] == h(chain[i - 1]) for i in range(1, len(chain)))
+    return all(chain[i]["prev"] == h(chain[i-1]) for i in range(1, len(chain)))
 
 ledger = []
-append(ledger, ["genesis"])
-append(ledger, ["A->B 5"])
-append(ledger, ["B->C 2"])
-print(verify(ledger))            # True
-
-ledger[1]["txs"] = ["A->M 5"]    # riscrittura della storia
-print(verify(ledger))            # False: il blocco 2 non punta più al blocco 1
+for txs in (["genesis"], ["A->B 5"], ["B->C 2"]):
+    append(ledger, txs)
+print(verify(ledger))          # True
+ledger[1]["txs"] = ["A->M 5"]  # riscrittura della storia
+print(verify(ledger))          # False
 ```
 
-Modificare un blocco rompe il collegamento con tutti i successivi, quindi ogni nodo che verifica la propria copia se ne accorge. Il codice però mostra anche il limite: chi riscrive la storia può **ricalcolare tutti gli hash successivi** e ottenere una catena di nuovo valida. La catena di hash rende la manomissione *evidente*; è il **consenso** (in Bitcoin, il costo del PoW da rifare) a renderla *impraticabile* (§1.6).
+Chi riscrive può però **ricalcolare tutti gli hash successivi**: la catena rende la manomissione *evidente*, il consenso (in Bitcoin, rifare il PoW) la rende *impraticabile*.
+
+### 4.2 Quorum BFT: il consenso "definisce" la verità
+
+```python
+from collections import Counter
+
+def consensus(votes, f):
+    n = len(votes)
+    assert n >= 3*f + 1, "troppi nodi bizantini"
+    value, count = Counter(votes).most_common(1)[0]
+    return value if count >= 2*f + 1 else None
+
+print(consensus(["tx_A"]*5 + ["tx_FAKE"]*2, f=2))   # tx_A
+```
+
+Con identità note vale **n ≥ 3f+1**. Nel permissionless n non è noto e le identità costano zero: per questo Bitcoin conta il lavoro, non i voti.
 
 ---
 
-## 5. Active Recall
+## 5. Quadro di riepilogo
 
 ### 5.1 Concetti chiave
 
 | Concetto | In sintesi |
 |---|---|
-| **Distribuito vs decentralizzato** | Distribuito = *dove* stanno dati e calcolo; decentralizzato = *chi* li controlla (*not only distribute*) |
-| **TTP** | Terza parte fidata (banca, notaio, piattaforma): ciò che la decentralizzazione vuole eliminare |
-| **Consensus defines trust** | La fiducia passa dall'istituzione al protocollo e alla maggioranza onesta |
-| **Maggioranza di cosa?** | Nel permissionless non si contano identità (Sybil) ma risorse: hash power (PoW), stake (PoS) |
-| **SPOF tecnico vs di controllo** | Il primo si elimina replicando (distribuzione), il secondo solo decentralizzando |
-| **Service Evolution** | Communication → Web 2.0 → share (*matching*) economy → decentralization |
-| **Public ledger** | Append-only e replicato; il consenso decide contenuto **e ordine** (received → ordered → replicated → committed) |
-| **Finalità** | PoW probabilistica (reorg, ~6 conferme); BFT/PBFT immediata |
-| **Assi delle blockchain** | Public/private = lettura; permissionless/permissioned = scrittura/validazione |
-| **Client/server vs P2P** | Ruoli asimmetrici + SPOF vs peer *servent* simmetrici su overlay, con churn |
-| **Overlay** | Rete logica di livello 7 sopra Internet, indipendente dalla topologia fisica |
-| **Server / flooding / DHT** | Memoria-overhead: O(N)/O(1) · O(1)/O(N²) · O(log N)/O(log N); la DHT non fa query complesse |
-| **Rete P2P di Bitcoin** | Non strutturata, gossip; nodi dimenticati dopo ~3 h; mempool divergenti → serve il consenso |
-| **Problemi del centralizzato** | Concentrazione dei dati (privacy, honeypot, lock-in) e censura (Egitto 2011) |
-| **Pilastri** | Computation (smart contract, off-chain, verifiable computing, oracoli) e Storage (DFS, data availability) |
-| **Trilemma** | Decentralizzazione, sicurezza, scalabilità: di solito due su tre |
+| Distribuito vs decentralizzato | *Dove* stanno i dati vs *chi* li controlla |
+| Consensus defines trust | La fiducia passa dalla TTP al protocollo; si contano risorse, non identità |
+| SPOF tecnico vs di controllo | Il primo si elimina replicando, il secondo solo decentralizzando |
+| Cryptoeconomics | Crittografia + sistemi distribuiti + economia + teoria dei giochi |
+| Service Evolution | Communication → Web 2.0 → share (*matching*) economy → decentralization |
+| Public ledger | Append-only, replicato; consenso su contenuto **e ordine** |
+| Finalità | PoW probabilistica (~6 conferme); PBFT immediata |
+| Client/server vs P2P | Ruoli asimmetrici e SPOF vs *servent* su overlay con churn |
+| Server / flooding / DHT | O(N)/O(1) · O(1)/O(N²) · O(log N)/O(log N) |
+| Rete Bitcoin | Non strutturata, flooding, oblio dopo 3 h, ~10K full node |
 
-### 5.2 Da ripetere prima della prossima lezione
+### 5.2 Parole chiave
 
-- distribuito vs decentralizzato;
-- *consensus defines trust*;
-- glossario: scalability, availability, SPOF, bottleneck, churn;
-- le 4 fasi della Service Evolution e sharing vs matching economy;
-- public ledger: append-only, accordo su contenuto **e ordine**, consenso; le 4 fasi (received, ordered, replicated, committed);
-- client/server vs P2P, overlay e tassonomia P2P;
-- tabella server / flooding / DHT;
-- rete P2P di Bitcoin;
-- problemi del centralizzato (raccolta dati, censura) e caso Egitto;
-- esempi P2P e spettro di decentralizzazione;
-- i due pilastri (computation e storage);
-- quando non usare una blockchain.
+`decentralizzazione` · `TTP` · `consensus defines trust` · `Sybil` · `SPOF` · `churn` · `bottleneck` · `cryptoeconomics` · `matching economy` · `append-only` · `finalità probabilistica` · `client/server` · `servent` · `overlay` · `flooding` · `DHT` · `censura` · `underlay` · `oracolo` · `data availability` · `trilemma`
 
-### 5.3 Domande e risposte
+### 5.3 Domande
 
-1. Qual è la differenza tra distribuito e decentralizzato? Fai un esempio di sistema distribuito ma non decentralizzato.
-2. Cosa significa "consensus defines trust"? Dove si sposta la fiducia rispetto a una TTP?
-3. Spiega la provocazione "Uber senza Uber".
-4. Perché eliminare lo SPOF tecnico non basta per parlare di decentralizzazione?
-5. Definisci il churn e spiega perché è critico nelle reti aperte.
-6. Confronta client/server e P2P rispetto a ruoli, SPOF e scalabilità.
-7. Perché una blockchain P2P non scala in throughput all'aumentare dei nodi?
-8. Quali sono i due pilastri tecnologici? Indica due tecnologie per ciascuno.
-9. Perché gli oracoli sono un punto critico?
-10. Che differenza c'è tra memorizzare un dato e garantirne la data availability?
-11. In quali condizioni una blockchain è peggiore di un database centralizzato?
-12. Perché in un sistema permissionless la "maggioranza" non si misura in nodi?
-13. Come permettono Secret Sharing e Proxy Re-Encryption un'autorizzazione senza server centrale?
-14. Perché un server replicato su più datacenter resta un sistema centralizzato?
-15. Cos'è una overlay network e che rapporto ha con la topologia fisica?
-16. Che tipo di SPOF aveva Napster, e perché è rilevante per il corso?
-17. Confronta server centrale, flooding e DHT per memoria, overhead, query complesse e robustezza.
-18. Come gestisce Bitcoin il churn e la propagazione delle transazioni?
-19. Perché una rete P2P da sola non basta a costruire una criptovaluta?
-20. Quali sono i due problemi delle soluzioni centralizzate evidenziati dalle slide, oltre allo SPOF tecnico?
-21. Un overlay P2P avrebbe resistito allo shutdown egiziano del 2011? Perché, e che cosa avrebbe resistito?
-22. Classifica BitTorrent, Spotify, SETI@home, FireChat e Bitcoin lungo lo spettro di decentralizzazione.
-23. Descrivi le quattro fasi della Service Evolution.
-24. Perché, secondo il Prof., la sharing economy è in realtà una matching economy, e cosa c'entra con la blockchain?
-25. Descrivi lo schema *The Public Ledger*: cosa rappresentano nodi, catena e replica?
-26. Perché la slide scrive *updates (additions)*? Chi garantisce che il ledger resti append-only?
-27. Perché i nodi devono accordarsi anche sull'**ordine** delle transazioni e non solo sul loro contenuto?
-28. In Bitcoin un blocco appena aggiunto è definitivo? Confronta con PBFT.
-29. Che differenza c'è tra public/private e permissionless/permissioned?
+1. Distribuito vs decentralizzato: fai un esempio di sistema distribuito ma non decentralizzato.
+2. Cosa significa *consensus defines trust*? Perché nel permissionless non si contano i nodi?
+3. Perché eliminare lo SPOF tecnico non basta?
+4. Quali discipline compongono la cryptoeconomics e che ruolo ha la teoria dei giochi?
+5. Perché per il Prof. la sharing economy è una *matching economy*?
+6. Perché i nodi devono accordarsi anche sull'**ordine** delle transazioni?
+7. In Bitcoin un blocco appena aggiunto è definitivo? Confronta con PBFT.
+8. Confronta client/server e P2P per ruoli, SPOF, scalabilità e fiducia.
+9. Un overlay P2P avrebbe resistito allo shutdown egiziano del 2011?
+10. Confronta server, flooding e DHT per memoria, overhead, query complesse e falsi negativi.
+11. Come gestisce Bitcoin il churn e la propagazione delle transazioni?
+12. Perché una rete P2P da sola non basta a costruire una criptovaluta?
 
 <details>
 <summary><b>Tracce di risposta</b></summary>
 
-1. La distribuzione riguarda la ripartizione, la decentralizzazione l'assenza di un controllo unico. Esempio: un DB replicato aziendale.
-2. La fiducia passa dall'istituzione al protocollo e al quorum onesto.
-3. Si elimina il garante e si mantengono matching, reputazione e pagamento tramite protocollo e contratti.
-4. Si può replicare tutto restando sotto il controllo di un'unica entità: lo SPOF di controllo rimane.
-5. È il join/leave imprevedibile dei nodi; minaccia la disponibilità dei dati e la stabilità del consenso.
-6. Vedi le tabelle del §2.1.
-7. Con la replicazione totale ogni nodo esegue e valida tutto: più nodi significano più resilienza, non più throughput.
-8. Computation: smart contract, off-chain, verifiable computing, oracoli. Storage: DFS, data availability.
-9. Introducono una fiducia esterna che il consenso non può verificare.
-10. Un hash on-chain non garantisce che il contenuto sia effettivamente ottenibile.
-11. Quando esiste una TTP accettata, oppure c'è un solo scrittore, oppure non c'è sfiducia reciproca.
-12. Per via del Sybil attack: si contano le risorse (hash power, stake).
-13. Shamir: servono k frammenti su n, quindi nessun nodo possiede la chiave da solo. PRE: il proxy trasforma il ciphertext per il destinatario senza vedere il plaintext.
-14. Un solo gestore significa un solo punto di fiducia e di controllo.
-15. È una rete logica a livello 7, indipendente dalla rete fisica.
-16. Uno SPOF amministrativo e legale sull'indice: il trasferimento era P2P, il controllo no.
-17. Vedi la tabella del §2.1.6.
-18. Propaga le transazioni per flooding ai vicini; non esiste un leave esplicito e i nodi vengono dimenticati dopo circa 3 ore.
-19. Il P2P fornisce la comunicazione ma non l'accordo: le mempool possono divergere e permettere il double spending, quindi serve il consenso.
-20. La concentrazione dei dati nei grandi server (privacy, profilazione, honeypot, lock-in) e la censura.
-21. No: il taglio era nell'underlay (ISP e routing), quindi anche l'overlay sarebbe stato isolato. Avrebbe resistito una rete mesh indipendente da Internet, come FireChat.
-22. Ibridi: Spotify, SETI@home. P2P puro: BitTorrent, FireChat. Fiducia decentralizzata: Bitcoin.
-23. Communication, Web 2.0, share economy, decentralization (servizi blockchain-based).
-24. Uber non condivide nulla, abbina domanda e offerta; il matcher centrale estrae rendita e dati. La blockchain prova a far svolgere il matching al protocollo.
-25. Nodi = peer della rete P2P; catena = registro storico di transazioni/stato; replica = ogni nodo ha una copia locale, nessun DB centrale.
-26. Perché il ledger cambia solo per aggiunta in coda. Lo garantiscono insieme la catena di hash (manomissione evidente) e il consenso (riscrittura troppo costosa).
-27. Due transazioni in conflitto (A→B, A→C) sono valide singolarmente: decide quale arriva prima nell'ordine concordato. Il consenso sul ledger è consenso sull'ordine.
-28. No: in PoW i fork temporanei e i reorg sono normali e la finalità è probabilistica (convenzione: 6 conferme). In PBFT un blocco concordato è subito finale.
-29. Public/private: chi può leggere il ledger. Permissionless/permissioned: chi può modificarlo, cioè proporre e accettare aggiornamenti.
+1. Ripartizione vs assenza di controllo unico; es. DB replicato aziendale.
+2. La fiducia passa al protocollo e al quorum onesto; le identità sono gratis (Sybil), quindi si contano hash power o stake.
+3. Si può replicare tutto restando sotto un'unica entità: lo SPOF di controllo rimane.
+4. Crittografia, sistemi distribuiti, economia, teoria dei giochi; quest'ultima progetta incentivi razionali per validare le transazioni.
+5. Uber abbina domanda e offerta; il matcher centrale estrae rendita e dati.
+6. Due transazioni in conflitto sono valide singolarmente: vince la prima nell'ordine concordato.
+7. No: reorg possibili, finalità probabilistica (~6 conferme). In PBFT è subito finale.
+8. Vedi tabella §2.1.
+9. No: il taglio era nell'underlay; avrebbe resistito solo una mesh indipendente (FireChat).
+10. Vedi tabella §2.4: il flooding con TTL può dare falsi negativi, la DHT non fa query complesse.
+11. Flooding ai vicini; nessun leave esplicito, nodi dimenticati dopo ~3 ore.
+12. Fornisce comunicazione, non accordo: i pool divergono e permettono il double spending.
 
 </details>
 
 ---
 
-## Riferimenti di approfondimento
-
-- Narayanan et al., *Bitcoin and Cryptocurrency Technologies* (2016)
-- Nakamoto, *Bitcoin: A Peer-to-Peer Electronic Cash System* (2008)
-- Lamport, Shostak, Pease, *The Byzantine Generals Problem* (1982)
-- Castro, Liskov, *Practical Byzantine Fault Tolerance* (1999), sul PBFT
-- Shamir, *How to Share a Secret* (1979)
-- Blaze, Bleumer, Strauss, *Divertible Protocols and Atomic Proxy Cryptography* (1998), sulla PRE
-- Stoica et al., *Chord: A Scalable Peer-to-peer Lookup Service for Internet Applications*, SIGCOMM (2001) (citato in 07.a)
-- Lua et al., *A survey and comparison of peer-to-peer overlay network schemes*, IEEE Communications Surveys & Tutorials (2005) (citato in 07.a)
-- Buterin, *The Meaning of Decentralization* (2017)
-- Wüst & Gervais, *Do you need a Blockchain?* (2018)
-
-> Nota: i riferimenti non presenti nelle slide, gli esempi storici Napster, Gnutella, Kazaa e Kademlia, i dettagli su Spotify, Google Talk, SETI@home, OpenBazaar, sullo shutdown egiziano del 2011, sui reorg e sulla convenzione delle 6 conferme vengono dalla letteratura generale.
-
----
+> **Fonti e verifica.** Verificato su 01 – Preliminaries, 02, 07.a e 08 – Blockchain. Dalla letteratura (non in slide): esempi Napster/Gnutella/Kazaa/Kademlia, dettagli su Spotify, FireChat e shutdown egiziano, reorg e convenzione delle 6 conferme, trilemma di Buterin, codice. Testo di riferimento: Narayanan et al., *Bitcoin and Cryptocurrency Technologies* (2016). Altri: Nakamoto (2008); Lamport et al., *Byzantine Generals* (1982); Stoica et al., *Chord* (SIGCOMM 2001); Wüst & Gervais, *Do you need a Blockchain?* (2018).
 
 [← Indice](README.md)
