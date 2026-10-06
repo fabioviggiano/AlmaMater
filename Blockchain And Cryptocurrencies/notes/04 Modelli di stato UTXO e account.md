@@ -2,7 +2,7 @@
 
 *Lezione 4 (02/10/2026) · Slide "03.01 – Cryptocurrencies": sezione "Taxonomy of Crypto Platforms" (slide 3–13, anticipata a fine della lezione precedente) e prima parte su Bitcoin. [Registrazione Panopto](https://unibo.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=c71434dc-97a7-4bf1-9658-b4d700985bcb)*
 
-> 🚧 **Capitolo in corso.** Copre la lezione fino al minuto 55:41 (slide *Fiat-Asset Collateralized Currency*). Vedi la nota in fondo.
+> 🚧 **Capitolo in corso.** Copre la lezione fino alla slide *Collateralization Ratio* inclusa. Vedi la nota in fondo.
 
 [← Indice](README.md)
 
@@ -302,10 +302,96 @@ La slide le dispone su un **triangolo**: tre tipi ai vertici, e ogni lato indica
 
 #### Fiat-asset collateralized currency
 
-- Ogni token è **garantito da una valuta reale** (es. USD), depositata presso una **banca**.
-- Lo schema della slide (animato) parte da **banca** e **utente**. Primo passo: **si depositano USD su un conto bancario** (*Deposit USD to a bank account*).
+**Idea.** La stablecoin è legata al valore di una **valuta reale**. Per creare una stablecoin agganciata al dollaro si **depositano dollari su un conto bancario** e si emette una quantità corrispondente di moneta digitale: **1 USD depositato = 1 stablecoin**.
 
-*(Sezione in corso: lezione sospesa al minuto 55:41, sul primo passo dello schema.)*
+Gli attori sono tre: l'**utente**, il **custode** (*custodian*, una banca o l'emittente che usa una banca) che conserva i dollari, e uno **smart contract** che tiene il registro dei saldi in token (`_balances`).
+
+Le slide (animate) mostrano tre operazioni.
+
+**1. Deposito ed emissione (*mint*).** L'utente deposita USD presso il custode. Il custode chiama lo smart contract, che **crea** (*mint*) la stessa quantità di token a nome dell'utente.
+
+<img width="1303" height="898" alt="image" src="https://github.com/user-attachments/assets/ef186399-e348-4985-8083-0cc14bbe0c92" />
+
+<img width="1407" height="846" alt="image" src="https://github.com/user-attachments/assets/7510b29f-ec08-4690-a639-96723da043e1" />
+
+**2. Trasferimento (*transfer*).** I token passano da un utente all'altro **on-chain**: lo smart contract aggiorna `_balances`. **Non serve passare dal sistema bancario**: la banca resta solo il custode dei dollari che garantiscono i token.
+
+<img width="1398" height="881" alt="image" src="https://github.com/user-attachments/assets/47e07c37-b135-465f-936d-776230315d71" />
+
+**3. Prelievo e distruzione (*withdrawal / burn*).** Esempio della slide *Withdrawal*:
+
+- Bob chiede al custode di ritirare **60 USD**;
+- il custode gli restituisce i 60 USD e chiama **`burn(Bob, 60)`**: i 60 token di Bob vengono **distrutti** (l'icona della fiamma).
+
+| | Prima | Dopo |
+|---|---|---|
+| Bob | 85 token | 25 token |
+| Alice | 35 token | 35 token |
+| Carol | 15 token | 15 token |
+| **Token in circolazione** | **135** | **75** |
+| **USD nella riserva del custode** | **135** | **75** |
+
+> 💡 **La regola che tiene in piedi tutto** (sintesi mia): **USD in riserva = token in circolazione**. Il *mint* aggiunge a entrambi, il *burn* toglie a entrambi, il *transfer* sposta solo token tra utenti. Finché la regola regge, ogni token vale 1 USD.
+
+**Pro** (slide *Pros*):
+
+<img width="1295" height="743" alt="image" src="https://github.com/user-attachments/assets/14a4b8a4-77d6-442e-8574-1f0d63d865e7" />
+
+- tutto è **digitale**;
+- **semplicità**;
+- prezzo **stabile al 100%**;
+- **less** … *(voce troncata negli appunti: probabilmente "less prone to hacks", perché la garanzia non sta sulla blockchain ma in banca; da verificare sulla slide)*.
+
+**Contro** (slide *Cons*):
+
+<img width="1335" height="763" alt="image" src="https://github.com/user-attachments/assets/82133f5a-78b9-419a-a981-e1b6e9f5e3bd" />
+
+- **Centralizzata**: un **custode fidato** deve conservare la valuta fiat.
+- **Servono audit** per garantire trasparenza: bisogna verificare che il custode abbia davvero **abbastanza denaro in riserva**.
+- **Molto regolamentata**: vincolata ai circuiti di pagamento tradizionali (*legacy payment rails*).
+- **Conversione in fiat costosa e lenta** (*liquidation to fiat*).
+
+> ⚠️ **Nota di rigore** (sintesi mia). La blockchain garantisce solo il registro dei token, non la riserva: se il custode spende i dollari o ne ha meno dei token emessi, il peg salta. È di nuovo il *Garbage In, Garbage Out* del Capitolo 2 e una TTP che rientra dalla porta: per questo servono gli audit.
+
+#### Crypto-collateralized currency
+
+<img width="1241" height="995" alt="image" src="https://github.com/user-attachments/assets/0adbe52e-8f0f-434f-aa33-a0919aac2cf5" />
+
+- La garanzia **non è un bene reale** (valuta, oro) ma **un'altra criptovaluta**, ad esempio ETH.
+- Al posto della banca c'è uno **smart contract** (l'icona della checklist con l'ingranaggio), che tiene bloccata la garanzia ed emette le stablecoin.
+- **Il problema** (slide): *"Stablecoin as volatile as the collateral cryptocurrency backing it"*. Se blocco 4 ETH per emettere 4 stablecoin, le stablecoin valgono quanto quei 4 ETH: se ETH scende, scendono anche loro.
+
+#### Collateralization ratio
+
+<img width="1412" height="1001" alt="image" src="https://github.com/user-attachments/assets/0f2809ef-1dbb-4849-990c-08023d7375e1" />
+
+**La soluzione: bloccare più garanzia di quanto si emette.** Le crypto-stablecoin sono **sovra-collateralizzate** (*over-collateralized*): per ogni stablecoin c'è in riserva **più di una moneta** di cripto.
+
+**In parole semplici.** Il *collateralization ratio* è il rapporto tra **quanto vale la garanzia bloccata** e **quanto valgono le stablecoin emesse**:
+
+```
+collateralization ratio = valore della garanzia / valore delle stablecoin emesse
+```
+
+**Esempio numerico** (sintesi mia). ETH vale 1.000 $ e voglio 1.000 stablecoin (= 1.000 $).
+
+| | Garanzia bloccata | Ratio | ETH scende del 20% | Ogni stablecoin è coperta da |
+|---|---|---|---|---|
+| **Senza margine** | 1 ETH = 1.000 $ | 100% | 1 ETH = 800 $ | **0,80 $** → peg perso |
+| **Sovra-collateralizzata** | 1,5 ETH = 1.500 $ | 150% | 1,5 ETH = 1.200 $ | **1,20 $** → ancora coperta |
+
+Il margine in più fa da **cuscinetto**: assorbe i cali di prezzo della garanzia, così ogni stablecoin resta coperta da almeno 1 $.
+
+**Lettura della slide.** A sinistra il caso fiat: 4 dollari in banca per 4 token, basta l'**1:1** perché il dollaro non oscilla rispetto a sé stesso. A destra il caso cripto: **6 ETH** nello smart contract per **4 stablecoin**, cioè un ratio del **150%**.
+
+> 💡 **Regola della slide:** *"The more volatile the crypto, the higher this ratio should be"*. Più la garanzia oscilla, più grande deve essere il cuscinetto.
+
+> 💡 **Analogia** (sintesi mia). È come un prestito su pegno: per avere 100 € in prestito lasci in garanzia un oggetto che vale 150 €, così il prestatore è coperto anche se l'oggetto perde un po' di valore.
+
+> ⚠️ **Nota** (sintesi mia, dalla letteratura).
+> - Se la garanzia scende troppo e il ratio va sotto una soglia minima, lo smart contract **liquida** la posizione: vende la garanzia per ripagare le stablecoin. È il meccanismo di **MakerDAO (DAI)**.
+> - Il prezzo da pagare è il **capitale bloccato**: per 1.000 $ di stablecoin ne immobilizzi 1.500. Ecco perché, nel triangolo, le crypto-collateralized **non** stanno sul lato *capital-efficient*.
+
 
 ---
 
@@ -439,6 +525,9 @@ lock("alice")
 | **Limiti della volatilità** | Speculazione, rischio di cambio (stipendio in BTC?), difficile per prestiti e contratti; molti vogliono solo un registro anti-censura |
 | **Stablecoin** | Valore agganciato a una valuta (≈ 1 USD); per il Prof. le cripto davvero utili come servizio sociale |
 | **Tipi di stablecoin** | Fiat/asset, crypto-collateralized, non-collateralized (algoritmiche/ibride); lati: collateralized, capital-efficient, decentralized |
+| **Fiat-collateralized** | 1 USD in banca = 1 token; mint al deposito, transfer on-chain, burn al prelievo; stabile ma centralizzata, servono audit |
+| **Crypto-collateralized** | Garanzia in cripto dentro uno smart contract; con 1:1 sarebbe volatile quanto la garanzia |
+| **Collateralization ratio** | Valore garanzia / valore stablecoin emesse; > 100% (es. 150%) come cuscinetto; più volatile la cripto, più alto il ratio |
 
 ### 5.2 Domande e risposte
 
@@ -468,6 +557,9 @@ lock("alice")
 24. Quali sono i limiti delle criptovalute volatili secondo la slide?
 25. Cos'è una stablecoin e perché il Prof. la considera utile come servizio sociale?
 26. Descrivi i tre tipi di stablecoin e le proprietà sui lati del triangolo della slide.
+27. Descrivi deposito, trasferimento e prelievo di una stablecoin fiat-collateralized. Cosa fanno mint e burn?
+28. Pro e contro delle fiat-collateralized.
+29. Perché una stablecoin crypto-collateralized 1:1 non è stabile? Cos'è il collateralization ratio e da cosa dipende?
 
 <details>
 <summary><b>Tracce di risposta</b></summary>
@@ -498,6 +590,9 @@ lock("alice")
 24. La speculazione alimenta la volatilità; rischio di cambio (non si può pagare uno stipendio in BTC con serenità); prestiti, derivati e contratti richiedono stabilità; molti utenti vogliono solo conservare valore su un registro anti-censura, fuori dal sistema bancario.
 25. Una cripto con valore agganciato a una valuta (≈ 1 USD). Toglie il rischio di cambio mantenendo i vantaggi della blockchain, quindi rende davvero praticabili rimesse, pagamenti e accesso per gli unbanked.
 26. Tre tipi sul triangolo della slide: fiat/asset-collateralized (Tether, TrueUSD, Digix; fiducia nell'emittente), crypto-collateralized (MakerDAO, bitUSD; crollo del collaterale), non-collateralized/algoritmiche (Basis, Carbon, Terra; perdita del peg, Terra 2022). Lati: collateralized, capital-efficient, decentralized; nessun tipo li ha tutti e tre.
+27. Deposito: l'utente versa USD al custode, che fa mint dello stesso numero di token. Trasferimento: i token passano tra utenti on-chain, senza banca. Prelievo: il custode restituisce gli USD e fa burn dei token (es. Bob ritira 60 USD → burn(Bob, 60), riserva e token passano da 135 a 75). Regola: USD in riserva = token in circolazione.
+28. Pro: tutto digitale, semplice, prezzo stabile al 100%. Contro: centralizzata (custode fidato), servono audit sulle riserve, molto regolamentata, conversione in fiat lenta e costosa.
+29. Con 1:1 la stablecoin vale quanto la garanzia, quindi segue la sua volatilità. Il ratio è valore della garanzia / valore delle stablecoin: si tiene sopra il 100% (es. 6 ETH per 4 stablecoin = 150%) così un calo della garanzia non scopre i token. Più la cripto è volatile, più il ratio deve essere alto.
 
 </details>
 
@@ -505,9 +600,9 @@ lock("alice")
 
 ## 🚧 Da completare
 
-**Riprendere dal minuto 55:41**, slide *Fiat-Asset Collateralized Currency* (schema banca–utente, dopo il deposito di USD) ([registrazione Panopto](https://unibo.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=c71434dc-97a7-4bf1-9658-b4d700985bcb)). Restano da integrare il dettaglio sulle stablecoin e il resto della slide *03.01 – Cryptocurrencies*.
+**Riprendere dopo la slide *Collateralization Ratio*** ([registrazione Panopto](https://unibo.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=c71434dc-97a7-4bf1-9658-b4d700985bcb)). Restano le stablecoin non-collateralized (algoritmiche) e il resto della slide *03.01 – Cryptocurrencies*.
 
-> Nota: nonce, privacy degli UTXO, eUTXO di Cardano, il modello a program/account di Solana, Lightning Network, la seed phrase, hot/cold wallet, i dettagli su Mt.Gox, Cipro e Argentina, i dettagli sulle stablecoin (sovra-collateralizzazione, collasso di Terra, Digix legata all'oro) vengono dalla letteratura generale, non dalle slide.
+> Nota: nonce, privacy degli UTXO, eUTXO di Cardano, il modello a program/account di Solana, Lightning Network, la seed phrase, hot/cold wallet, i dettagli su Mt.Gox, Cipro e Argentina, i dettagli sulle stablecoin (liquidazione in MakerDAO, collasso di Terra, Digix legata all'oro), l'esempio numerico sul collateralization ratio e l'analogia del pegno vengono dalla letteratura generale, non dalle slide.
 
 ---
 
