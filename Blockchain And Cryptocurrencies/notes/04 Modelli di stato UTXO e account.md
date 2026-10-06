@@ -72,11 +72,14 @@ acct3   state: z=1   wallet: 10:T
 
 - **Fully digital currency**, **no government** che la emette (tetto di 21 milioni nel protocollo), **no banks** (transazioni P2P), **no one knows who invented it** (Satoshi Nakamoto, pseudonimo di persona o gruppo).
 - **Caratteristiche (slide):** anonimato e privacy (**chiavi pubbliche come pseudonimi**), **apertura** (basta Internet), **decentralizzazione**, **forte volatilità**.
+- **BTC / real money:** il cambio con il dollaro è stato molto volatile; il valore si basa sulla **fiducia in ciò che puoi comprarci**. Ci sono "bitcoin millionaires" che hanno minato nel 2009, e chi ha buttato un computer con una chiave privata legata a oltre 500k $: senza chiave, i fondi sono persi per sempre.
 - **Storia:** whitepaper fine 2008, annuncio 2009; gennaio 2009 **Genesis Block** e prima transazione Satoshi → **Hal Finney**; maggio 2010 primo acquisto reale: **Laszlo Hanyecz** paga **10.000 BTC** per pizze da ~25 $ (*Bitcoin Pizza Day*, 22 maggio); **2013** il prezzo esplode.
 
 **La rete.** Ogni nodo ha una copia del ledger (la blockchain). Le transazioni sono **broadcast** ai nodi, che le **validano** (firma, input UTXO non spesi, niente double spending), le inseriscono in un blocco e le ritrasmettono. Una tx è **accettata solo quando compare nella blockchain** (in pratica si attendono ~6 conferme). Obiettivo: **consenso globale** sulla storia.
 
-**Possibilità (slide):** rimesse, *bank the unbanked*, micropagamenti. **Governi:** il contante digitale "non tracciabile" aggira il **controllo dei capitali**; contromisura degli Stati: **scollegare BTC dalle istituzioni finanziarie in valuta fiat**.
+**Possibilità (slide):** rimesse, *bank the unbanked*, micropagamenti. **Governi:** il contante digitale "non tracciabile" aggira il **controllo dei capitali**; contromisura degli Stati: **scollegare BTC dalle istituzioni finanziarie in valuta fiat**. **Implicazioni:** nelle crisi finanziarie Bitcoin viene percepito come bene rifugio rispetto alle banche (articolo *The Balance* in slide), pur non essendo un investimento sicuro.
+
+**Statistiche di rete (slide, aprile 2025):** consumo energetico e impronta del mining da [Digiconomist](http://digiconomist.net/bitcoin-energy-consumption); il Prof. invita a esplorare i dati live su [blockchain.info](https://blockchain.info/). Ordini di grandezza per transazione nel [Capitolo 2](<02 DLT, smart contract e use case.md>), §1.5.
 
 > ⚠️ **Nota di rigore.** Bitcoin è **pseudonimo**, non anonimo: le transazioni sono pubbliche e analizzabili. E con fee di 1–2 $ e ~1 h di latenza i micropagamenti on-chain non sono praticabili (da qui il livello 2, es. Lightning). Il Prof. insiste sul **valore sociale** del protocollo, non sul mercato.
 
@@ -112,6 +115,8 @@ Marketplace dove si comprano e vendono cripto, con un **intermediario** che appl
 ## 3. Stablecoin e il caso Terra
 
 ### 3.1 Perché servono
+
+**Altcoin.** Bitcoin è solo la prima di migliaia di criptovalute (elenco CryptoCompare in slide). Nota del Prof.: le cripto sono **strettamente legate al concetto di token**, introdotto subito dopo ([Capitolo 5](05%20Smart%20Contracts%20%28Online%20%2B%20Panopto%29.md)). Nell'elenco dei prezzi alcune valgono stabilmente ~1 $: sono le stablecoin.
 
 **Drawbacks of volatile cryptos:** la speculazione alimenta la volatilità; rischio di cambio inutile (*"can you pay someone salary in Bitcoin?"*); prestiti, derivati, prediction market e contratti richiedono stabilità; molti utenti vogliono solo **conservare denaro su un registro resistente alla censura**, fuori dal sistema bancario.
 
@@ -158,7 +163,9 @@ Lati del triangolo: **collateralized** (fiat–crypto), **capital-efficient** (f
 
 > 💡 **Death spiral.** Ogni UST bruciato conia nuovi Luna: più si vende UST, più Luna entra in circolo e il suo prezzo crolla, quindi servono ancora più Luna per "1 $". Il cuscinetto (Luna) cade insieme a ciò che doveva proteggere, e il tetto giornaliero rende l'arbitraggio troppo lento.
 
-**Attacco speculativo?** Ipotesi (*"some suppose"*): un attaccante accumula UST, ritira 2 mld $ in un colpo per rompere il peg, costringe Terra a vendere le **riserve in BTC**, il panico forza altre vendite e il calo di Bitcoin premia chi era **short** su BTC. È un'ipotesi, non un fatto accertato. Le ultime slide mostrano un'**analisi del sentiment e della geolocalizzazione dei tweet** durante il collasso.
+**Attacco speculativo?** Ipotesi (*"some suppose"*): un attaccante accumula UST, ritira 2 mld $ in un colpo per rompere il peg, costringe Terra a vendere le **riserve in BTC**, il panico forza altre vendite e il calo di Bitcoin premia chi era **short** su BTC. È un'ipotesi, non un fatto accertato.
+
+**Il collasso visto da Twitter.** Le ultime slide mostrano un'analisi del **sentiment** dei tweet durante il crollo e la loro **geolocalizzazione**. Anche i tweet "positivi" non erano di fiducia: esprimevano eccitazione per il crollo (sorpresa, ironia), erano pubblicità per attirare follower, o soddisfazione e sollievo per non aver investito. È un esempio di come si studia un evento cripto con i dati social.
 
 ---
 
@@ -217,7 +224,7 @@ print(utxo)   # {('tx3', 0): (1, 'p4'), ('tx4', 0): (4, 'p6')}
 
 ### 5.2 Parole chiave
 
-`UTXO` · `spending condition` · `previous checks` · `change` · `fee` · `EOA` · `contract account` · `stateful / stateless` · `nonce` · `Genesis Block` · `pseudonimato` · `capital control` · `hot / cold wallet` · `custodial` · `order book` · `matching engine` · `CEX / DEX` · `peg` · `mint / burn` · `audit delle riserve` · `collateralization ratio` · `CDP` · `stablecoin algoritmica` · `oracolo` · `UST / Luna` · `Anchor` · `arbitraggio` · `death spiral`
+`UTXO` · `spending condition` · `previous checks` · `change` · `fee` · `EOA` · `contract account` · `stateful / stateless` · `nonce` · `Genesis Block` · `pseudonimato` · `capital control` · `altcoin` · `hot / cold wallet` · `custodial` · `order book` · `matching engine` · `CEX / DEX` · `peg` · `mint / burn` · `audit delle riserve` · `collateralization ratio` · `CDP` · `stablecoin algoritmica` · `oracolo` · `UST / Luna` · `Anchor` · `arbitraggio` · `death spiral` · `sentiment analysis`
 
 ### 5.3 Domande
 

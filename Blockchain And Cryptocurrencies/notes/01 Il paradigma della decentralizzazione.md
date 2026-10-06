@@ -23,7 +23,7 @@ In breve: la distribuzione riguarda *dove* stanno dati e calcolo, la decentraliz
 
 ### 1.2 Fiducia senza terza parte
 
-Nel modello classico la fiducia è delegata a una **Trusted Third Party (TTP)**: banca, notaio, piattaforma. Il desiderata delle slide è *"Users are able to build trust without involving a third party"*, con la provocazione: **"possiamo costruire Uber senza Uber, o Airbnb senza Airbnb?"**
+Le slide di apertura di *02 – Introduction Blockchain* partono da qui: oggi una **Central Trusted Authority** sta in mezzo a quasi tutto, cioè **economia, finanza, trading, dispute giudiziarie, norme e regolazione, servizi digitali**. È la **Trusted Third Party (TTP)**: banca, notaio, tribunale, piattaforma. Il desiderata delle slide è *"Users are able to build trust without involving a third party"*, con la provocazione: **"possiamo costruire Uber senza Uber, o Airbnb senza Airbnb?"**
 
 **Consensus defines trust.** Senza TTP la fiducia non scompare, **si sposta dall'istituzione al protocollo**: l'algoritmo di consenso stabilisce lo stato "vero" (contenuto e ordine del ledger). Non ci si fida di un nodo, ma del fatto che la maggioranza segua le regole. **Maggioranza di cosa?** In un sistema permissionless contare le identità non ha senso (**Sybil attack**): si contano risorse, cioè potenza di calcolo (PoW) o stake (PoS).
 
@@ -238,7 +238,7 @@ Con identità note vale **n ≥ 3f+1**. Nel permissionless n non è noto e le id
 
 ### 5.2 Parole chiave
 
-`decentralizzazione` · `TTP` · `consensus defines trust` · `Sybil` · `SPOF` · `churn` · `bottleneck` · `cryptoeconomics` · `matching economy` · `append-only` · `finalità probabilistica` · `client/server` · `servent` · `overlay` · `flooding` · `DHT` · `censura` · `underlay` · `oracolo` · `data availability` · `trilemma`
+`decentralizzazione` · `Central Trusted Authority` · `TTP` · `consensus defines trust` · `Sybil` · `SPOF` · `churn` · `bottleneck` · `cryptoeconomics` · `matching economy` · `append-only` · `finalità probabilistica` · `client/server` · `servent` · `overlay` · `flooding` · `DHT` · `censura` · `underlay` · `oracolo` · `data availability` · `trilemma`
 
 ### 5.3 Domande
 
