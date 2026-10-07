@@ -26,7 +26,6 @@ Uno smart contract è un **protocollo di transazione computerizzato** che esegue
 
 Il problema principale resta la fiducia (*trust*): l'idea è spostarla dalla controparte/intermediario al codice, che esegue automaticamente quanto pattuito.
 
-<img width="771" height="374" alt="image" src="https://github.com/user-attachments/assets/9b2ddca9-73b3-444b-80a0-0a34644cd2d1" />
 
 <img width="40%" height="40%" alt="image" src="https://github.com/user-attachments/assets/3c50f269-c90a-41b0-b069-314500e31351" />
 
@@ -43,6 +42,10 @@ Oggi: **programmi definiti dall'utente che girano sopra una blockchain**.
 ### Flessibilità
 
 <img width="40%" height="462" alt="image" src="https://github.com/user-attachments/assets/9ebbd44e-a8b5-4aeb-8d84-c344695fd68c" />"
+
+### Trasparenza
+
+<img width="40%" height="374" alt="image" src="https://github.com/user-attachments/assets/9b2ddca9-73b3-444b-80a0-0a34644cd2d1" />
 
 - Uno smart contract può essere scritto in un linguaggio **Turing completo**
   - **Non in Bitcoin** (Script volutamente limitato)
