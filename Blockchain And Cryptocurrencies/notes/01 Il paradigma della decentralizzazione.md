@@ -126,7 +126,27 @@ Solo l'ultimo gruppo è decentralizzazione nel senso pieno del corso.
 
 Nessun approccio domina: tabella tipica da esame.
 
-### 2.5 La rete P2P di Bitcoin (slide 08)
+### 2.5 Come funziona una DHT: Chord (slide 07.a)
+
+Una **DHT** è una hashmap le cui entry sono **ripartite su molti nodi**, più un **protocollo di routing** che trova il peer responsabile di una coppia ⟨chiave, valore⟩. Interfaccia: `put(GUID, data)`, `get(GUID)`, `remove(GUID)`.
+
+1. **Keyspace:** spazio logico di ID a *m* bit (0 … 2^m − 1, tipicamente m = 160), con ordine totale e una nozione di distanza (in modulo). Nodi e dati sono mappati **nello stesso spazio** con un hash crittografico (es. SHA-1): `NodeID = hash(IP, porta)`, `KeyID = hash(chiave)`. L'overlay **non è correlato alla topologia reale**.
+2. **Responsabilità:** ogni nodo gestisce un **intervallo contiguo** di chiavi, quelle "vicine" al proprio ID; a volte con ridondanza (repliche).
+3. **Key-based routing:** ogni nodo inoltra la query a un nodo **più vicino** alla chiave; le tabelle di routing si adattano a join, leave e guasti. Il valore può essere il dato (*direct storage*) o un puntatore alla sua posizione reale (*indirect storage*).
+
+**Chord** (Stoica et al.):
+- ID organizzati su un **anello**; la chiave *k* va al **successor(k)**, il primo nodo con ID ≥ *k* in senso orario.
+- **Lookup base:** ogni nodo conosce solo il successore → **O(N)** passi. La correttezza dipende solo dai successori.
+- **Finger table:** il nodo *n* ha *m* entry; l'*i*-esima punta al primo nodo ≥ *n* + 2^i, cioè a metà, un quarto, un ottavo… dell'anello. A ogni salto lo spazio di ricerca **si dimezza** → **O(log N)** passi attesi (con 1.000.000 di nodi, circa 20).
+- Ogni nodo mantiene: finger table (il primo finger è il successore) e predecessore.
+
+**Load balancing** (problema aperto delle slide): carico sbilanciato se un nodo copre un intervallo più ampio, se un intervallo contiene più dati, o se alcune chiavi sono più richieste (*hot spot*). Meno bilanciamento = meno robustezza e scalabilità.
+
+**DHT note e chi le usa (slide):** Chord, Pastry, Tapestry, CAN, P-Grid, **Kademlia** (KAD in eMule, BitTorrent), **S/Kademlia** (IPFS). Usate da Dynamo (Amazon), Cassandra, IPFS, Coral CDN; applicazioni: DNS distribuito, storage P2P, caching, file system distribuiti.
+
+> 💡 **Il filo del corso.** La DHT ritorna con **IPFS** (Cap. 2–3): il CID è la chiave, la DHT dice quale peer ha il contenuto.
+
+### 2.6 La rete P2P di Bitcoin (slide 08)
 
 - Stack: **TCP/IP → rete P2P → consenso → ledger**.
 - Rete **non strutturata**: il wallet invia la transazione a un nodo qualsiasi, che la propaga per **flooding** ai vicini.
@@ -136,7 +156,7 @@ Nessun approccio domina: tabella tipica da esame.
 
 > 💡 **Il filo del corso.** Il P2P risolve la *comunicazione* senza un centro, non l'*accordo*. Il consenso aggiunge l'accordo sopra l'overlay.
 
-### 2.6 Consenso, calcolo, storage
+### 2.7 Consenso, calcolo, storage
 
 ```
                  CONSENSUS  ← definisce la fiducia
@@ -217,6 +237,35 @@ print(consensus(["tx_A"]*5 + ["tx_FAKE"]*2, f=2))   # tx_A
 
 Con identità note vale **n ≥ 3f+1**. Nel permissionless n non è noto e le identità costano zero: per questo Bitcoin conta il lavoro, non i voti.
 
+### 4.3 Lookup in Chord con finger table
+
+```python
+M = 7                                        # spazio di ID 0..127, come nelle slide
+nodes = sorted([10, 19, 31, 49, 74, 81, 105, 120])
+
+def successor(k):
+    k %= 2**M
+    return next((n for n in nodes if n >= k), nodes[0])   # giro dell'anello
+
+def fingers(n):
+    return [successor(n + 2**i) for i in range(M)]
+
+def between(x, a, b):                        # x in (a, b] sull'anello
+    return a < x <= b if a < b else x > a or x <= b
+
+def lookup(n, k, hops=0):
+    if between(k, n, successor(n + 1)):
+        return successor(n + 1), hops + 1
+    nxt = max((f for f in fingers(n) if between(f, n, k - 1)),
+              key=lambda f: (f - n) % 2**M, default=successor(n + 1))
+    return lookup(nxt, k, hops + 1)
+
+print(fingers(74))        # [81, 81, 81, 105, 105, 120, 10]
+print(lookup(74, 40))     # (49, 3): 74 -> 10 -> 31 -> 49
+```
+
+Ogni salto usa il finger più lontano che **non supera** la chiave: lo spazio residuo si dimezza, da cui O(log N). Con il solo successore servirebbero 7 salti invece di 3.
+
 ---
 
 ## 5. Quadro di riepilogo
@@ -234,11 +283,12 @@ Con identità note vale **n ≥ 3f+1**. Nel permissionless n non è noto e le id
 | Finalità | PoW probabilistica (~6 conferme); PBFT immediata |
 | Client/server vs P2P | Ruoli asimmetrici e SPOF vs *servent* su overlay con churn |
 | Server / flooding / DHT | O(N)/O(1) · O(1)/O(N²) · O(log N)/O(log N) |
+| DHT / Chord | Nodi e chiavi nello stesso spazio di hash; chiave al successor; finger table → O(log N) |
 | Rete Bitcoin | Non strutturata, flooding, oblio dopo 3 h, ~10K full node |
 
 ### 5.2 Parole chiave
 
-`decentralizzazione` · `Central Trusted Authority` · `TTP` · `consensus defines trust` · `Sybil` · `SPOF` · `churn` · `bottleneck` · `cryptoeconomics` · `matching economy` · `append-only` · `finalità probabilistica` · `client/server` · `servent` · `overlay` · `flooding` · `DHT` · `censura` · `underlay` · `oracolo` · `data availability` · `trilemma`
+`decentralizzazione` · `Central Trusted Authority` · `TTP` · `consensus defines trust` · `Sybil` · `SPOF` · `churn` · `bottleneck` · `cryptoeconomics` · `matching economy` · `append-only` · `finalità probabilistica` · `client/server` · `servent` · `overlay` · `flooding` · `DHT` · `Chord` · `successor` · `finger table` · `key-based routing` · `Kademlia` · `censura` · `underlay` · `oracolo` · `data availability` · `trilemma`
 
 ### 5.3 Domande
 
@@ -254,6 +304,7 @@ Con identità note vale **n ≥ 3f+1**. Nel permissionless n non è noto e le id
 10. Confronta server, flooding e DHT per memoria, overhead, query complesse e falsi negativi.
 11. Come gestisce Bitcoin il churn e la propagazione delle transazioni?
 12. Perché una rete P2P da sola non basta a costruire una criptovaluta?
+13. In Chord, a quale nodo va una chiave? Perché il lookup passa da O(N) a O(log N)?
 
 <details>
 <summary><b>Tracce di risposta</b></summary>
@@ -270,11 +321,12 @@ Con identità note vale **n ≥ 3f+1**. Nel permissionless n non è noto e le id
 10. Vedi tabella §2.4: il flooding con TTL può dare falsi negativi, la DHT non fa query complesse.
 11. Flooding ai vicini; nessun leave esplicito, nodi dimenticati dopo ~3 ore.
 12. Fornisce comunicazione, non accordo: i pool divergono e permettono il double spending.
+13. Al successor(k), primo nodo con ID ≥ k in senso orario. Con la finger table (salti di 2^i) ogni passo dimezza lo spazio di ricerca.
 
 </details>
 
 ---
 
-> **Fonti e verifica.** Verificato su 01 – Preliminaries, 02, 07.a e 08 – Blockchain. Dalla letteratura (non in slide): esempi Napster/Gnutella/Kazaa/Kademlia, dettagli su Spotify, FireChat e shutdown egiziano, reorg e convenzione delle 6 conferme, trilemma di Buterin, codice. Testo di riferimento: Narayanan et al., *Bitcoin and Cryptocurrency Technologies* (2016). Altri: Nakamoto (2008); Lamport et al., *Byzantine Generals* (1982); Stoica et al., *Chord* (SIGCOMM 2001); Wüst & Gervais, *Do you need a Blockchain?* (2018).
+> **Fonti e verifica.** Verificato su 01 – Preliminaries, 02, 07.a e 08 – Blockchain. **Aggiornamento 07/10/2026:** aggiunti §2.5 (DHT e Chord, dalle slide 07.a) e §4.3 (codice del lookup), per coprire la voce *Tipologie di overlay* del programma ufficiale. Dalla letteratura (non in slide): esempi Napster/Gnutella/Kazaa, dettagli su Spotify, FireChat e shutdown egiziano, reorg e convenzione delle 6 conferme, trilemma di Buterin, codice. Testo di riferimento: Narayanan et al., *Bitcoin and Cryptocurrency Technologies* (2016). Altri: Nakamoto (2008); Lamport et al., *Byzantine Generals* (1982); Stoica et al., *Chord* (SIGCOMM 2001); Wüst & Gervais, *Do you need a Blockchain?* (2018).
 
 [← Indice](README.md)

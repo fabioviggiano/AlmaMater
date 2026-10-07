@@ -82,6 +82,8 @@ I contenuti presi dalla letteratura generale e non dalle slide sono segnalati ne
 - **Project work** obbligatorio, da 1 a 3 persone.
 - **A scelta:** presentazione di un paper durante il corso (prenotazione su Virtuale) **oppure** orale tradizionale.
 
+> ⚠️ **Da verificare.** La scheda ufficiale dell'insegnamento (90748, A.A. 2026/2027) parla di verifica *solo* tramite **prova di progetto**, senza paper né orale. Chiarire con il Prof.
+
 Materiali e comunicazioni: [virtuale.unibo.it](https://virtuale.unibo.it).
 
 ## Testo di riferimento
