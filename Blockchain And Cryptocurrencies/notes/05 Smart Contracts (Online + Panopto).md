@@ -1,8 +1,8 @@
 # Lezione 5 — Smart contracts
 
-[Lezione del 5 ottobre 2026 – Panopto](LINK_PANOPTO)
+[Lezione del 5 ottobre 2026 – Panopto]([LINK_PANOPTO](https://unibo.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=3627f577-fbb1-4cb9-a36a-b4db0067f928))
 
-*Slide di riferimento: [da verificare – Smart contracts]*
+*Slide di riferimento: Smart contracts*
 
 ---
 
