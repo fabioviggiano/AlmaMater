@@ -26,6 +26,8 @@ Uno smart contract è un **protocollo di transazione computerizzato** che esegue
 
 Il problema principale resta la fiducia (*trust*): l'idea è spostarla dalla controparte/intermediario al codice, che esegue automaticamente quanto pattuito.
 
+<img width="771" height="374" alt="image" src="https://github.com/user-attachments/assets/9b2ddca9-73b3-444b-80a0-0a34644cd2d1" />
+
 <img width="40%" height="40%" alt="image" src="https://github.com/user-attachments/assets/3c50f269-c90a-41b0-b069-314500e31351" />
 
 ### Smart contract come programmi su blockchain
