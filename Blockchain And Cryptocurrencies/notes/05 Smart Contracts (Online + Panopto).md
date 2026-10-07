@@ -1,4 +1,4 @@
-# Lezione 5 — Smart contracts
+# Lezione 5 — Smart contracts e token
 
 [Lezione del 5 ottobre 2026 – Panopto](https://unibo.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=3627f577-fbb1-4cb9-a36a-b4db0067f928)
 
@@ -26,7 +26,6 @@ Uno smart contract è un **protocollo di transazione computerizzato** che esegue
 
 Il problema principale resta la fiducia (*trust*): l'idea è spostarla dalla controparte/intermediario al codice, che esegue automaticamente quanto pattuito.
 
-
 <img width="40%" height="40%" alt="image" src="https://github.com/user-attachments/assets/3c50f269-c90a-41b0-b069-314500e31351" />
 
 ### Smart contract come programmi su blockchain
@@ -41,17 +40,19 @@ Oggi: **programmi definiti dall'utente che girano sopra una blockchain**.
 
 ### Flessibilità
 
-<img width="40%" height="462" alt="image" src="https://github.com/user-attachments/assets/9ebbd44e-a8b5-4aeb-8d84-c344695fd68c" />"
-
-### Trasparenza
-
-<img width="40%" height="374" alt="image" src="https://github.com/user-attachments/assets/9b2ddca9-73b3-444b-80a0-0a34644cd2d1" />
+<img width="40%" height="40%" alt="image" src="https://github.com/user-attachments/assets/9ebbd44e-a8b5-4aeb-8d84-c344695fd68c" />
 
 - Uno smart contract può essere scritto in un linguaggio **Turing completo**
   - **Non in Bitcoin** (Script volutamente limitato)
   - **Ethereum** sì
 - Può fare *qualsiasi cosa* faccia un normale computer
 - **Ma si paga**: il codice viene eseguito in parallelo da **tutti i nodi** della rete → ogni computazione ha un costo (anticipa il concetto di *gas*)
+
+### Trasparenza
+
+<img width="40%" height="40%" alt="image" src="https://github.com/user-attachments/assets/9b2ddca9-73b3-444b-80a0-0a34644cd2d1" />
+
+- <!-- da completare con il contenuto della slide -->
 
 ### Applicazioni
 
@@ -88,10 +89,8 @@ Spettro dal semplice al complesso:
 
 - Gioco in cui gli utenti **collezionano e fanno riprodurre gattini virtuali** tramite smart contract su Ethereum
 - I gattini si **comprano pagando in ether**
-- Ogni gattino è unico e la sua proprietà è registrata on-chain: è un esempio di **token non fungibile** (NFT, standard ERC-721) → collegamento con la parte sui token
+- Ogni gattino è unico e la sua proprietà è registrata on-chain: è un **token non fungibile** (ERC-721, vedi [sezione NFT](#erc-721-nft))
 - Anche la riproduzione (*breeding*) è logica del contratto: il nuovo gattino eredita caratteristiche dai genitori
-
-> Contesto: lanciato a fine 2017, ebbe un successo tale da congestionare la rete Ethereum, caso citato spesso per i limiti di scalabilità.
 
 ### Da smart contract a DApp
 
@@ -141,7 +140,7 @@ Due elementi nuovi rispetto al Web 2.0:
 
 ### Esempio: licenza (contratto legale)
 
-Spunto: Solidity come linguaggio per scrivere smart contract su Ethereum (non visto oggi).
+Spunto: Solidity come linguaggio per scrivere smart contract su Ethereum.
 
 <img width="40%" height="40%" alt="image" src="https://github.com/user-attachments/assets/2dfbfeaa-4831-4dc9-a947-5493481cc133" />
 
@@ -180,12 +179,6 @@ Morale: un contratto legale si può formalizzare come macchina a stati, quindi c
 
 ---
 
-### Punti su cui insiste il Prof.
-
-> L'idea di smart contract non è nuova (Szabo 1994): la novità è eseguirli su un consenso decentralizzato.
-> Obiettivo chiave: ridurre il bisogno di intermediari fidati.
-> Turing completezza (Ethereum vs Bitcoin) ha un costo: ogni nodo esegue tutto.
-
 ## Tokens
 
 Con gli smart contract si possono sviluppare molte applicazioni diverse, ma di solito prevedono qualcosa che gli utenti possono scambiare: in genere parliamo di **token**.
@@ -202,7 +195,197 @@ I token si possono ottenere:
 
 Il prezzo di un token sale o scende in base a **domanda e offerta**.
 
+### ERC-20: implementazione di base
 
+<!-- screenshot "ERC-20 Basic Implementation Excerpt" (variabili + constructor) -->
 
+Stato del contratto:
+
+```solidity
+contract ERC20 {
+    uint256 constant totalSupply_;                                    // numero totale di token
+    mapping(address => uint256) balances;                             // saldo di ogni indirizzo
+    mapping(address => mapping (address => uint256)) allowed;         // quanto un indirizzo può spendere per conto di un altro
+
+    // crea i token, tutti assegnati al creatore
+    function constructor(uint256 total) public {
+        totalSupply_ = total;
+        balances[msg.sender] = _totalSupply;
+    }
+}
+```
+
+- `balances`: è il **registro dei saldi**, il cuore del token. Possedere token = avere un numero associato al proprio indirizzo in questa mappa
+- `allowed`: gestisce le **deleghe** (*allowance*): A autorizza B a spendere fino a N token suoi (usato da `approve` / `transferFrom`)
+- `constructor`: eseguito una sola volta al deploy; `msg.sender` è chi pubblica il contratto e riceve tutta la supply iniziale
+
+<!-- screenshot "ERC-20 Basic Implementation Excerpt" (balanceOf) -->
+
+```solidity
+function balanceOf(address tokenOwner) public view returns (uint256) {
+    return balances[tokenOwner];
+}
+```
+
+- Funzione `view`: **legge** lo stato senza modificarlo → non serve una transazione, non costa gas se chiamata dall'esterno
+
+<!-- screenshot "ERC-20 Basic Implementation Excerpt" (transfer) -->
+
+```solidity
+function transfer(address receiver, uint256 numTokens) public returns (bool) {
+    require(numTokens <= balances[msg.sender]);
+    balances[msg.sender] = balances[msg.sender] - numTokens;
+    balances[receiver] = balances[receiver] + numTokens;
+    emit Transfer(msg.sender, receiver, numTokens);
+    return true;
+}
+```
+
+1. `require`: controlla che il mittente abbia saldo sufficiente, altrimenti la transazione viene annullata (*revert*)
+2. scala i token dal mittente
+3. li aggiunge al destinatario
+4. `emit Transfer`: emette un **evento**, registrato nei log della transazione, che wallet ed explorer usano per tracciare i trasferimenti
+
+Un "trasferimento di token" quindi non sposta nulla: **aggiorna due righe di una mappa** dentro il contratto.
+
+> Nota: l'estratto è semplificato e non compilerebbe così com'è (`totalSupply_` dichiarata `constant` ma assegnata nel constructor, `_totalSupply` vs `totalSupply_`, `function constructor` è sintassi vecchia). Serve a capire la logica, non come codice reale.
+
+### Implementazioni note
+
+<!-- screenshot "Famous Implementations" -->
+
+Gli smart contract si possono scrivere da zero, ma **una volta caricati sulla blockchain non si possono modificare né cancellare**: un bug resta lì per sempre (e può costare soldi veri). Per questo conviene partire da implementazioni già note e verificate:
+
+- **OpenZeppelin**: libreria open source (repository su GitHub) di contratti standard e controllati, tra cui l'implementazione di ERC-20; di fatto il punto di partenza più usato
+- **ConsenSys**: altra implementazione di riferimento
+- Tutorial con codice su GitHub: *how to issue your own token on Ethereum in less than 20 minutes*
+
+### ERC-721 (NFT)
+
+<!-- screenshot "ERC721 (NFT)" -->
+
+- Proposto inizialmente per gestire **atti di proprietà** (*deeds*)
+- **Non-fungible token**: ogni token è **unico e non intercambiabile** con gli altri
+- Obiettivo: un'**interfaccia standard** per creare e scambiare token distinguibili che rappresentano beni digitali o fisici (es. figurine da collezione, come nella slide)
+
+| | Fungibile (ERC-20) | Non fungibile (ERC-721) |
+|---|---|---|
+| Unità | tutte uguali e intercambiabili | ognuna unica (`tokenId`) |
+| Cosa registra il contratto | quanti token ha ogni indirizzo | quale indirizzo possiede ogni token |
+| Esempio | valuta, punti fedeltà | gattino CryptoKitties, opera digitale |
+
+Esempi:
+
+- **CryptoKitties** (token ERC-721): hanno avuto un momento di popolarità enorme, con gattini scambiati a valutazioni altissime
+- **Beeple**: opere video vendute come NFT a cifre milionarie
+- **Game 5 Ball**: altro esempio citato <!-- verificare -->
+
+### ERC-721: interfaccia (semplificata)
+
+<!-- screenshot "ERC721 Token interface" -->
+
+```solidity
+contract ERC721 {
+    // funzioni compatibili con ERC-20
+    function name() constant returns (string name);
+    function symbol() constant returns (string symbol);
+    function totalSupply() constant returns (uint totalSupply);
+    function balanceOf(address _owner) constant returns (uint balance);
+    // funzioni che definiscono la proprietà
+    function ownerOf(uint _tokenId) constant returns (address _owner);
+    function approve(address _to, uint _tokenId);
+    function takeOwnership(uint _tokenId);
+    function transfer(address _to, uint _tokenId) returns (bool success);
+    function tokenOfOwnerByIndex(address _owner, uint _index) constant returns (uint tokenId);
+    // metadati del token
+    function tokenMetadata(uint _tokenId) constant returns (string infoUrl);
+    // eventi
+    event Transfer(address indexed _from, address indexed _to, uint _tokenId);
+    event Approval(address indexed _owner, address indexed _spender, uint _tokenId);
+}
+```
+
+- **Funzioni compatibili con ERC-20** (`name`, `symbol`, `totalSupply`, `balanceOf`): permettono di inviare token e controllare i saldi come per un token fungibile
+- **Proprietà**: la differenza chiave è che si ragiona per **`tokenId`**, non per quantità
+  - `ownerOf(tokenId)`: chi possiede quel token specifico
+  - `approve` + `takeOwnership`: il proprietario autorizza qualcuno, che poi prende il token
+  - `transfer(_to, _tokenId)`: trasferisce *quel* token, non "N token"
+  - `tokenOfOwnerByIndex`: elenca i token di un proprietario
+- **Metadati**: `tokenMetadata` restituisce un URL con le informazioni sul bene (immagine, descrizione). L'opera vera e propria di solito **non sta on-chain**, ci sta solo il riferimento
+- **Eventi**: `Transfer` e `Approval`, come in ERC-20 ma con `tokenId` al posto della quantità
+
+> Nota: è una versione semplificata/bozza; lo standard finale usa `transferFrom`, `safeTransferFrom`, `setApprovalForAll` e `tokenURI`.
+
+### ERC-20 vs ERC-721
+
+<!-- screenshot "ERC20 vs ERC721" -->
+
+- **ERC-20** → token per il **denaro** e ciò che si comporta come denaro
+  - una banconota da 5 € vale esattamente quanto qualsiasi altra banconota da 5 € (**fungibilità**)
+- **ERC-721** → token per **oggetti da collezione** e "cose" in generale
+  - equivalente alle figurine di baseball
+  - tante persone hanno un cane, ma *quel* cane è il loro e non lo scambierebbero con un altro: con ERC-721 si possono rappresentare quei cani e la loro proprietà
+
+Regola pratica: se due unità sono intercambiabili → ERC-20; se conta *quale* unità possiedi → ERC-721.
+
+### NFT e IPFS
+
+<!-- screenshot "NFTs and IPFS" -->
+
+Come si crea un NFT:
+
+1. **Crea l'artefatto** (immagine, video, ...)
+2. **Crea un contratto ERC-721** per coniare (*mint*) l'NFT, eventualmente più NFT
+3. **Fai il pin dell'artefatto su IPFS**: il file viene salvato sul file system decentralizzato e resta disponibile finché qualche nodo lo mantiene (*pinning*)
+4. **Conia l'NFT**: nel contratto registri il **riferimento IPFS** all'artefatto (il suo identificativo, derivato dal contenuto)
+
+Il punto chiave: **on-chain c'è solo il riferimento**, non l'opera. Costa molto meno, ma se nessuno mantiene il file su IPFS il token punta a qualcosa che non c'è più.
+
+Strumenti citati:
+
+- **OpenSea**: marketplace per comprare e vendere NFT
+- **NFT.Storage**: servizio per salvare i file degli NFT su IPFS
+- Tutorial NFT per chi è interessato: <!-- link dalla slide -->
+
+### Altro esempio: ERC-1190
+
+<!-- screenshot "Another Example: ERC-1190" -->
+<!-- screenshot "Example" (oggetto di gioco) -->
+
+Esempio di chiusura: un **oggetto di gioco** (es. una spada con caratteristiche speciali).
+
+- Il creatore dell'oggetto **incorpora l'oggetto e le informazioni sulla sua proprietà** in un token ERC-1190
+- Idea dello standard: gestire **licenze** sugli asset digitali, distinguendo chi **possiede** l'oggetto da chi ne detiene i **diritti creativi** (il creatore può continuare a guadagnare quando l'oggetto viene usato o rivenduto)
+
+### ERC-1155 (multi-token)
+
+- Standard **multi-token**: un solo contratto gestisce sia token **fungibili** sia **non fungibili**
+- Nato in ambito gaming: nello stesso contratto possono stare le monete del gioco (fungibili) e gli oggetti unici (non fungibili)
+- Permette trasferimenti **in batch** (più token in una sola transazione) → meno gas rispetto a usare contratti ERC-20 e ERC-721 separati
+
+<!-- lezione in corso: aggiungere qui le slide successive -->
+
+---
+
+## Punti su cui insiste il Prof.
+
+> L'idea di smart contract non è nuova (Szabo 1994): la novità è eseguirli su un consenso decentralizzato.
+> Obiettivo chiave: ridurre il bisogno di intermediari fidati.
+> Turing completezza (Ethereum vs Bitcoin) ha un costo: ogni nodo esegue tutto.
+> Un contratto deployato non si può modificare né cancellare → usare implementazioni note (OpenZeppelin, ConsenSys).
+
+## Dubbi da verificare
+
+- [ ] Caricare gli screenshot mancanti (applicazioni, PwC, CryptoKitties, DApp, Web site vs DApp, ERC-20, implementazioni, ERC-721)
+- [ ] Completare la sezione *Trasparenza*
+- [ ] Beeple: quale opera ha citato il Prof.? (video *Crossroad* o *Everydays: The First 5000 Days*?)
+- [ ] "Game 5 Ball": verificare nome e contesto dell'esempio
+- [ ] ERC-1190: confermare che il Prof. lo abbia presentato come standard di licenza (proprietà vs diritti creativi)
+- [ ] ERC-1155: il Prof. l'ha spiegato o solo nominato?
+- [ ] Recuperare il link al tutorial NFT dalla slide
+- [ ] Come si gestiscono tempo (24 h) ed eventi esterni in uno smart contract? → oracoli / timestamp del blocco
+- [ ] La UI di una DApp è davvero sempre su file system decentralizzato? (spesso in pratica è su server tradizionali)
+
+---
 
 *Lezione in corso di trascrizione: da completare.*
