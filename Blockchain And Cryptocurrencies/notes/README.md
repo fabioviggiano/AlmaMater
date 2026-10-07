@@ -16,9 +16,11 @@ Ogni capitolo corrisponde a una lezione e incrocia tre fonti: gli appunti presi 
 | 2 | [DLT, smart contract e casi d'uso](02%20DLT%2C%20smart%20contract%20e%20use%20case.md) | 2 (2.1 + 2.2) · ven 25/09/2026 | I–II — Introduzione e prime applicazioni | 02 |
 | 3 | [Smart Transportation: dati personali su DFS e DLT](03%20Smart%20Transportation.md) | 3 · lun 28/09/2026 | II — Applicazioni | 03.00 (Mobi talk) |
 | 4 | [Criptovalute: modelli di stato, Bitcoin e stablecoin](04%20Modelli%20di%20stato%20UTXO%20e%20account.md) | 4 · ven 02/10/2026 | III — Criptovalute | 03.01 |
-| 5 | [Smart contract e token](05%20Smart%20Contracts%20%28Online%20%2B%20Panopto%29.md) 🚧 *bozza, da completare* | 5 · lun 05/10/2026 | IV — Smart contract | 04.00, 04.01 |
+| 5 | [Smart contract e token](05%20Smart%20contract%20e%20token.md) | 5 · lun 05/10/2026 | III–IV — Token e smart contract | 04.00, 04.01 |
 
-I capitoli 1–4 sono nella versione revisionata (formato uniforme, verificati sulle slide). Il 5 è ancora una trascrizione in corso.
+Tutti e cinque i capitoli sono nella versione revisionata (formato uniforme, verificati sulle slide; codice Python e Solidity testato). Il 5 copre per intero le slide 04.00 e 04.01, quindi è più lungo del limite di 5 pagine.
+
+**Copertura del programma ufficiale:** P2P e overlay (Cap. 1) · introduzione alle criptovalute (Cap. 4) · decentralizzazione e DLT (Cap. 1–2) · smart contract (Cap. 2, 5). Da trattare: transazioni e scripting, mining, attacchi, anonimato.
 
 > Gli appunti grezzi da Panopto (`AAAA.MM.GG - Lezione N - ... .md`) non sono ancora caricati nel repository: per ora la fonte di verifica dei capitoli sono le slide.
 
@@ -28,7 +30,6 @@ I capitoli 1–4 sono nella versione revisionata (formato uniforme, verificati s
 
 | Argomento previsto | Slide |
 |---|---|
-| Token: ERC-20, NFT, ICO, DAO | 04.01 |
 | Ethereum: account, transazioni, gas, EVM | 05 |
 | Solidity e Remix | 06.01 |
 | DeFi: swap, AMM, lending, bridge | 06.00 |

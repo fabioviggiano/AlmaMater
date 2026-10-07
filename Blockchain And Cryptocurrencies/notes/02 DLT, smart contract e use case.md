@@ -109,7 +109,7 @@ In filiera ogni attore usa sistemi chiusi (*silos*): visibilità limitata, regis
 
 ### 2.4 Blockchain e GDPR
 
-GDPR (Reg. UE 2016/679): *self-executing*, applicabile anche fuori UE, in vigore dal 2016 con sanzioni dal 2018, pensato per un **modello centralizzato** (c'è un titolare). Diritti in slide: **accesso (art. 15)**, **rettifica (art. 16)**, **cancellazione/oblio (art. 17)**. L'append-only li contraddice → **need to use off-chain data**.
+GDPR (Reg. UE 2016/679): *self-executing*, applicabile anche fuori UE, in vigore dal 2016 con sanzioni dal 2018 (più precisamente: entrato in vigore il 24/05/2016, applicabile dal 25/05/2018), pensato per un **modello centralizzato** (c'è un titolare). Diritti in slide: **accesso (art. 15)**, **rettifica (art. 16)**, **cancellazione/oblio (art. 17)**. L'append-only li contraddice → **need to use off-chain data**.
 
 ```
 [dato sensibile] ──▶ storage off-chain protetto (cancellabile, rettificabile)

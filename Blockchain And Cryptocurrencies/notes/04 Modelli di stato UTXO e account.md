@@ -116,7 +116,7 @@ Marketplace dove si comprano e vendono cripto, con un **intermediario** che appl
 
 ### 3.1 Perché servono
 
-**Altcoin.** Bitcoin è solo la prima di migliaia di criptovalute (elenco CryptoCompare in slide). Nota del Prof.: le cripto sono **strettamente legate al concetto di token**, introdotto subito dopo ([Capitolo 5](05%20Smart%20Contracts%20%28Online%20%2B%20Panopto%29.md)). Nell'elenco dei prezzi alcune valgono stabilmente ~1 $: sono le stablecoin.
+**Altcoin.** Bitcoin è solo la prima di migliaia di criptovalute (elenco CryptoCompare in slide). Nota del Prof.: le cripto sono **strettamente legate al concetto di token**, introdotto subito dopo ([Capitolo 5](05%20Smart%20contract%20e%20token.md)). Nell'elenco dei prezzi alcune valgono stabilmente ~1 $: sono le stablecoin.
 
 **Drawbacks of volatile cryptos:** la speculazione alimenta la volatilità; rischio di cambio inutile (*"can you pay someone salary in Bitcoin?"*); prestiti, derivati, prediction market e contratti richiedono stabilità; molti utenti vogliono solo **conservare denaro su un registro resistente alla censura**, fuori dal sistema bancario.
 
@@ -128,7 +128,7 @@ Marketplace dove si comprano e vendono cripto, con un **intermediario** che appl
 |---|---|---|---|---|
 | **Fiat/asset-collateralized** | Valuta reale (o oro, Digix) in banca, **1:1** | Tether, TrueUSD, Digix | Il più semplice; **100% stabile** (1 $ in riserva per token, rimborsabile); meno esposto agli hack (collaterale non on-chain) | **Centralizzato** (custode fidato); servono **audit** delle riserve; molto regolato (*legacy payment rails*); conversione in fiat lenta e costosa |
 | **Crypto-collateralized** | Altra cripto in uno **smart contract**, **> 100%** | MakerDAO (CDP), bitUSD | Più decentralizzato; liquidazione nel collaterale rapida ed economica; trasparente (ratio ispezionabile) | Meno stabile; **auto-liquidazione** in un crollo (si perde il collaterale); legato a un'altra cripto; capitale inefficiente; complessità massima |
-| **Non-collateralized (algoritmica)** | Nessuna: un algoritmo regola l'offerta | Basis, Carbon, Terra | Nessuna garanzia; il più decentralizzato e indipendente; non legato a fiat o cripto; nessun incentivo a inflazionare | **Più vulnerabile a un crollo, senza poter liquidare**; complesso; limiti di sicurezza difficili da analizzare; **richiede crescita continua** |
+| **Non-collateralized (algoritmica)** | Nessuna: un algoritmo regola l'offerta | Basis, Carbon, Terra | Nessuna garanzia (*no collateral required*: non serve immobilizzare collaterale); il più decentralizzato e indipendente; non legato a fiat o cripto; nessun incentivo a inflazionare o deflazionare (mira alla stabilità) | **Più vulnerabile a un crollo, senza poter liquidare**; complesso; limiti di sicurezza difficili da analizzare; **richiede crescita continua** |
 
 Lati del triangolo: **collateralized** (fiat–crypto), **capital-efficient** (fiat–algoritmica), **decentralized** (crypto–algoritmica). Nessun tipo ha tutte e tre le proprietà.
 
