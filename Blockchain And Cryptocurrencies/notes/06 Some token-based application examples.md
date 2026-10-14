@@ -1,4 +1,4 @@
-# Capitolo 6 — Applicazioni dei token ed esempi
+# Capitolo 6 — Alcuni e<sempi di applicazioni base su token
 
 | | |
 |---|---|
