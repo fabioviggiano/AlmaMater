@@ -17,6 +17,9 @@ Ogni capitolo corrisponde a una lezione e incrocia tre fonti: gli appunti presi 
 | 3 | [Smart Transportation: dati personali su DFS e DLT](03%20Smart%20Transportation.md) | 3 · lun 28/09/2026 | II — Applicazioni | 03.00 (Mobi talk) |
 | 4 | [Criptovalute: modelli di stato, Bitcoin e stablecoin](04%20Modelli%20di%20stato%20UTXO%20e%20account.md) | 4 · ven 02/10/2026 | III — Criptovalute | 03.01 |
 | 5 | [Smart contract e token](05%20Smart%20contract%20e%20token.md) | 5 · lun 05/10/2026 | III–IV — Token e smart contract | 04.00, 04.01 |
+| 6.1 | [Esempi di applicazioni su token](06.1%20Some%20token-based%20application%20examples.md) | 6 · lun 12/10/2026 | III — Token: applicazioni | 04.01 |
+| 6.2 | [Ethereum](6.2%20-%20Ethereum.md) | 6 · lun 12/10/2026 | III–IV — Ethereum | 05 |
+| 6.3 | [Scalabilità: Layer 1 e Layer 2](6.3%20-%20Scalability.md) | 6 · lun 12/10/2026 | III–IV — Ethereum: scalabilità | Scalability |
 
 Tutti e cinque i capitoli sono nella versione revisionata (formato uniforme, verificati sulle slide; codice Python e Solidity testato). Il 5 copre per intero le slide 04.00 e 04.01, quindi è più lungo del limite di 5 pagine.
 
