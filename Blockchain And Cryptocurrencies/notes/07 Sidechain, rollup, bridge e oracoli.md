@@ -593,6 +593,71 @@ La lezione chiude con un'anteprima del linguaggio con cui si scrivono i contratt
 - **progettato per Ethereum**, cioè per la EVM (Cap. 6.2), ma usato anche su altre catene compatibili EVM come **Avalanche** e Polygon;
 - **Turing-completo**: può esprimere qualunque calcolo, nei limiti del **gas**.
 
+**Primo esempio: il contratto `Storage`.** È il contratto di esempio di Remix: salva un numero e lo restituisce. Versione della slide:
+
+```solidity
+pragma solidity >=0.4.22 <0.7.0;
+
+/**
+ * @title Storage
+ * @dev Store & retreive value in a variable
+ */
+contract Storage {
+
+    uint256 number;
+
+    /**
+     * @dev Store value in variable
+     * @param num value to store
+     */
+    function store(uint256 num) public {
+        number = num;
+    }
+
+    /**
+     * @dev Return value
+     * @return value of 'number'
+     */
+    function retreive() public view returns (uint256){
+        return number;
+    }
+}
+```
+
+Come leggerlo, con i concetti del Cap. 6.2:
+- `pragma solidity` indica quali versioni del compilatore accettano il file.
+- `uint256 number;` definisce una variabile (*"memory area"* nella slide) che contiene interi senza segno a 256 bit. Essendo dichiarata **fuori dalle funzioni**, è una **variabile di stato**: vive nello **storage** permanente del contratto.
+- `store` **modifica lo stato**: per chiamarla serve una **transazione**, che costa gas e resta registrata nella blockchain.
+- `retreive` è `view`: **legge soltanto**, quindi si può chiamare gratis da un nodo, senza transazione.
+
+**Le domande tipiche** (*Usual questions*): cosa ci posso fare? È davvero un contratto? Posso testarlo?
+
+**È davvero un contratto?** Sì:
+- si può fare il **deploy** sulla blockchain, e da quel momento "gira" nella blockchain;
+- tutti i nodi che lo usano sanno che è un **programma immutabile** che memorizza un valore;
+- **ogni modifica** del valore è una **transazione registrata** nella blockchain, quindi lo storico di tutti i valori è pubblico e verificabile.
+
+**Posso testarlo?** Sì: lo si vedrà la settimana prossima (Remix).
+
+La stessa logica in Solidity moderna (compila con solc 0.8.20). Cambiano la licenza SPDX, ora richiesta, e il pragma; il nome è corretto in `retrieve`:
+
+```solidity
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity ^0.8.20;
+
+contract Storage {
+    uint256 number;                                   // variabile di stato: sta in STORAGE
+
+    function store(uint256 num) public {              // scrive lo stato: serve una transazione (gas)
+        number = num;
+    }
+
+    function retrieve() public view returns (uint256) {  // view: sola lettura, chiamata gratuita
+        return number;
+    }
+}
+```
+
 Slide di riferimento: 06.01 – Solidity.
 
 ---
