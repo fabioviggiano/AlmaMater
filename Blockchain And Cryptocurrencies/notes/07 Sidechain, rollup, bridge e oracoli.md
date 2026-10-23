@@ -1,14 +1,14 @@
-# Capitolo 7 — Sidechain, rollup e bridge
+# Capitolo 7 — Sidechain, rollup, bridge e oracoli
 
 | | |
 |---|---|
 | **Data** | Lunedì 19/10/2026 · Lezione 7 (da remoto) |
-| **Macro tema** | Parte III–IV — Scalabilità Layer 2 e interoperabilità |
+| **Macro tema** | Parte III–IV — Scalabilità Layer 2, interoperabilità e oracoli |
 | **Slide** | 05.1 – Scalability (Layer 2) <!-- verificare nome file --> · <!-- link Panopto --> |
 
 [← Indice](README.md)
 
-Continua il Cap. 6.3. Lì il Layer 2 era rappresentato dagli state channel: veloci e sicuri, ma adatti solo a poche parti che interagiscono spesso. Qui si vedono le soluzioni L2 **general purpose**: **sidechain**, **Plasma** e soprattutto **rollup** (optimistic e zk). Poi si passa all'**interoperabilità**: i **bridge** che collegano blockchain indipendenti. La lezione è una **panoramica**: l'obiettivo è capire le idee, non i dettagli implementativi.
+Continua il Cap. 6.3. Lì il Layer 2 era rappresentato dagli state channel: veloci e sicuri, ma adatti solo a poche parti che interagiscono spesso. Qui si vedono le soluzioni L2 **general purpose**: **sidechain**, **Plasma** e soprattutto **rollup** (optimistic e zk). Poi si passa all'**interoperabilità**: i **bridge** che collegano blockchain indipendenti. L'ultima parte è un approfondimento sugli **oracoli**, il ponte tra la blockchain e il mondo esterno. La lezione è una **panoramica**: l'obiettivo è capire le idee, non i dettagli implementativi.
 
 ---
 
@@ -85,6 +85,28 @@ A ogni "rollup" si scrive su L1 lo stato (il suo hash) della catena secondaria p
 | Campo d'uso | applicazioni specifiche, poche parti | **general purpose** | general purpose |
 
 > 💡 **Il filo del corso.** Il rollup è la **soluzione di mezzo**: prende dagli state channel la sicurezza garantita da Ethereum e dalle sidechain l'uso general purpose. Il trucco sono i dati su L1: chiunque può rieseguire, quindi nessuno deve fidarsi dell'operatore, e si evita la centralizzazione.
+
+### 1.6 Oracoli: il ponte verso il mondo esterno
+
+Un bridge collega due blockchain. Un **oracolo** collega una blockchain al **mondo esterno**: porta **dentro** la catena informazioni che stanno **fuori** (prezzi, meteo, stato di un volo, risultati sportivi).
+
+Il problema nasce dal determinismo (Cap. 6.2): ogni nodo deve rieseguire il contratto e ottenere lo stesso risultato, quindi un contratto **non può fare una chiamata HTTP**. Ogni nodo potrebbe ricevere una risposta diversa. Il dato esterno deve entrare con una **transazione**, e qualcuno deve mandarla: l'oracolo.
+
+**Due categorie di smart contract / DApp:**
+
+| **Non servono dati esterni** | **Servono dati esterni** |
+|---|---|
+| Token management (ERC-20, ERC-721, ERC-1155) | Lending (es. MakerDAO): prezzo del collaterale |
+| NFT games (es. CryptoKitties) | Insurance (es. assicurazione voli) |
+| Staking contracts | Algorithmic stablecoin: prezzo di mercato |
+| | Decentralized betting, prediction markets: esito degli eventi |
+| | Dynamic NFT: l'NFT cambia in base a eventi esterni |
+
+> **Frase chiave da esame:** gli oracoli oggi sono **ovunque nella DeFi**. Quasi tutte le applicazioni interessanti cadono nella colonna di destra.
+
+**Due definizioni** (dalla lezione):
+- **Narrow** (in senso stretto): un oracolo è un servizio che **porta dati esterni** dentro la blockchain, tipicamente un *data feed* (es. prezzo ETH/USD).
+- **Generalized** (in senso ampio): un oracolo è un qualunque sistema che fa da **ponte** tra blockchain e mondo esterno, in **entrambe le direzioni**, anche eseguendo calcoli off-chain per conto del contratto (randomness, automazione, messaggi cross-chain come CCIP).
 
 ---
 
@@ -194,6 +216,27 @@ User          BridgeSource (A)         Oracle              BridgeDestination (B)
 
 > 💡 **Per il project work.** Il Prof. segnala **Chainlink CCIP** (*Cross-Chain Interoperability Protocol*): su ciascuna catena un *Router* e un *OnRamp/OffRamp* con *Token Pool* (lock/burn e unlock/mint); in mezzo, off-chain, una *Committing DON* e una *Executing DON* (reti di oracoli decentralizzate) sorvegliate da una *Risk Management Network* indipendente.
 
+### 2.6 Come si costruisce un oracolo: l'assicurazione parametrica dei voli
+
+Esempio guida delle slide. Un utente chiede al **Flight Insurance Contract**: *"Dammi una polizza da 100 $ sul volo AA 1215 del 17 maggio 2026"*, e paga **2 $**. Se il volo è in **ritardo**, il contratto paga **automaticamente** 100 $. "Parametrica" significa che paga in base a un parametro oggettivo (ritardo sì/no), senza perizie né pratiche.
+
+⚠️ **La domanda:** come fa il contratto a sapere se pagare? **Gli servono i dati del volo**, che stanno fuori dalla blockchain.
+
+La costruzione procede per passi, risolvendo un problema alla volta:
+
+1. **Oracolo singolo**: un solo nodo legge il dato e lo scrive sulla catena. È un **single point of failure**: se mente o viene compromesso, il contratto paga (o non paga) a torto. Si torna alla fiducia in un'entità centrale, cioè il problema che la blockchain voleva eliminare (Cap. 1).
+2. **Più nodi e firme digitali**: **N nodi indipendenti** (1–5 nella slide) leggono il dato dalla fonte (*FlightDataPalooza.com*) e lo **firmano**. Il contratto riceve `Report: "Flight delayed" + (sig1, …, sig5)` e verifica le firme. **Majority honesty ⇒ informazione valida**: finché la maggioranza dei nodi è onesta, il dato accettato è corretto.
+3. **Dati eterogenei**: i nodi possono **non essere d'accordo**. Nella slide 2 e 4 dicono "ritardo", 1, 3 e 5 "in orario": fonti diverse, orari di lettura diversi o nodi malevoli. Per un dato binario si usa la **maggioranza** (qui: in orario, 3 a 2).
+4. **Medianizzazione**: per un dato **numerico** (es. un prezzo) si prende la **mediana** dei valori riportati.
+
+> **Frase chiave da esame (The beauty of medianization):** se i valori malevoli sono una **minoranza**, la mediana è un **valore onesto** oppure è **compresa tra due valori onesti**.
+
+Nella slide: 7 nodi, 3 malevoli. Valori ordinati: 1985, **1991**, 1993, **2000**, 2007, **2007**, 2010. La mediana è 2000, riportata da un malevolo, ma sta tra 1993 e 2007, due valori onesti. Il malevolo non può spingerla fuori dall'intervallo dei valori onesti: per spostarla dovrebbe controllare la maggioranza.
+
+Perché funziona: con *f < n/2* valori malevoli, sia sopra sia sotto la mediana ci sono più di *f* valori, quindi da ciascun lato almeno uno è onesto. La **media** invece no: basta **un solo** bugiardo con un valore enorme per spostarla dove vuole (vedi §4.3).
+
+**Dove si usano oggi:** *price feed* della DeFi (lending, stablecoin, DEX), assicurazioni parametriche, randomness verificabile, automazione. Il caso più noto è **Chainlink**, una rete di oracoli decentralizzata (DON, la stessa del CCIP visto sopra).
+
 ---
 
 ## 3. Trade-off e attacchi
@@ -211,6 +254,11 @@ User          BridgeSource (A)         Oracle              BridgeDestination (B)
 | **De-peg del wrapped** | In mercati volatili il prezzo del token wrapped può divergere dall'originale | Riserve verificabili; redemption sempre possibile |
 | **Bug del bridge** | Vulnerabilità nell'implementazione: il contratto custodisce cifre enormi | Audit, limiti di prelievo, pause d'emergenza |
 | **Scalabilità del bridge** | Le transazioni cross-chain crescono e il ponte diventa collo di bottiglia | Protocolli dedicati (es. CCIP), relay chain |
+| **Oracle problem** | Il contratto è sicuro quanto il dato che riceve: *garbage in, garbage out* | Più nodi indipendenti, più fonti, firme verificate on-chain |
+| **Oracolo singolo** | Single point of failure: se mente, il contratto esegue un pagamento sbagliato | Rete decentralizzata di oracoli; majority honesty |
+| **Nodi in disaccordo** | Fonti diverse o tempi di lettura diversi danno risposte diverse | Maggioranza per dati binari, **mediana** per dati numerici |
+| **Manipolazione dei prezzi** | Un oracolo che legge un solo DEX può essere manipolato (es. con un flash loan) | Mediana su molte fonti; prezzi medi nel tempo (TWAP) |
+| **Collusione** | Se la maggioranza dei nodi si accorda, l'aggregazione non protegge più | Nodi indipendenti con reputazione e stake da perdere |
 
 Dalla letteratura: i bridge sono stati il bersaglio dei furti più grandi della storia della DeFi, per esempio **Ronin** (circa 600 milioni di dollari, marzo 2022, chiavi di 5 validatori su 9 compromesse) e **Wormhole** (circa 320 milioni, febbraio 2022, bug nella verifica delle firme). Collegamento con le slide *DeFi Security* (9.1).
 
@@ -362,11 +410,117 @@ Cosa osservare:
 - Le sottrazioni (`-=`) vanno in revert se il saldo non basta, grazie ai controlli di overflow di Solidity 0.8.
 - Codice didattico, non sicuro per la produzione: manca la protezione dal *replay* (un evento processato due volte).
 
+### 4.3 Medianizzazione in Python: perché la mediana e non la media
+
+Verifica la proprietà della slide sull'esempio e poi su 100.000 casi casuali.
+
+```python
+import random, statistics
+
+def aggregate(reports):
+    """Aggregazione dell'oracolo: mediana dei valori riportati dai nodi."""
+    return statistics.median_low(reports)          # median_low: restituisce sempre un valore riportato
+
+# Esempio della slide: 7 nodi, 3 malevoli (1991, 2000, 2007 in rosso)
+honest = [1985, 1993, 2007, 2010]
+bad = [1991, 2000, 2007]
+print("mediana slide:", aggregate(honest + bad), "| onesti tra", min(honest), "e", max(honest))
+
+# Verifica della proprietà su 100.000 casi casuali: con f < n/2 malevoli che mentono
+# come vogliono, la mediana resta sempre tra il minimo e il massimo dei valori onesti
+for _ in range(100_000):
+    n = random.choice([5, 7, 9, 21])
+    f = random.randint(0, (n - 1) // 2)               # minoranza malevola
+    honest = [2000 + random.gauss(0, 10) for _ in range(n - f)]
+    bad = [random.choice([0, 10**9, random.uniform(-1e6, 1e6)]) for _ in range(f)]
+    m = aggregate(honest + bad)
+    assert min(honest) <= m <= max(honest)
+print("proprietà verificata su 100.000 casi")
+
+# Confronto con la media: basta un solo nodo malevolo per spostarla a piacere
+honest = [1985, 1993, 2007, 2010, 2001, 1999]
+print("media con 1 bugiardo: ", round(statistics.mean(honest + [10**6])))
+print("mediana con 1 bugiardo:", aggregate(honest + [10**6]))
+```
+
+```
+mediana slide: 2000 | onesti tra 1985 e 2010
+proprietà verificata su 100.000 casi
+media con 1 bugiardo:  144571
+mediana con 1 bugiardo: 2001
+```
+
+### 4.4 Assicurazione voli in Solidity: oracoli a maggioranza
+
+Il contratto della slide: polizza da 2 $ che paga 100 $ (qui scalati in ETH). Cinque nodi oracolo votano "ritardo" o "in orario"; decide la maggioranza.
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract FlightInsurance {
+    uint256 public constant PREMIUM = 0.002 ether;     // "Policy price: $2"
+    uint256 public constant PAYOUT  = 0.1 ether;       // "$100 policy"
+
+    address public immutable insurer;
+    mapping(address => bool) public isOracle;         // i nodi 1..5 della slide
+    uint256 public immutable quorum;                  // maggioranza dei nodi
+
+    struct Policy { address holder; bool paid; }
+    mapping(bytes32 => Policy[]) public policies;     // volo => polizze
+    mapping(bytes32 => mapping(address => bool)) public hasVoted;
+    mapping(bytes32 => uint256) public delayedVotes;
+    mapping(bytes32 => uint256) public onTimeVotes;
+    mapping(bytes32 => bool) public settled;
+
+    constructor(address[] memory oracles) payable {   // l'assicuratore deposita la riserva
+        insurer = msg.sender;
+        for (uint i = 0; i < oracles.length; i++) isOracle[oracles[i]] = true;
+        quorum = oracles.length / 2 + 1;
+    }
+
+    function flightId(string calldata flight, string calldata date) public pure returns (bytes32) {
+        return keccak256(abi.encode(flight, date));   // es. ("AA1215", "2026-05-17")
+    }
+
+    function buy(bytes32 flight) external payable {   // "Gimme a $100 policy"
+        require(msg.value == PREMIUM, "premio errato");
+        require(!settled[flight], "volo gia chiuso");
+        policies[flight].push(Policy(msg.sender, false));
+    }
+
+    // Ogni nodo oracolo riporta il dato che legge dalla fonte esterna
+    function report(bytes32 flight, bool delayed) external {
+        require(isOracle[msg.sender], "non sei un oracolo");
+        require(!settled[flight] && !hasVoted[flight][msg.sender], "voto non ammesso");
+        hasVoted[flight][msg.sender] = true;
+        if (delayed) delayedVotes[flight]++; else onTimeVotes[flight]++;
+
+        if (delayedVotes[flight] >= quorum) {         // majority honesty => dato valido
+            settled[flight] = true;
+            Policy[] storage ps = policies[flight];
+            for (uint i = 0; i < ps.length; i++) {
+                ps[i].paid = true;                    // effetto prima dell'interazione
+                payable(ps[i].holder).transfer(PAYOUT);
+            }
+        } else if (onTimeVotes[flight] >= quorum) {
+            settled[flight] = true;                   // volo in orario: l'assicuratore tiene i premi
+        }
+    }
+}
+```
+
+Cosa osservare:
+- Il contratto **non legge** il sito dei voli: riceve **transazioni** dai nodi oracolo. È l'unico modo per far entrare un dato esterno.
+- Con 5 nodi il `quorum` è 3: nell'esempio *heterogeneous data* (2 "ritardo", 3 "in orario") il contratto chiude come volo in orario e non paga.
+- Qui ogni nodo invia la propria tx; nella slide *digital signatures* un solo nodo invia un report con le 5 firme e il contratto le verifica (`ecrecover`, come nel payment channel del Cap. 6.3). Costa meno gas.
+- Didattico: il ciclo di pagamenti non scala con migliaia di polizze, e non si controlla che la riserva basti.
+
 ---
 
 ## 5. Quadro di riepilogo
 
-> 💡 **Punti su cui insiste il Prof.** Sidechain = consenso proprio, **meno sicura**. Rollup = esecuzione su L2 ma **dati su L1**, quindi rieseguibile da chiunque: è la soluzione di mezzo tra state channel e sidechain. **Optimistic** (fraud proof, 7 giorni) vs **zk** (validity proof, finalità immediata). Gli attori **aggregator/verifier** e la fase di disputa. Bridge: **lock-and-mint**, ruolo degli oracoli, contro. **CCIP** come spunto per il project work.
+> 💡 **Punti su cui insiste il Prof.** Sidechain = consenso proprio, **meno sicura**. Rollup = esecuzione su L2 ma **dati su L1**, quindi rieseguibile da chiunque: è la soluzione di mezzo tra state channel e sidechain. **Optimistic** (fraud proof, 7 giorni) vs **zk** (validity proof, finalità immediata). Gli attori **aggregator/verifier** e la fase di disputa. Bridge: **lock-and-mint**, ruolo degli oracoli, contro. **CCIP** come spunto per il project work. Oracoli: DApp **con e senza dati esterni**, definizione **narrow vs generalized**, costruzione passo per passo (firme, majority honesty, **medianizzazione**).
 
 ### 5.1 Concetti chiave
 
@@ -382,10 +536,14 @@ Cosa osservare:
 | Bridge | Collega blockchain diverse: centralizzato, decentralizzato, relay chain |
 | Lock-and-mint | Lock su A → verifica → mint wrapped 1:1 su B; ritorno con burn su B e unlock su A |
 | Oracolo nel bridge | Osserva gli eventi di una catena e chiama i contratti dell'altra |
+| Oracolo | Porta dati esterni dentro la blockchain tramite transazioni; serve perché i contratti sono deterministici |
+| Narrow / generalized | Data feed esterno → catena / ponte bidirezionale con anche calcolo off-chain |
+| Majority honesty | Con N nodi firmatari e maggioranza onesta, il dato accettato è valido |
+| Medianizzazione | Con una minoranza malevola, la mediana è onesta o compresa tra valori onesti |
 
 ### 5.2 Parole chiave
 
-`Layer 2` · `sidechain` · `parent chain` · `two-way bridge` · `two-way peg` · `Polygon` · `Plasma` · `child chain` · `state commitment` · `Merkle root` · `data withholding` · `rollup` · `data availability` · `state root` · `batch` · `optimistic rollup` · `fraud proof` · `fault proof` · `challenge window` · `aggregator` · `verifier` · `dispute phase` · `zk-rollup` · `validity proof` · `ZK-SNARK` · `ZK-STARK` · `Optimism` · `Arbitrum` · `zkSync` · `StarkNet` · `bridge` · `interoperabilità` · `relay chain` · `Polkadot` · `lock-and-mint` · `wrapped token` · `WBTC` · `burn` · `oracolo` · `Wormhole` · `Chainlink CCIP`
+`Layer 2` · `sidechain` · `parent chain` · `two-way bridge` · `two-way peg` · `Polygon` · `Plasma` · `child chain` · `state commitment` · `Merkle root` · `data withholding` · `rollup` · `data availability` · `state root` · `batch` · `optimistic rollup` · `fraud proof` · `fault proof` · `challenge window` · `aggregator` · `verifier` · `dispute phase` · `zk-rollup` · `validity proof` · `ZK-SNARK` · `ZK-STARK` · `Optimism` · `Arbitrum` · `zkSync` · `StarkNet` · `bridge` · `interoperabilità` · `relay chain` · `Polkadot` · `lock-and-mint` · `wrapped token` · `WBTC` · `burn` · `oracolo` · `Wormhole` · `Chainlink CCIP` · `oracolo` · `oracle problem` · `narrow oracle` · `generalized oracle` · `parametric insurance` · `data feed` · `majority honesty` · `medianizzazione` · `DON` · `Chainlink`
 
 ### 5.3 Domande
 
@@ -399,6 +557,10 @@ Cosa osservare:
 8. Elenca vantaggi e svantaggi di optimistic e zk-rollup.
 9. Descrivi i passi del meccanismo lock-and-mint e il ruolo dell'oracolo.
 10. Quali sono i rischi di un bridge?
+11. Perché uno smart contract ha bisogno di un oracolo? Fai esempi di DApp che ne hanno bisogno e che non ne hanno bisogno.
+12. Distingui oracolo narrow e generalized.
+13. Descrivi come si costruisce un oracolo affidabile per l'assicurazione voli.
+14. Perché si usa la mediana e non la media? Enuncia la proprietà.
 
 <details>
 <summary><b>Tracce di risposta</b></summary>
@@ -413,6 +575,10 @@ Cosa osservare:
 8. Optimistic: compatibile EVM, più semplice, meno calcolo; ma prelievi lunghi e fraud proof complesse. Zk: prelievi veloci, garanzie più forti, privacy migliore; ma matematica complessa, calcolo elevato e possibili problemi di compatibilità EVM.
 9. Initiation, lock dei token in un contratto su A, verifica dei validatori, mint dei wrapped 1:1 su B, ricezione da parte dell'utente; per tornare, burn su B e unlock su A. L'oracolo osserva gli eventi di una catena e chiama mint o release sull'altra.
 10. Si deve fidare di chi ha creato o custodisce il contratto; il token wrapped può perdere l'aggancio di prezzo in mercati volatili; i bug di implementazione espongono fondi enormi (Ronin, Wormhole); il ponte fatica a scalare con molte tx cross-chain.
+11. I contratti devono essere deterministici: tutti i nodi rieseguono e devono ottenere lo stesso risultato, quindi non possono interrogare fonti esterne. Il dato deve entrare con una transazione inviata da un oracolo. Ne hanno bisogno lending, assicurazioni, stablecoin algoritmiche, betting, prediction market, dynamic NFT; non ne hanno bisogno token, NFT game, staking.
+12. Narrow: servizio che porta dati esterni nella catena (data feed). Generalized: qualunque ponte tra catena e mondo esterno, in entrambe le direzioni, anche con calcolo off-chain.
+13. Un oracolo singolo è un single point of failure. Si usano N nodi indipendenti che leggono la fonte e firmano il dato; il contratto verifica le firme e accetta il dato della maggioranza (majority honesty). Se i nodi non concordano si aggrega: maggioranza per dati binari, mediana per dati numerici.
+14. Con una minoranza di valori malevoli la mediana è un valore onesto o è compresa tra due valori onesti. La media invece può essere spostata a piacere anche da un solo nodo malevolo.
 
 </details>
 
@@ -420,7 +586,8 @@ Cosa osservare:
 
 ### Da verificare
 
-- [ ] **Ultimi ~30 minuti della registrazione ancora da ascoltare**: integrare il capitolo con quello che manca (e controllare se la parte su CCIP o sugli esempi continua)
+- [ ] Definizioni **narrow** e **generalized**: ricostruite dagli appunti (che riportano solo i due termini). Ricontrollare sulla registrazione il significato esatto che dà il Prof.
+- [ ] Le slide sugli oracoli (flight insurance, medianization) sembrano tratte da un talk di Ari Juels (Chainlink). Capire da quale set di slide vengono
 - [ ] Nome del file di slide: negli appunti compare "05.1 Scalability (Layer 2)". Aggiungere il link Panopto
 - [ ] La slide scrive "Arbitrium": il progetto si chiama **Arbitrum**
 - [ ] Polygon: la slide lo presenta come sidechain ("10× più veloce"). Oggi l'ecosistema Polygon include anche zk-rollup (zkEVM, AggLayer): capire se il Prof. si riferisce solo a Polygon PoS
@@ -429,6 +596,6 @@ Cosa osservare:
 
 ---
 
-> **Fonti e verifica.** Slide del corso (Sidechains, Polygon, Plasma, Rollups, Rollups vs Sidechain, Optimistic Rollups, Zero-Knowledge Rollups, Fraudulent rollups, Disputes take time, The Need for Bridges, Types of Bridges, Lock-and-Mint, Use of Oracles, Some bridges, Chainlink CCIP, Cons) e appunti presi dalla videolezione del 19/10/2026 (parziali). Dalla letteratura (non in slide): whitepaper di Plasma (Poon, Buterin, 2017) e problema del data withholding, distinzione stretta sidechain/L2, attacchi Ronin e Wormhole (2022), dettagli dei componenti CCIP. Il codice Python è stato eseguito e i contratti Solidity compilano con solc 0.8.20; sono aggiunte didattiche, non presenti nelle slide.
+> **Fonti e verifica.** Slide del corso (Sidechains, Polygon, Plasma, Rollups, Rollups vs Sidechain, Optimistic Rollups, Zero-Knowledge Rollups, Fraudulent rollups, Disputes take time, The Need for Bridges, Types of Bridges, Lock-and-Mint, Use of Oracles, Some bridges, Chainlink CCIP, Cons, Consider a few types of smart contracts / DApps, Parametric flight insurance, Digital signatures, Heterogeneous data, The beauty of medianization) e appunti presi dalla videolezione del 19/10/2026. Dalla letteratura (non in slide): whitepaper di Plasma (Poon, Buterin, 2017) e problema del data withholding, distinzione stretta sidechain/L2, attacchi Ronin e Wormhole (2022), dettagli dei componenti CCIP, oracle problem, manipolazione dei prezzi e TWAP. Il codice Python è stato eseguito e i contratti Solidity compilano con solc 0.8.20; sono aggiunte didattiche, non presenti nelle slide.
 
 [← Indice](README.md)
