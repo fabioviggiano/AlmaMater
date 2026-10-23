@@ -584,6 +584,19 @@ Cosa osservare:
 
 ---
 
+### Verso la prossima lezione: Solidity
+
+La lezione chiude con un'anteprima del linguaggio con cui si scrivono i contratti visti finora (jukebox, payment channel, bridge, assicurazione voli):
+
+- **orientato agli oggetti**: il `contract` è simile a una classe, con stato (variabili di storage), funzioni ed ereditarietà;
+- **tipizzato staticamente**: ogni variabile ha un tipo (`uint256`, `address`, `bool`, `mapping`…) controllato in compilazione;
+- **progettato per Ethereum**, cioè per la EVM (Cap. 6.2), ma usato anche su altre catene compatibili EVM come **Avalanche** e Polygon;
+- **Turing-completo**: può esprimere qualunque calcolo, nei limiti del **gas**.
+
+Slide di riferimento: 06.01 – Solidity.
+
+---
+
 ### Da verificare
 
 - [ ] Definizioni **narrow** e **generalized**: ricostruite dagli appunti (che riportano solo i due termini). Ricontrollare sulla registrazione il significato esatto che dà il Prof.
