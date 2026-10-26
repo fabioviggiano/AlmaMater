@@ -21,6 +21,7 @@ Ogni capitolo corrisponde a una lezione e incrocia tre fonti: gli appunti presi 
 | 6.2 | [Ethereum](6.2%20-%20Ethereum.md) | 6 · lun 12/10/2026 | III–IV — Ethereum | 05 |
 | 6.3 | [Scalabilità: Layer 1 e Layer 2](6.3%20-%20Scalability.md) | 6 · lun 12/10/2026 | III–IV — Ethereum: scalabilità | Scalability |
 | 7 | [Sidechain, rollup, bridge e oracoli](07%20Sidechain%2C%20rollup%2C%20bridge%20e%20oracoli.md) | 7 · lun 19/10/2026 | III–IV — Layer 2, interoperabilità e oracoli | 05.1 |
+| 8 | [Introduzione a Solidity e Remix](08%20Introduzione%20a%20Solidity%20e%20Remix.md) | 8 · lun 26/10/2026 | IV — Smart contract: Solidity e Remix | 06.01 |
 
 Tutti e cinque i capitoli sono nella versione revisionata (formato uniforme, verificati sulle slide; codice Python e Solidity testato). Il 5 copre per intero le slide 04.00 e 04.01, quindi è più lungo del limite di 5 pagine.
 
@@ -28,7 +29,7 @@ Tutti e cinque i capitoli sono nella versione revisionata (formato uniforme, ver
 
 > Gli appunti grezzi da Panopto (`AAAA.MM.GG - Lezione N - ... .md`) non sono ancora caricati nel repository: per ora la fonte di verifica dei capitoli sono le slide.
 
-**Note di calendario (ottobre):** 5 *(no presence friday)* · 12 e 15 · 19 *(no presence friday)*.
+**Note di calendario (ottobre):** 5 *(no presence friday)* · 12 e 15 · 19 *(no presence friday)* · 26 *(30/10 annullata per le lauree)*.
 
 ### Programma indicativo delle prossime lezioni
 
